@@ -64,6 +64,11 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,t
 .quests header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .quests header span{font-size:12px;color:var(--muted)}
 .q{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
+#chores{margin-top:16px}
+.q .tagday{font-size:11px;font-weight:700;color:var(--accent);margin-left:6px;white-space:nowrap}
+.q .xp.zero{color:var(--muted)}
+.hadd{display:flex;gap:8px;flex-wrap:wrap}
+.hadd input{flex:1 1 180px;min-width:0;font:inherit;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink,inherit)}
 .q .xp{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--go);font-variant-numeric:tabular-nums;white-space:nowrap}
 
 .tl{display:grid;gap:8px}
@@ -128,7 +133,7 @@ details[open] .chev{transform:rotate(180deg)}
 form.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 form.grid label{display:grid;gap:3px;font-size:12.5px;color:var(--muted);min-width:0}
 form.grid label.wide{grid-column:1/-1}
-form.grid input,form.grid textarea{font:600 15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+form.grid input,form.grid textarea,form.grid select{font:600 15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
 form.grid textarea{font-weight:500;min-height:54px;resize:vertical}
 .btn{appearance:none;border:0;background:var(--accent);color:var(--surface);font:700 14px var(--body);border-radius:12px;padding:10px 16px;cursor:pointer;justify-self:start}
 .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line);padding:6px 10px;font-size:12.5px}
@@ -198,6 +203,7 @@ td.best{color:var(--go);font-weight:800}
     <div class="progress"><i id="bar"></i></div>
     <div class="quests" id="quests"></div>
     <main class="tl" id="tl"></main>
+    <div class="quests" id="chores"></div>
     <div class="panel" id="send" hidden>
       <span class="eyebrow">Отчёт маме</span>
       <h2>Отправить отметки в Telegram</h2>
@@ -224,6 +230,26 @@ td.best{color:var(--go);font-weight:800}
       <div class="stat"><b id="st-streak">0</b><span>дней подряд</span></div>
       <div class="stat"><b id="st-work">0</b><span>тренировок</span></div>
       <div class="stat"><b id="st-quest">0</b><span>квестов по еде</span></div>
+    </div>
+    <div class="panel" id="earn">
+      <span class="eyebrow">1 балл = 1 ₽</span>
+      <h2>Заработано на этой неделе</h2>
+      <div class="bank-sum"><b id="e-week">0 ₽</b><span id="e-of">цель недели — 1000 ₽</span></div>
+      <div class="progress"><i id="e-bar"></i></div>
+      <p class="small muted" id="e-hint"></p>
+      <p class="small"><b>Карманные 500 ₽ — твои всегда.</b> Они не зависят от баллов и штрафов: это на воду и вкусности. Баллы — это сверху.</p>
+      <div id="e-fines"></div>
+      <div class="tblwrap"><table id="e-table"><thead><tr><th>Неделя</th><th>Баллы</th><th>Бонус</th><th>Штрафы</th><th>Итого</th><th class="e-paid">Выплата</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="panel">
+      <span class="eyebrow">Правила известны заранее</span>
+      <h2>Штрафы</h2>
+      <div class="tblwrap"><table><thead><tr><th>За что</th><th>Сколько</th></tr></thead><tbody>
+        <tr><td>Игры дольше лимита: в будни больше 2 часов, в выходные больше 4–5 часов или без перерывов (10 минут перерыв каждый час)</td><td>−50 ₽ за каждый лишний час</td></tr>
+        <tr><td>Не сделал уроки</td><td>−50 ₽</td></tr>
+        <tr><td>Плохая оценка</td><td>−50…−100 ₽</td></tr>
+      </tbody></table></div>
+      <p class="small muted">Штраф снимается только с заработанных баллов недели, ниже нуля неделя не уходит. Карманные не трогаются никогда. О каждом штрафе тебе придёт сообщение от бота, и он появится здесь, на «Прогрессе». Исправил двойку — скажи маме, штраф могут вернуть.</p>
     </div>
     <div class="panel" id="bank">
       <span class="eyebrow">Копилка с удвоением</span>
@@ -677,7 +703,8 @@ function plan(dow){
   if(w||c){var base=Math.max(w?w.m+40:0,c?c.m+(dow===1?20:dow===6?45:35):0);it.push({m:base,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:15,ex:STR_});}
   if(dow===0){it.push({m:720,key:'long',kind:'walk',title:'Прогулка',dur:'60 мин',xp:30,lead:'День отдыха от тренировок, но не от движения.'});
     it.push({m:1140,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:15,ex:STR_});}
-  it.push({m:(dow===4||dow===1)?1200:1170,key:'eve',kind:'walk',title:'10 минут пешком после ужина',dur:'10–15 мин',xp:15,lead:'Ходьба сразу после еды снижает сахар и инсулин.'});
+  it.push({m:(dow===4||dow===1)?1200:1170,key:'eve',kind:'walk',title:'Прогулка после ужина',sub:'на улице, не по квартире',dur:'30 мин',xp:30,lead:'30 минут на улице сразу после еды: ходьба снижает сахар и инсулин, а дневной и вечерний свет полезен глазам. Можно с другом, с музыкой, в магазин — главное ногами и на улице.'});
+  it.push({m:wk?1230:660,key:'guitar',kind:'rest',title:'Гитара',sub:'каждый день',dur:'20 мин',xp:30,lead:'20 минут без телефона рядом: 5 минут разогреть пальцы и повторить аккорды, 10 минут разбирать новое, 5 минут играть то, что уже получается. Сидеть ровно, гитару на левое бедро или с ремнём — спина скажет спасибо.'});
   it.push({m:wk?1335:1380,key:'sleep',kind:'rest',title:'Отбой',dur:'сон 9 часов',xp:10,lead:'Подъём в 7:30, значит лечь в 22:15–22:30. Телефон на зарядку вне комнаты за 30 минут до сна. Мышцы растут во сне, а недосып тянет к сладкому.'});
   it.sort(function(a,b){return a.m-b.m;});
   return it;
@@ -689,6 +716,12 @@ var QUESTS=[
  ['q-fiber','Съел 3 порции фруктов или овощей (яблоко, груша, слива, огурцы, морковка, салат)'],
  ['q-late','После ужина больше не ел']
 ];
+// house chores: small money, daily cap; any number can be ticked, own ones can be added
+var CHORES=[['h-room','Убрался в комнате: стол, пол, кровать',10],['h-dish','Помыл посуду',10],['h-cook','Приготовил вкусняшку или ужин',10],['h-wash','Сам постирал свои носки и трусы',10],
+ ['h-closet','Аккуратно сложил вещи в шкафу',5],['h-shelf','Протёр пыль на своей полке',5],['h-door','Протёр пыль на двери',5],['h-pillow','Взбил подушки на диване',5],['h-plinth','Протёр плинтуса',5],['h-trash','Вынес мусор',5]];
+var DAYCHORE={1:'h-closet',2:'h-dish',3:'h-shelf',4:'h-trash',5:'h-plinth',6:'h-room',0:'h-cook'};
+var CHORE_CAP=20,CHORE_OWN=5;
+function isChore(k){return k.indexOf('h-')===0||k.indexOf('hx')===0;}
 var LEVELS=[[0,'Новичок'],[500,'Юниор'],[1500,'Игрок дубля'],[3000,'Игрок основы'],[5000,'Капитан'],[8000,'Легенда']];
 var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
 
@@ -696,6 +729,7 @@ var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
 function get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}}
 function set(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 var done={};try{done=JSON.parse(get('sm-done','{}'))||{};}catch(e){done={};}
+var hnames={};try{hnames=JSON.parse(get('sm-hnames','{}'))||{};}catch(e){hnames={};}
 var store=null;
 function saveDay(date){
   set('sm-done',JSON.stringify(done));
@@ -742,6 +776,16 @@ function renderToday(){
   QUESTS.forEach(function(x){var on=!!day[x[0]];if(on)n++;
     q+='<label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="10"'+(on?' checked':'')+'><span>'+esc(x[1])+'</span><span class="xp">+10</span></label>';});
   document.getElementById('quests').innerHTML=q;
+  var used=0;Object.keys(day).forEach(function(k){if(isChore(k))used+=+day[k]||0;});
+  var dc=DAYCHORE[sel],list=CHORES.slice().sort(function(a,b){return (b[0]===dc)-(a[0]===dc);});
+  var h='<header><h2>Дела по дому</h2><span>до '+CHORE_CAP+' ₽ в день</span></header>';
+  list.forEach(function(x){var on=day[x[0]]!=null;
+    h+='<label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="'+x[2]+'"'+(on?' checked':'')+'><span>'+esc(x[1])+(x[0]===dc?'<span class="tagday">дело дня</span>':'')+'</span><span class="xp'+(on&&!+day[x[0]]?' zero':'')+'">+'+(on?+day[x[0]]:x[2])+'</span></label>';});
+  Object.keys(day).filter(function(k){return k.indexOf('hx')===0;}).forEach(function(k){
+    h+='<label class="q"><input class="check" type="checkbox" checked data-id="'+k+'" data-xp="'+CHORE_OWN+'"><span>'+esc(hnames[k]||'Своё дело')+'</span><span class="xp'+(+day[k]?'':' zero')+'">+'+(+day[k]||0)+'</span></label>';});
+  h+='<div class="hadd"><input id="h-new" type="text" maxlength="50" placeholder="Своё дело, например: полил цветы"><button class="btn ghost" type="button" id="h-add">Добавить +'+CHORE_OWN+'</button></div>';
+  h+='<p class="small muted">Отмечай сколько угодно дел. Засчитано сегодня: '+used+' из '+CHORE_CAP+' ₽'+(used>=CHORE_CAP?' — лимит дня собран, дальше просто плюс в карму 😉':'')+'</p>';
+  document.getElementById('chores').innerHTML=h;
   items.forEach(function(it){
     var on=!!day[it.key];if(on)n++;
     var kind=it.kind||'home';
@@ -765,12 +809,24 @@ function renderToday(){
 function onCheck(e){
   var t=e.target;if(!t.dataset||!t.dataset.id)return;
   var key=iso(dateOf(sel));done[key]=done[key]||{};
-  if(t.checked)done[key][t.dataset.id]=+t.dataset.xp;else delete done[key][t.dataset.id];
+  var xp=+t.dataset.xp;
+  if(t.checked&&isChore(t.dataset.id)){var u=0;Object.keys(done[key]).forEach(function(k){if(isChore(k))u+=+done[key][k]||0;});xp=Math.max(0,Math.min(xp,CHORE_CAP-u));}
+  if(t.checked)done[key][t.dataset.id]=xp;else delete done[key][t.dataset.id];
   if(!Object.keys(done[key]).length)delete done[key];
   saveDay(key);renderToday();renderStats();
 }
 document.getElementById('tl').addEventListener('change',onCheck);
 document.getElementById('quests').addEventListener('change',onCheck);
+document.getElementById('chores').addEventListener('change',onCheck);
+document.getElementById('chores').addEventListener('click',function(e){
+  if(e.target.id!=='h-add')return;
+  var inp=document.getElementById('h-new'),txt=(inp.value||'').trim();if(!txt){inp.focus();return;}
+  var key=iso(dateOf(sel)),k='hx'+Date.now().toString(36);done[key]=done[key]||{};
+  var u=0;Object.keys(done[key]).forEach(function(x){if(isChore(x))u+=+done[key][x]||0;});
+  hnames[k]=txt.replace(/[|,:\n]/g,' ');set('sm-hnames',JSON.stringify(hnames));
+  done[key][k]=Math.max(0,Math.min(CHORE_OWN,CHORE_CAP-u));saveDay(key);renderToday();renderStats();
+});
+document.getElementById('chores').addEventListener('keydown',function(e){if(e.target.id==='h-new'&&e.key==='Enter'){e.preventDefault();document.getElementById('h-add').click();}});
 document.getElementById('tl').addEventListener('click',function(e){if(e.target.matches('.check'))e.stopPropagation();});
 
 // ---------- progress ----------
@@ -802,6 +858,7 @@ function renderStats(){
     dots+='<i class="'+cls+'" title="'+d.getDate()+' '+MON[d.getMonth()]+'"></i>';}
   document.getElementById('dots').innerHTML=dots;
   if(typeof renderBank==='function'&&document.getElementById('b-total'))try{renderBank();}catch(e){}
+  if(typeof renderEarn==='function')try{renderEarn();}catch(e){}
   document.getElementById('ladder').innerHTML=LEVELS.map(function(l,i){return '<div class="'+(i===li?'cur':'')+'"><b>'+esc(l[1])+'</b><span>от '+l[0]+' XP</span></div>';}).join('');
 }
 
@@ -887,18 +944,89 @@ document.getElementById('d-table').addEventListener('click',function(e){
 }
 function dmsg(t){var s=document.getElementById('d-status');if(s)s.textContent=t;}
 
+// ---------- earnings: 1 XP = 1 rub, weekly bonus for 6+ workouts ----------
+var WEEK_BONUS=150,WEEK_GOAL=1000,IS_MOM=!!(window.claude&&window.claude.use);
+var pay={};try{pay=JSON.parse(get('sm-pay','{}'))||{};}catch(e){pay={};}
+// fines: mom adds them on her page (db `fines`) and sends to the bot; the bot script publishes fines.json next to the GitHub page
+var fines={};try{fines=JSON.parse(get('sm-fines','{}'))||{};}catch(e){fines={};}
+function weekSum(mon){var xp=0,work=0,a=iso(mon),e=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+6),b2=iso(e),fn=0,fl=[];
+  for(var i=0;i<7;i++){var d=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i),ids=done[iso(d)]||{};
+    Object.keys(ids).forEach(function(k){xp+=+ids[k]||0;if(WORK[k])work++;});}
+  Object.keys(fines).forEach(function(k){var f=fines[k];if(f&&f.d>=a&&f.d<=b2){fn+=+f.a||0;fl.push(f);}});
+  var b=work>=6?WEEK_BONUS:0;return {xp:xp,work:work,bonus:b,fine:fn,fl:fl,total:Math.max(0,xp+b-fn)};}
+function renderEarn(){
+  var w=weekSum(monday);
+  document.getElementById('e-fines').innerHTML=w.fl.length?'<div class="stop"><b>Штрафы на этой неделе: −'+rub(w.fine)+'</b><ul>'+w.fl.sort(function(x,y){return x.d<y.d?-1:1;}).map(function(f){return '<li>'+fmtDate(f.d)+' — '+esc(f.r)+': −'+rub(+f.a)+'</li>';}).join('')+'</ul></div>':'';
+  document.getElementById('e-week').textContent=rub(w.total);
+  document.getElementById('e-of').textContent=w.total>=WEEK_GOAL?'цель недели 1000 ₽ — есть!':'до 1000 ₽ — ещё '+rub(WEEK_GOAL-w.total);
+  document.getElementById('e-bar').style.width=Math.min(100,w.total/WEEK_GOAL*100)+'%';
+  document.getElementById('e-hint').textContent='Каждый балл — рубль. Тренировок за неделю: '+w.work+' из 7. Сделаешь 6 — бонус +'+WEEK_BONUS+' ₽. '+(IS_MOM?'':'Деньги засчитываются по отчёту: вечером нажимай «Отправить маме». ')+'Выплата по воскресеньям.';
+  var weeks=[];for(var i=0;i<8;i++){var m=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()-7*i),s=weekSum(m);if(s.xp||s.fine||i===0)weeks.push([m,s]);}
+  [].forEach.call(document.querySelectorAll('.e-paid'),function(th){th.hidden=!IS_MOM;});
+  document.querySelector('#e-table tbody').innerHTML=weeks.map(function(x){var m=x[0],s=x[1],k=iso(m),e=new Date(m.getFullYear(),m.getMonth(),m.getDate()+6);
+    var p=pay[k];
+    return '<tr><td>'+m.getDate()+'.'+('0'+(m.getMonth()+1)).slice(-2)+'–'+e.getDate()+'.'+('0'+(e.getMonth()+1)).slice(-2)+'</td><td>'+s.xp+'</td><td>'+(s.bonus?'+'+s.bonus:'—')+'</td><td>'+(s.fine?'−'+s.fine:'—')+'</td><td><b>'+rub(s.total)+'</b></td>'+
+      (IS_MOM?'<td>'+(p?'<button class="btn ghost" type="button" data-unpay="'+k+'">✓ '+rub(p.sum)+'</button>':'<button class="btn" type="button" data-pay="'+k+'" data-sum="'+s.total+'">Выплатила</button>')+'</td>':'')+'</tr>';}).join('');
+}
+document.getElementById('e-table').addEventListener('click',function(e){
+  var t=e.target,k;
+  if((k=t.dataset.pay)){pay[k]={sum:+t.dataset.sum,at:todayIso};}
+  else if((k=t.dataset.unpay)){if(t.dataset.sure!=='1'){t.dataset.sure='1';t.textContent='Отменить?';return;}delete pay[k];}
+  else return;
+  set('sm-pay',JSON.stringify(pay));
+  if(store){var p=pay[k]?store.collection('pay').doc(k).set(pay[k]):store.collection('pay').doc(k).delete();p.catch(function(){});}
+  renderEarn();
+});
+
+var renderFines=null;
+function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEarn();if(renderFines)renderFines();}
+if(!IS_MOM&&window.fetch){
+  fetch('fines.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(arr){
+    if(!Array.isArray(arr))return;var m={};arr.forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});setFines(m);}).catch(function(){});
+}
+var fineForm=document.getElementById('f-form');
+if(fineForm){
+  var fstore=null;
+  document.getElementById('f-date').value=todayIso;
+  document.getElementById('f-type').addEventListener('change',function(e){var o=e.target.selectedOptions[0];document.getElementById('f-amount').value=o.dataset.a;});
+  renderFines=function(){
+    var ks=Object.keys(fines).sort(function(a,b){return fines[a].d<fines[b].d?1:-1;});
+    document.querySelector('#f-table tbody').innerHTML=ks.length?ks.map(function(k){var f=fines[k];return '<tr><td>'+fmtDate(f.d)+'</td><td>'+esc(f.r)+'</td><td>−'+(+f.a)+'</td><td><button class="btn ghost" type="button" data-fdel="'+k+'">Отменить</button></td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Штрафов нет.</td></tr>';
+  };
+  var tgOpen=function(txt){var a=document.createElement('a');a.href='https://t.me/HelpKattyBot?text='+encodeURIComponent(txt);a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();};
+  fineForm.addEventListener('submit',function(e){
+    e.preventDefault();var d=document.getElementById('f-date').value,a=+document.getElementById('f-amount').value,t=document.getElementById('f-type').value,n=document.getElementById('f-note').value.trim();
+    if(!d||!a)return;var id='f'+Date.now().toString(36),r=(t+(n?': '+n:'')).replace(/\n/g,' ');
+    var f={id:id,d:d,a:a,r:r};fines[id]=f;setFines(fines);
+    if(store)store.collection('fines').doc(id).set(f).catch(function(){});
+    tgOpen('#штраф '+id+' '+d+' '+a+' '+r);
+    document.getElementById('f-status').textContent='Сохранено. В открывшемся Telegram нажмите «Отправить» — тогда штраф дойдёт до Семёна.';
+    document.getElementById('f-note').value='';
+  });
+  document.getElementById('f-table').addEventListener('click',function(e){
+    var k=e.target.dataset&&e.target.dataset.fdel;if(!k)return;
+    if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно?';return;}
+    delete fines[k];setFines(fines);if(store)store.collection('fines').doc(k).delete().catch(function(){});
+    tgOpen('#штраф отмена '+k);
+    document.getElementById('f-status').textContent='Штраф отменён. Отправьте сообщение боту — у Семёна он тоже исчезнет.';
+  });
+  renderFines();
+}
+
 // ---------- report to mom via Telegram (only outside the claude.ai viewer, i.e. the GitHub build) ----------
-var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка','eve':'шаги после ужина','sleep':'отбой вовремя',
+var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка','eve':'шаги после ужина','guitar':'гитара','sleep':'отбой вовремя',
   'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина'};
 function reportText(){
   var L=['#семён отчёт'],D=[];
   for(var i=6;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i),k=iso(d),ids=done[k]||{},ks=Object.keys(ids),xp=0;
     ks.forEach(function(x){xp+=+ids[x]||0;});
-    L.push(d.getDate()+'.'+('0'+(d.getMonth()+1)).slice(-2)+' '+DS[d.getDay()]+': '+(ks.length?ks.map(function(x){return SHORT[x]||x;}).join(', ')+' ('+xp+' XP)':'—'));
+    L.push(d.getDate()+'.'+('0'+(d.getMonth()+1)).slice(-2)+' '+DS[d.getDay()]+': '+(ks.length?ks.map(function(x){if(SHORT[x])return SHORT[x];if(x.indexOf('hx')===0)return '🏠 '+(hnames[x]||'своё дело');var c=CHORES.filter(function(y){return y[0]===x;})[0];return c?'🏠 '+c[1].split(':')[0].toLowerCase():x;}).join(', ')+' ('+xp+' XP)':'—'));
     D.push('D|'+k+'|'+ks.map(function(x){return x+':'+ids[x];}).join(','));}
   var tk=Object.keys(tests).sort().slice(-3);
   tk.forEach(function(k){var r=tests[k];D.push('T|'+k+'|'+TF.map(function(f){return f+'='+(r[f]===''||r[f]==null?'':r[f]);}).join(','));});
-  var t=totals();L.push('Всего: '+t.xp+' XP, уровень «'+LEVELS[level(t.xp)][1]+'», серия '+streak()+' дн.');
+  var t=totals(),w=weekSum(monday);
+  L.push('Эта неделя: '+w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+' = '+w.total+' ₽ (тренировок '+w.work+')');
+  L.push('Всего: '+t.xp+' XP, уровень «'+LEVELS[level(t.xp)][1]+'», серия '+streak()+' дн.');
   return L.join('\n')+'\n\n'+D.join('\n');
 }
 if(!(window.claude&&window.claude.use)){
@@ -966,6 +1094,14 @@ if(window.claude&&window.claude.use){
       var st=null;snap.docs.forEach(function(x){if(x.id==='state')st=x.data();});
       if(st){bank=st;bank.items=bank.items||{};set('sm-bank',JSON.stringify(bank));renderBank();}
       else if(Object.keys(bank.items).length||bank.goal)db.collection('bank').doc('state').set(bank).catch(function(){});
+    },function(){});
+    db.collection('fines').onSnapshot(function(snap){
+      var fresh={};snap.docs.forEach(function(x){var v=x.data();if(v&&v.d)fresh[x.id]=v;});setFines(fresh);
+    },function(){});
+    db.collection('pay').onSnapshot(function(snap){
+      var fresh={};snap.docs.forEach(function(x){var v=x.data();if(v)fresh[x.id]=v;});
+      Object.keys(pay).forEach(function(k){if(!fresh[k])db.collection('pay').doc(k).set(pay[k]).catch(function(){});fresh[k]=fresh[k]||pay[k];});
+      pay=fresh;set('sm-pay',JSON.stringify(pay));renderEarn();
     },function(){});
     if(HAS_DIARY)db.collection('diary').onSnapshot(function(snap){
       var fresh={};snap.docs.forEach(function(x){var v=x.data();if(v)fresh[x.id]=v;});
