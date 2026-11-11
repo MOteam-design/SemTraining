@@ -145,6 +145,7 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 </div>
 <div id="toast" hidden></div>
 <script src="puzzles.js"></script>
+<script src="state.js"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -196,11 +197,16 @@ function act(a){
   a.id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);a.at=new Date().toISOString();
   if(!KEY){location.href='https://t.me/HelpKattyBot?text='+encodeURIComponent(cmd(a));return;}
   PEND.push(a);savePend();render();
-  ghAppend(a).then(function(){toast('Сохранено ✓ Семён узнает в течение 15 минут');},function(e){
+  ghAppend(a).then(function(){toast('Сохранено ✓ Семён увидит у себя в приложении');load();},function(e){
     PEND=PEND.filter(function(x){return x.id!==a.id;});savePend();render();toast('Не сохранилось ('+e.message+'). Проверьте ключ и связь.');});
 }
 // apply my not-yet-processed actions on top of status.json, so the screen changes immediately
+// live mode (key with SemReports access): state = window.SEM.derive(claims.json, mom.json + my pending) — no computer needed
+var LIVE=null;
 function view(){
+  if(LIVE){var have={};LIVE.acts.forEach(function(a){have[a.id]=1;});
+    PEND=PEND.filter(function(a){return !have[a.id]&&(Date.now()-Date.parse(a.at))<3*864e5;});savePend();
+    return window.SEM.derive(LIVE.claims,LIVE.acts.concat(PEND));}
   var V=JSON.parse(JSON.stringify(S)),done={};(S.applied||[]).forEach(function(i){done[i]=1;});
   PEND=PEND.filter(function(a){return !done[a.id]&&(Date.now()-Date.parse(a.at))<3*864e5;});savePend();
   PEND.forEach(function(a){
@@ -324,7 +330,9 @@ document.getElementById('offer-go').addEventListener('click',function(){var l=pi
 // buttons
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('button[data-a]');if(!b)return;var t=b.dataset.a,a={t:t};
-  if(t==='ok'||t==='no')a.d=b.dataset.d;
+  var V0=view();
+  if(t==='ok'||t==='no'){a.d=b.dataset.d;a.ids=V0.claimed[a.d]||{};}
+  if(t==='pok'||t==='pno')a.tries=(V0.projects[b.dataset.ref]||{}).cur||1;
   if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
   if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
   if(/^(bok|bno|pok|pno)$/.test(t))a.ref=b.dataset.ref;
@@ -341,12 +349,26 @@ document.getElementById('f-form').addEventListener('submit',function(e){
 document.getElementById('key-save').addEventListener('click',function(){
   var k=document.getElementById('key').value.trim();if(!k)return;var st=document.getElementById('key-st');st.textContent='Проверяю…';
   fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+k}}).then(function(r){return r.json();}).then(function(j){
-    if(j&&j.permissions&&j.permissions.push){KEY=k;try{localStorage.setItem('sm-gh-key',k);}catch(e){}document.getElementById('key').value='';render();toast('Ключ сохранён на этом телефоне ✓');}
+    if(j&&j.permissions&&j.permissions.push){KEY=k;try{localStorage.setItem('sm-gh-key',k);}catch(e){}document.getElementById('key').value='';
+      fetch('https://api.github.com/repos/'+REPO.split('/')[0]+'/SemReports',{headers:{'Authorization':'Bearer '+k}}).then(function(r){
+        toast(r.ok?'Ключ сохранён ✓ Отметки Семёна видны сразу':'Ключ сохранён, но у него нет доступа к SemReports — отметки будут приходить с задержкой');});
+      load();}
     else st.textContent='Ключ не подходит: нужен доступ к SemTraining с правом Contents: Read and write.';
   }).catch(function(){st.textContent='Не удалось проверить ключ — нет связи?';});
 });
 document.getElementById('key-reset').addEventListener('click',function(e){e.preventDefault();if(KEY){if(this.dataset.sure!=='1'){this.dataset.sure='1';this.textContent='Удалить ключ с телефона? Нажмите ещё раз';return;}KEY='';try{localStorage.removeItem('sm-gh-key');}catch(x){}}render();document.getElementById('setup').scrollIntoView();});
 function load(){
+  if(KEY&&window.SEM){
+    Promise.all([window.SEM.readJSON('SemReports','claims.json',KEY),window.SEM.readJSON('SemTraining','mom.json',KEY)]).then(function(r){
+      LIVE={claims:r[0].data||{},acts:(r[1].data&&r[1].data.actions)||[]};
+      var u=LIVE.claims.updated?new Date(LIVE.claims.updated):null;
+      document.getElementById('upd').textContent=u?'Семён отмечал '+u.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Семён ещё ничего не отправлял';
+      render();
+    },function(e){LIVE=null;loadStatus();});
+    return;}
+  loadStatus();
+}
+function loadStatus(){
   fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(j){
     S=j;['claimed','confirmed','status','paid','books','projects','puzzles','answers'].forEach(function(k){S[k]=S[k]||{};});S.fines=S.fines||[];S.applied=S.applied||[];
     var u=j.updated?new Date(j.updated):null;document.getElementById('upd').textContent=u?'обновлено '+u.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
@@ -354,6 +376,7 @@ function load(){
   }).catch(function(){document.getElementById('upd').textContent='данных пока нет';render();});
 }
 document.addEventListener('visibilitychange',function(){if(!document.hidden)load();});
+setInterval(function(){if(!document.hidden)load();},60000);
 load();
 })();
 </script>
