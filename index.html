@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261111d"></script><script src="state.js?v=20261111d"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261111e"></script><script src="state.js?v=20261111e"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -768,10 +768,11 @@ function plan(dow){
   // School: wake 7:30, lessons 8:30–15:00 (Thu till 16:00). Training 2 h after the after-school meal (reflux).
   var end=dow===4?960:900,T=dow===4?1110:1050;
   if(wk)it.push({m:450,key:'wake',kind:'rest',title:'Встал сам и позавтракал',sub:'без маминого «вставай»',dur:'до 8:05',xp:20,lead:'Будильник в 7:30 — и сразу встать, не «ещё 5 минут». Позавтракать дома: голодным в школе тянет на булки и сладкое. Что помогает: телефон-будильник положить вечером на другой конец комнаты; сразу включить свет и умыться холодной водой; одежду и рюкзак собрать с вечера; лечь в 22:15 — тогда в 7:30 встаётся легко. Быстрый завтрак за 5 минут: омлет в микроволновке, творог с ягодами и мёдом, бутерброд с курицей и сыром, сырники, которые мама сделала с вечера, или шейк из молока с творогом.'});
-  it.push({m:wk?462:575,key:'vit',kind:'rest',title:'Витамины',sub:'D 5000 и омега-3',dur:'с завтраком',xp:5,lead:'Витамин D и омега-3 пить во время завтрака: они жирорастворимые и лучше усваиваются с едой. Поставь баночки рядом с тарелкой, чтобы не забывать.'});
+  it.push({m:wk?463:575,key:'bfast',kind:'rest',title:'Завтрак',sub:'полноценный, с белком',dur:'до выхода',xp:5,lead:'Не голодным в школу! Варианты на 5 минут: омлет в микроволновке, творог с ягодами и мёдом, бутерброд с курицей и сыром, сырники, шейк из молока с творогом. Белок утром — меньше тяги к булкам и сладкому днём.'});
+  it.push({m:wk?468:580,key:'vit',kind:'rest',title:'Витамины',sub:'D 5000 и омега-3',dur:'с завтраком',xp:5,lead:'Витамин D и омега-3 пить во время завтрака: они жирорастворимые и лучше усваиваются с едой. Поставь баночки рядом с тарелкой, чтобы не забывать.'});
   it.push({m:wk?455:570,key:'feet',kind:'feet',title:'Стопы',sub:'против плоскостопия',dur:'4 мин',xp:10,ex:['shortfoot','towel','calfraise'],lead:wk?'Сразу после подъёма, босиком, пока не надел носки. До выхода в школу хватит времени.':'Босиком, утром.'});
   if(wk)it.push({m:end,key:'out',kind:'walk',title:'Из школы пешком и улица',dur:'всего за день до 2 часов',xp:5,lead:'Дорога из школы пешком, гулять с друзьями до тренировки. Дневной свет тормозит рост близорукости. Цель — 8–10 тысяч шагов.'});
-  if(wk)it.push({m:end+30,key:'meal',kind:'rest',title:'Обед после школы',dur:'тарелка, а не перекусы',xp:5,lead:'Нормальная еда с белком — суп, мясо или курица с гарниром. После неё до тренировки ничего не ешь: через 2 часа тренироваться можно без изжоги.'});
+  it.push({m:wk?end+30:840,key:'meal',kind:'rest',title:'Обед',sub:wk?'после школы':'дома',dur:'тарелка, а не перекусы',xp:5,lead:'Нормальная еда с белком — суп, мясо или курица с гарниром. После неё до тренировки ничего не ешь: через 2 часа тренироваться можно без изжоги.'});
   var w=null,c=null;
   if(dow===1)w={m:T,key:'str-a',title:'Сила А · грудь, спина, плечи, руки',sub:'гантели 3 и 1 кг',dur:'35 мин',xp:40,ex:SA,note:DOSE};
   if(dow===3)w={m:T,key:'str-b',title:'Сила Б · пресс, ягодицы, бёдра',sub:'колено не нагружается',dur:'35 мин',xp:40,ex:SB,note:DOSE};
@@ -785,6 +786,8 @@ function plan(dow){
   if(w||c){var base=Math.max(w?w.m+40:0,c?c.m+(dow===1?20:dow===6?45:35):0);it.push({m:base,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
   if(dow===0){it.push({m:720,key:'long',kind:'walk',title:'Прогулка',dur:'60 мин',xp:30,lead:'День отдыха от тренировок, но не от движения.'});
     it.push({m:1140,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
+  it.push({m:dow===4?1160:1140,key:'dinner',kind:'rest',title:'Ужин',sub:'белок + овощи',dur:'тарелка',xp:5,lead:'Мясо, курица, рыба, яйца или творог и овощи/салат. Ужин — последняя еда дня.'});
+  it.push({m:1290,key:'nosweet',kind:'rest',title:'После ужина — без сладкого',sub:'и без перекусов',dur:'весь вечер',xp:10,lead:'Самое важное для инсулина: после ужина ничего не есть, особенно сладкое. Захотелось — вода, чай без сахара или кефир. Отметь перед сном, если продержался.'});
   it.push({m:(dow===4||dow===1)?1200:1170,key:'eve',kind:'walk',title:'Прогулка после ужина',sub:'на улице, не по квартире',dur:'30 мин',xp:15,lead:'30 минут на улице сразу после еды: ходьба снижает сахар и инсулин, а дневной и вечерний свет полезен глазам. Можно с другом, с музыкой, в магазин — главное ногами и на улице.'});
   it.push({m:wk?1230:660,key:'guitar',kind:'rest',title:'Гитара',sub:'каждый день',dur:'20 мин',xp:30,lead:'20 минут без телефона рядом: 5 минут разогреть пальцы и повторить аккорды, 10 минут разбирать новое, 5 минут играть то, что уже получается. Сидеть ровно, гитару на левое бедро или с ремнём — спина скажет спасибо.'});
   it.push({m:wk?1260:900,key:'read',kind:'rest',title:'Чтение 20 минут',sub:'бумажная, электронная или аудио',dur:'20 мин',xp:20,lead:'Любая книга, которая сейчас на вкладке «Голова». 20 минут — это примерно 15–20 страниц: книга в 300 страниц выходит за 3 недели, а за неё ещё +500 ₽. Не идёт книга — смени, это не экзамен.'});
@@ -795,9 +798,7 @@ function plan(dow){
 var QUESTS=[
  ['q-drink','Пил воду или zero вместо сладкой газировки и сока'],
  ['q-dessert','Сладкое только после еды, без перекусов'],
- ['q-prot','Завтрак с белком: яйца, творог, сырники, бутерброд с курицей'],
- ['q-fiber','Съел 3 порции фруктов или овощей (яблоко, груша, слива, огурцы, морковка, салат)'],
- ['q-late','После ужина больше не ел']
+ ['q-fiber','Съел 3 порции фруктов или овощей (яблоко, груша, слива, огурцы, морковка, салат)']
 ];
 // house chores: small money, daily cap; any number can be ticked, own ones can be added
 var CHORES=[['h-room','Убрался в комнате: стол, пол, кровать',10],['h-dish','Помыл посуду',10],['h-cook','Приготовил вкусняшку или ужин',10],['h-wash','Сам постирал свои носки и трусы',10],
@@ -1345,7 +1346,7 @@ function brainLines(){var L=[];
 renderPuzzle();renderBooks();renderProj();
 
 // ---------- report to mom via Telegram (only outside the claude.ai viewer, i.e. the GitHub build) ----------
-var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка','eve':'прогулка 30','vit':'витамины','wake':'встал сам и позавтракал','guitar':'гитара','read':'чтение','puzzle':'задача дня','sleep':'отбой вовремя',
+var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка','eve':'прогулка 30','vit':'витамины','bfast':'завтрак','dinner':'ужин','nosweet':'без сладкого после ужина','wake':'встал сам и позавтракал','guitar':'гитара','read':'чтение','puzzle':'задача дня','sleep':'отбой вовремя',
   'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина'};
 function reportText(){
   var L=['#семён отчёт'],D=[];
