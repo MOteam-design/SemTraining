@@ -110,6 +110,7 @@ details[open] .chev{transform:rotate(180deg)}
 .panel ul,.panel ol{margin:0;padding-left:20px;display:grid;gap:5px}
 .muted{color:var(--muted)}
 .row{display:flex;flex-wrap:wrap;gap:8px}
+.as-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
 #send{margin-top:16px}
 .small{font-size:13px}
 .level{display:grid;gap:10px;background:var(--ink);color:var(--surface);border-radius:18px;padding:16px}
@@ -323,10 +324,17 @@ td.best{color:var(--go);font-weight:800}
       <details class="bank-set"><summary>Подсказка</summary><p class="small" id="pz-h"></p></details>
     </div>
 
+    <div class="panel" id="bka">
+      <span class="eyebrow">Книга на срок</span>
+      <h2>Книги от мамы</h2>
+      <p class="small muted">Мама выбирает книгу, срок и награду. Успеешь к сроку — вся награда, позже — половина. Отмечай, на какой ты странице, — страница сама посчитает, сколько читать в день.</p>
+      <div id="bka-list" style="display:grid;gap:10px"></div>
+    </div>
+
     <div class="panel" id="bk">
       <span class="eyebrow">300 страниц = 500 ₽</span>
-      <h2>Книги</h2>
-      <p class="small">За каждую дочитанную книгу — деньги сразу, по страницам: 300 страниц = 500 ₽, 150 страниц = 250 ₽. Плюс каждый день «Чтение 20 минут» в плане. Дочитал — нажми «Дочитал!» и расскажи маме за 3 минуты, о чём книга и что зацепило. После этого мама подтвердит.</p>
+      <h2>Своя книга</h2>
+      <p class="small">Можно читать и свою книгу: деньги по страницам, 300 страниц = 500 ₽, 150 страниц = 250 ₽. Дочитал — нажми «Дочитал!» и расскажи маме за 3 минуты, о чём книга и что зацепило. После этого мама подтвердит.</p>
       <form class="grid" id="bk-form">
         <label class="wide" for="bk-title">Что читаю<input id="bk-title" type="text" maxlength="60" placeholder="название и автор" required></label>
         <label for="bk-pages">Страниц<input id="bk-pages" type="number" inputmode="numeric" min="20" max="2000" required></label>
@@ -1188,8 +1196,37 @@ var proj=null;try{proj=JSON.parse(get('sm-proj','null'));}catch(e){proj=null;}
 function bookPrice(p){return Math.round((+p||0)*500/300/10)*10;}
 function clean(s){return String(s||'').replace(/[|\n\r,:]/g,' ').trim().slice(0,60);}
 function momItem(kind,id){return momStatus&&momStatus[kind]&&momStatus[kind][id];}
+// books assigned by mom (momStatus.assigned): progress page, pages per day, deadline
+function dlong(s){return dt2(s).toLocaleDateString('ru-RU',{day:'numeric',month:'long'});}
+function dt2(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+function renderAssigned(){
+  var A=(momStatus&&momStatus.assigned)||{},ids=Object.keys(A).sort(function(x,y){return A[x].due<A[y].due?-1:1;}),box=document.getElementById('bka-list');
+  if(!ids.length){box.innerHTML='<p class="small muted">Мама пока не задала книгу. Когда задаст, она появится здесь со сроком и наградой.</p>';return;}
+  box.innerHTML=ids.map(function(id){var a=A[id],b=books[id]||{},m=momItem('books',id),meta=(a.a?esc(a.a)+' · ':'')+(a.pg?a.pg+' стр. · ':'')+'срок до '+dlong(a.due);
+    if(b.f){var st=m&&m.status==='ok'?'<b class="xp">✅ +'+m.reward+' ₽</b>':m&&m.status==='no'?'<span class="muted small">мама не засчитала — расскажи ей о книге</span>':'<span class="muted small">ждёт маму'+(b.f>a.due?' · после срока — половина':'')+'</span>';
+      return '<div class="as-card"><div class="row" style="justify-content:space-between"><b>✓ «'+esc(a.t)+'»</b>'+st+'</div><span class="small muted">'+meta+' · прочитана '+dlong(b.f)+'</span></div>';}
+    var left=Math.round((dt2(a.due)-dt2(todayIso))/864e5),pg=+b.pg||0,rest=Math.max(0,(a.pg||0)-pg),perDay=a.pg&&rest?Math.ceil(rest/Math.max(1,left+1)):0;
+    var when=left<0?'<span class="small" style="color:var(--warn,#c2410c)">Срок прошёл. Дочитаешь — получишь половину: '+Math.round(a.rw/2)+' ₽.</span>'
+      :left===0?'<span class="small" style="color:var(--warn,#c2410c)">Сегодня последний день!'+(rest?' Осталось '+rest+' стр.':'')+'</span>'
+      :'<span class="small">Осталось дней: <b>'+left+'</b>'+(perDay?' · читай примерно <b>'+perDay+' стр. в день</b>':'')+'</span>';
+    return '<div class="as-card" data-bid="'+id+'"><div class="row" style="justify-content:space-between"><b>«'+esc(a.t)+'»</b><b class="xp">+'+a.rw+' ₽</b></div><span class="small muted">'+meta+'</span>'+when+
+      (a.pg?'<div class="progress"><i style="width:'+Math.min(100,Math.round(pg/a.pg*100))+'%"></i></div><label class="small">Я на странице <input type="number" class="bka-pg" min="0" max="'+a.pg+'" value="'+(pg||'')+'" inputmode="numeric" style="width:90px"> из '+a.pg+'</label>':'')+
+      '<div class="row"><button class="btn" type="button" data-afin="'+id+'">Дочитал!</button></div></div>';}).join('');
+}
+document.getElementById('bka-list').addEventListener('change',function(e){
+  if(!e.target.classList.contains('bka-pg'))return;var id=e.target.closest('[data-bid]').dataset.bid,a=momStatus.assigned[id];
+  books[id]=books[id]||{t:clean(a.t),p:a.pg||0,s:todayIso,f:null,mom:1};books[id].pg=Math.max(0,Math.min(+a.pg||9999,+e.target.value||0));
+  set('sm-books',JSON.stringify(books));renderAssigned();
+});
+document.getElementById('bka-list').addEventListener('click',function(e){
+  var id=e.target.dataset&&e.target.dataset.afin;if(!id)return;
+  if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно дочитал?';return;}
+  var a=momStatus.assigned[id];books[id]=books[id]||{t:clean(a.t),p:a.pg||0,s:a.from||todayIso,mom:1};books[id].f=todayIso;if(a.pg)books[id].pg=a.pg;
+  set('sm-books',JSON.stringify(books));refreshMom();renderAssigned();
+});
 function renderBooks(){
-  var ks=Object.keys(books).sort(function(a,b){return books[a].s<books[b].s?1:-1;});
+  renderAssigned();
+  var ks=Object.keys(books).filter(function(k){return !books[k].mom;}).sort(function(a,b){return books[a].s<books[b].s?1:-1;});
   document.querySelector('#bk-table tbody').innerHTML=ks.length?ks.map(function(k){var b=books[k],m=momItem('books',k),st;
     if(m&&m.status==='ok')st='<span class="xp">✅ +'+(m.reward||bookPrice(b.p))+'</span>';
     else if(m&&m.status==='no')st='<span class="muted small">не засчитано</span>';
