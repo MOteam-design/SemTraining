@@ -113,13 +113,15 @@
     return gh(repo, path, key, 'PUT', body).then(function (r) { if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; } return r.json(); });
   }
   // план дня (для списка «что он должен сделать» у мамы) — те же ключи и баллы, что в plan() на странице Семёна
-  var QUESTS = [['q-drink', 'Без сладких напитков'], ['q-dessert', 'Сладкое только после еды'], ['q-prot', 'Белковый завтрак'], ['q-fiber', '3 порции фруктов/овощей'], ['q-late', 'Не ел после ужина']];
+  var QUESTS = [['q-drink', 'Без сладких напитков'], ['q-dessert', 'Сладкое только после еды'], ['q-fiber', '3 порции фруктов/овощей']];
+  // старые ключи из первых дней — чтобы история читалась
+  var LEGACY = { 'q-prot': 'Белковый завтрак', 'q-late': 'Не ел после ужина' };
   var CHORES = { 'h-room': 'Убрался в комнате', 'h-dish': 'Помыл посуду', 'h-cook': 'Приготовил еду', 'h-wash': 'Постирал своё', 'h-closet': 'Сложил вещи в шкафу',
     'h-shelf': 'Пыль на полке', 'h-door': 'Пыль на двери', 'h-pillow': 'Взбил подушки', 'h-plinth': 'Протёр плинтуса', 'h-trash': 'Вынес мусор' };
   function dayPlan(dow) {
     var wk = dow >= 1 && dow <= 5, G = [];
     function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
-    g('Утро', [wk && { k: 'wake', t: 'Встал сам и позавтракал', xp: 20 }, { k: 'vit', t: 'Витамины D и омега-3', xp: 5 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
+    g('Утро', [wk && { k: 'wake', t: 'Встал сам по будильнику', xp: 20 }, { k: 'vit', t: 'Витамины D и омега-3', xp: 5 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
     var sport = [];
     if (dow === 1) sport.push({ k: 'str-a', t: 'Сила А: верх тела', xp: 40 }, { k: 'bike', t: 'Велотренажёр 15 мин', xp: 20 });
     if (dow === 2) sport.push({ k: 'bike', t: 'Велотренажёр 30 мин', xp: 30 });
@@ -133,11 +135,11 @@
     sport.push({ k: 'eve', t: 'Прогулка 30 мин после ужина', xp: 15 });
     g('Спорт и движение', sport);
     g('Голова и гитара', [{ k: 'guitar', t: 'Гитара 20 мин', xp: 30 }, { k: 'read', t: 'Чтение 20 мин', xp: 20 }, { k: 'puzzle', t: 'Задача дня', xp: 10 }]);
-    g('Еда', [wk && { k: 'meal', t: 'Обед после школы', xp: 5 }].concat(QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; })));
+    g('Еда', [{ k: 'bfast', t: 'Завтрак', xp: 5 }, { k: 'meal', t: 'Обед', xp: 5 }, { k: 'dinner', t: 'Ужин', xp: 5 }, { k: 'nosweet', t: 'После ужина без сладкого', xp: 10 }].concat(QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; })));
     g('Вечер', [{ k: 'sleep', t: 'Отбой вовремя', xp: 5 }]);
     return G;
   }
   // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
   function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
-  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
+  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
 })();
