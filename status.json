@@ -1,7 +1,23 @@
 {
- "claimed": {},
- "confirmed": {},
- "status": {},
+ "claimed": {
+  "2026-11-11": {
+   "q-drink": 5,
+   "q-dessert": 5,
+   "out": 5,
+   "meal": 5
+  }
+ },
+ "confirmed": {
+  "2026-11-11": {
+   "q-drink": 5,
+   "q-dessert": 5,
+   "out": 5,
+   "meal": 5
+  }
+ },
+ "status": {
+  "2026-11-11": "ok"
+ },
  "paid": {},
  "fines": [],
  "books": {},
@@ -21,9 +37,11 @@
  "answers": {},
  "tests": {},
  "hnames": {},
- "updated": "2026-11-11T16:51",
+ "updated": "2026-11-11T17:11",
  "applied": [
   "amwc5whc4z9k",
-  "amwc67m35xzt"
+  "amwc67m35xzt",
+  "amwc749zfu8e",
+  "amwc74k7t0cy"
  ]
 }
