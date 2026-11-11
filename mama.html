@@ -53,6 +53,21 @@ input,select,textarea{font:600 15px var(--body);color:var(--ink);background:var(
 .note{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:13px}
 .tp{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:3px 0}.tp input{width:auto;margin-top:4px}
 details summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.pz-ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+.pz-ctl label{display:grid;gap:3px}
+.pz-chk{display:flex!important;align-items:center;gap:6px;padding-bottom:8px}
+.pz-chk input{width:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{appearance:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:5px 11px;font:700 12.5px var(--body);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pzlist{display:grid;gap:8px}
+.pz{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px}
+.pz.used{opacity:.7}
+.pz-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-weight:700}
+.pz-q{font-size:15px;font-weight:600}
+.pz details p{font-size:14px;margin:6px 0 0;background:var(--surface);border-radius:10px;padding:8px 10px}
+.pzday{display:grid;gap:6px;font-size:13.5px;background:var(--soft);border-radius:12px;padding:10px 12px}
+.pzday .ans{white-space:pre-wrap;font-weight:600}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;max-width:calc(100% - 32px);z-index:5}
 </style>
 </head>
@@ -82,6 +97,22 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
   <section class="card"><h2>Дни недели</h2><div id="days"></div></section>
 
   <section class="card"><h2>Книги и доклады</h2><div id="brain"></div></section>
+
+  <section class="card" id="pz-card">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Задачки</h2><span class="small muted" id="pz-total"></span></div>
+    <p class="small">Выберите задачку на день — у Семёна она заменит автоматическую «задачу дня». Он пишет ответ, вы видите его рядом с разбором и подтверждаете день как обычно. ★★★ — уровень 12–14 лет.</p>
+    <div id="pz-plan" style="display:grid;gap:8px;margin:8px 0"></div>
+    <div class="pz-ctl">
+      <label class="small muted">День<input id="pz-date" type="date"></label>
+      <label class="small muted">Уровень<select id="pz-lvl"><option value="0">все</option><option value="1">★ легко</option><option value="2">★★ средне</option><option value="3" selected>★★★ трудно</option></select></label>
+      <label class="small muted">Поиск<input id="pz-q" type="search" placeholder="слово из условия"></label>
+      <label class="pz-chk small"><input id="pz-new" type="checkbox" checked> только новые</label>
+    </div>
+    <div class="chips" id="pz-groups" style="margin:8px 0"></div>
+    <div class="row" style="margin-bottom:8px"><button class="btn ghost" type="button" id="pz-rand">🎲 Случайная на этот день</button></div>
+    <div class="pzlist" id="pz-list"></div>
+    <button class="btn ghost" type="button" id="pz-more" hidden style="margin-top:8px">Показать ещё</button>
+  </section>
 
   <section class="card">
     <h2>Темы для доклада</h2>
@@ -113,6 +144,7 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
   <p class="note">Семён узнаёт о решении от бота в течение 15 минут. Отчёты приходят и в Telegram с кнопками ✅ / ❌ — подтверждать можно и там. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
+<script src="puzzles.js"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -130,7 +162,7 @@ var TOPICS={
  'Тело и жизнь':['Как растут мышцы','Зачем подросткам 9 часов сна','Что сахар делает с телом','Почему бывает близорукость и как её остановить','Как устроен мозг подростка'],
  'Деньги и будущее':['Как работает банк и откуда берутся проценты','Как блогеры зарабатывают на самом деле','Профессии будущего','Как делают кроссовки и почему они столько стоят']};
 var DS=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-var S={claimed:{},confirmed:{},status:{},paid:{},fines:[],books:{},projects:{},topics:null,applied:[]};
+var S={claimed:{},confirmed:{},status:{},paid:{},fines:[],books:{},projects:{},topics:null,applied:[],puzzles:{},answers:{}};
 var KEY='';try{KEY=localStorage.getItem('sm-gh-key')||'';}catch(e){}
 var PEND=[];try{PEND=JSON.parse(localStorage.getItem('sm-mom-pend')||'[]');}catch(e){PEND=[];}
 function savePend(){try{localStorage.setItem('sm-mom-pend',JSON.stringify(PEND));}catch(e){}}
@@ -145,6 +177,7 @@ var now=new Date(),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(
 
 // ---- actions: written to mom.json in the repo (with key) or sent as a Telegram command (without) ----
 function cmd(a){return {ok:'#ок '+a.d,no:'#нет '+a.d,paid:'#выплатила '+a.mon+' '+a.sum,fine:'#штраф '+a.fid+' '+a.d+' '+a.a+' '+a.r,unfine:'#штраф отмена '+a.fid,
+  pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
   bok:'#книга ок '+a.ref,bno:'#книга нет '+a.ref,pok:'#доклад ок '+a.ref,pno:'#доклад нет '+a.ref,topics:'#темы '+(a.list||[]).join('; ')}[a.t];}
 function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
 function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
@@ -179,6 +212,8 @@ function view(){
     if((a.t==='bok'||a.t==='bno')&&V.books[a.ref])V.books[a.ref].status=a.t==='bok'?'ok':'no';
     if((a.t==='pok'||a.t==='pno')&&V.projects[a.ref])V.projects[a.ref].status=a.t==='pok'?'ok':'no';
     if(a.t==='topics')V.topics={id:a.id,list:a.list};
+    if(a.t==='pz')V.puzzles[a.d]=a.pid;
+    if(a.t==='unpz')delete V.puzzles[a.d];
   });
   return V;
 }
@@ -239,8 +274,44 @@ function render(){
   var li=0;LEVELS.forEach(function(l,j){if(all>=l[0])li=j;});
   document.getElementById('lvl').textContent='Всего подтверждено: '+all+' XP · уровень «'+LEVELS[li][1]+'»'+(LEVELS[li+1]?' · до «'+LEVELS[li+1][1]+'» '+(LEVELS[li+1][0]-all)+' XP':'');
   var fl=(V.fines||[]).slice().sort(function(a,b){return a.d<b.d?1:-1;});
+  renderPz(V);
   document.getElementById('fines').innerHTML=fl.length?fl.map(function(f){return '<tr><td>'+dm(f.d)+'</td><td style="white-space:normal">'+esc(f.r)+'</td><td>−'+(+f.a)+'</td><td><button class="btn ghost" type="button" data-a="unfine" data-fid="'+f.id+'">отменить</button></td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Штрафов нет.</td></tr>';
 }
+// puzzle bank (puzzles.js): mom picks the puzzle for a day, sees Semyon's answer next to the solution
+var PZ=window.PUZZLES||null,pzGroup='all',pzShow=15;
+function pzDay(s){return dt(s).toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'short'});}
+function renderPz(V){
+  var card=document.getElementById('pz-card');if(!PZ){card.hidden=true;return;}
+  var P=V.puzzles||{},A=V.answers||{},used={};for(var d in P)used[P[d]]=(used[P[d]]||[]).concat(d);
+  document.getElementById('pz-total').textContent=PZ.LIST.length+' задачек';
+  var gb=document.getElementById('pz-groups');
+  if(!gb.children.length)[['all','Все']].concat(Object.keys(PZ.GROUPS).map(function(k){return [k,PZ.GROUPS[k]];})).forEach(function(x){
+    var b=document.createElement('button');b.type='button';b.dataset.g=x[0];b.textContent=x[1]+(x[0]==='all'?'':' · '+PZ.LIST.filter(function(p){return p.g===x[0];}).length);gb.appendChild(b);});
+  [].forEach.call(gb.children,function(b){b.setAttribute('aria-pressed',String(b.dataset.g===pzGroup));});
+  var from=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7));
+  var plan=Object.keys(P).filter(function(d){return d>=from;}).sort().reverse();
+  document.getElementById('pz-plan').innerHTML=plan.map(function(d){var p=PZ.BY[P[d]],a=A[d];
+    return '<div class="pzday"><div class="row" style="justify-content:space-between"><b>'+pzDay(d)+'</b>'+(a?'<span class="chip new">есть ответ</span>':'<span class="chip none">ждём ответ</span>')+'</div>'+
+      '<div>'+esc(p?p.q:P[d])+'</div>'+(a?'<div>Семён: <span class="ans">'+esc(a)+'</span></div>':'')+
+      (p?'<details'+(a?' open':'')+'><summary>Разбор</summary><p>'+esc(p.a)+'</p></details>':'')+
+      (a?'<div class="small muted">Засчитать: подтвердите этот день в «Днях недели».</div>':'<div><button class="btn ghost" type="button" data-a="unpz" data-d="'+d+'">Снять</button></div>')+'</div>';}).join('');
+  var lv=+document.getElementById('pz-lvl').value,q=document.getElementById('pz-q').value.trim().toLowerCase(),onlyNew=document.getElementById('pz-new').checked,day=document.getElementById('pz-date').value;
+  var L=PZ.LIST.filter(function(p){return (pzGroup==='all'||p.g===pzGroup)&&(!lv||p.l===lv)&&(!q||(p.q+' '+p.a).toLowerCase().indexOf(q)>=0)&&(!onlyNew||!used[p.id]);});
+  var dl=day?dt(day).toLocaleDateString('ru-RU',{day:'numeric',month:'short'}):'';
+  document.getElementById('pz-list').innerHTML=L.slice(0,pzShow).map(function(p){var u=used[p.id]||[];
+    return '<div class="pz'+(u.length?' used':'')+'"><div class="pz-meta"><span>'+esc(PZ.GROUPS[p.g])+' · '+'★'.repeat(p.l)+'</span><span>'+(u.length?'задана '+u.map(dm).join(', '):'')+'</span></div><div class="pz-q">'+esc(p.q)+'</div><details><summary>Ответ</summary><p>'+esc(p.a)+'</p></details>'+
+      '<div class="row">'+(P[day]===p.id?'<span class="chip ok">✓ задана на '+dl+'</span>':'<button class="btn" type="button" data-a="pz" data-d="'+day+'" data-pid="'+p.id+'">Задать на '+dl+'</button>')+'</div></div>';}).join('')||'<p class="small muted">Ничего не найдено — смените группу или снимите «только новые».</p>';
+  document.getElementById('pz-more').hidden=L.length<=pzShow;
+  pzFiltered=L;
+}
+var pzFiltered=[];
+document.getElementById('pz-date').value=iso(now);
+document.getElementById('pz-groups').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;pzGroup=b.dataset.g;pzShow=15;render();});
+['pz-lvl','pz-new','pz-date'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){pzShow=15;render();});});
+document.getElementById('pz-q').addEventListener('input',function(){pzShow=15;render();});
+document.getElementById('pz-more').addEventListener('click',function(){pzShow+=15;render();});
+document.getElementById('pz-rand').addEventListener('click',function(){var d=document.getElementById('pz-date').value;if(!d||!pzFiltered.length){toast('Выберите день и фильтр, где есть задачки');return;}
+  act({t:'pz',d:d,pid:pzFiltered[Math.floor(Math.random()*pzFiltered.length)].id});});
 // topic bank
 var th='';Object.keys(TOPICS).forEach(function(g){th+='<h3>'+esc(g)+'</h3>'+TOPICS[g].map(function(t){return '<label class="tp"><input type="checkbox" value="'+esc(t)+'"><span>'+esc(t)+'</span></label>';}).join('');});
 document.getElementById('topics').innerHTML='<details><summary>Выбрать из списка ('+Object.keys(TOPICS).reduce(function(n,g){return n+TOPICS[g].length;},0)+' тем)</summary>'+th+'</details>';
@@ -257,6 +328,7 @@ document.addEventListener('click',function(e){
   if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
   if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
   if(/^(bok|bno|pok|pno)$/.test(t))a.ref=b.dataset.ref;
+  if(t==='pz'||t==='unpz'){a.d=b.dataset.d;if(t==='pz'){if(!a.d){toast('Выберите день');return;}a.pid=b.dataset.pid;}}
   act(a);
 });
 document.getElementById('f-date').value=iso(now);
@@ -276,7 +348,7 @@ document.getElementById('key-save').addEventListener('click',function(){
 document.getElementById('key-reset').addEventListener('click',function(e){e.preventDefault();if(KEY){if(this.dataset.sure!=='1'){this.dataset.sure='1';this.textContent='Удалить ключ с телефона? Нажмите ещё раз';return;}KEY='';try{localStorage.removeItem('sm-gh-key');}catch(x){}}render();document.getElementById('setup').scrollIntoView();});
 function load(){
   fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(j){
-    S=j;['claimed','confirmed','status','paid','books','projects'].forEach(function(k){S[k]=S[k]||{};});S.fines=S.fines||[];S.applied=S.applied||[];
+    S=j;['claimed','confirmed','status','paid','books','projects','puzzles','answers'].forEach(function(k){S[k]=S[k]||{};});S.fines=S.fines||[];S.applied=S.applied||[];
     var u=j.updated?new Date(j.updated):null;document.getElementById('upd').textContent=u?'обновлено '+u.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
     render();
   }).catch(function(){document.getElementById('upd').textContent='данных пока нет';render();});
