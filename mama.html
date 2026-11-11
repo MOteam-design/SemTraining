@@ -219,8 +219,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js?v=20261111d"></script>
-<script src="state.js?v=20261111d"></script>
+<script src="puzzles.js?v=20261111e"></script>
+<script src="state.js?v=20261111e"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -318,7 +318,7 @@ function renderDay(V){
     h+='</div>';});
   // anything else he marked that is not in today's plan
   var other=Object.keys(cl).filter(function(k){return !planKeys[k];});
-  if(other.length){h+='<div class="grp"><h3>Ещё отмечено</h3>'+other.map(function(k){var s=it[k]||'new';return '<div class="it"><span class="m">✔️</span><span class="t">'+esc(k)+'<small>+'+cl[k]+'</small></span><span class="a">'+itemBtns(DAY,k,s)+'</span></div>';}).join('')+'</div>';}
+  if(other.length){h+='<div class="grp"><h3>Ещё отмечено</h3>'+other.map(function(k){var s=it[k]||'new';return '<div class="it"><span class="m">✔️</span><span class="t">'+esc(SEM.LEGACY[k]||SEM.CHORES[k]||k)+'<small>+'+cl[k]+'</small></span><span class="a">'+itemBtns(DAY,k,s)+'</span></div>';}).join('')+'</div>';}
   $('day-list').innerHTML=h;
   $('day-count').textContent='сделано '+doneN+' из '+total;
   $('day-bar').style.width=(total?doneN/total*100:0)+'%';
