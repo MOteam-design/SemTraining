@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#1F6FEB">
+<meta name="theme-color" content="#4361FF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Семён ₽">
-<title>Семён · мама</title>
-<link rel="manifest" href="mama.webmanifest">
-<link rel="icon" type="image/png" href="mama-192.png">
-<link rel="apple-touch-icon" href="mama-180.png">
+<meta name="apple-mobile-web-app-title" content="Мотивация">
+<title>Мотивация Семёна</title>
+<link rel="manifest" href="mama.webmanifest?v=2">
+<link rel="icon" type="image/png" href="mama-192.png?v=2">
+<link rel="apple-touch-icon" href="mama-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;600;700;800&display=swap">
 <style>
@@ -57,6 +57,7 @@ h3{font-size:12px;margin:12px 0 4px;color:var(--muted);text-transform:uppercase;
 .it .m{font-size:16px;text-align:center}
 .it.todo{color:var(--muted)}
 .it .t{min-width:0}
+.it .t .sub{display:inline-block;margin-top:2px;font-size:12.5px;font-weight:700;color:var(--new);background:var(--new-soft);border-radius:8px;padding:1px 7px}
 .it .t small{color:var(--muted);font-weight:700;margin-left:4px;white-space:nowrap}
 .it .a{display:flex;gap:6px;align-items:center}
 .ib{appearance:none;width:36px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:16px;cursor:pointer;color:var(--ink)}
@@ -94,7 +95,7 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
 </head>
 <body>
 <div class="wrap">
-  <header><h1>Семён · мама</h1><span class="small muted" id="upd">загружаю…</span></header>
+  <header><h1>Мотивация Семёна</h1><span class="small muted" id="upd">загружаю…</span></header>
 
   <section class="card" id="setup" hidden>
     <h2>Подтверждать прямо здесь</h2>
@@ -218,8 +219,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js?v=20261111b"></script>
-<script src="state.js?v=20261111b"></script>
+<script src="puzzles.js?v=20261111c"></script>
+<script src="state.js?v=20261111c"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -311,7 +312,7 @@ function renderDay(V){
     g.items.forEach(function(x){planKeys[x.k]=1;if(!x.chore)total++;
       var did=x.k in cl,s=it[x.k]||(did?'new':''),pts=did?+cl[x.k]||0:x.xp;if(did&&!x.chore)doneN++;
       h+='<div class="it'+(did?'':' todo')+'"><span class="m">'+(did?(s==='ok'?'✅':s==='no'?'❌':'✔️'):'○')+'</span>'+
-        '<span class="t">'+esc(x.t)+'<small>'+(did?'+':'')+pts+'</small></span><span class="a">'+(did?itemBtns(DAY,x.k,s):'<span class="small muted">не сделано</span>')+'</span>';
+        '<span class="t">'+esc(x.t)+'<small>'+(did?'+':'')+pts+'</small>'+(((V.subs||{})[DAY]||{})[x.k]?'<br><span class="sub">🔄 вместо этого: '+esc(V.subs[DAY][x.k])+'</span>':'')+'</span><span class="a">'+(did?itemBtns(DAY,x.k,s):'<span class="small muted">не сделано</span>')+'</span>';
       if(x.k==='puzzle')h+=puzzleAnswer(V,DAY);
       h+='</div>';});
     h+='</div>';});
@@ -394,7 +395,10 @@ function renderEnot(V){
 // 8. projects + topics on offer
 function renderProj(V){
   var P=V.projects||{},ks=Object.keys(P),h='';
-  if(V.topics&&V.topics.list)h+='<div class="box small"><b>Предложено:</b> '+V.topics.list.map(esc).join(' · ')+'</div>';
+  if(V.topics&&V.topics.list){var byT={};ks.forEach(function(k){byT[P[k].topic]=P[k];});
+    h+='<h3>Сейчас предложено — Семён выбирает</h3>'+V.topics.list.map(function(t){var p=byT[t];
+      return '<div class="les"><span>'+esc(t)+'</span>'+(p?(p.status==='ok'?'<span class="chip ok">✅ принят</span>':'<span class="chip new">🎤 выбрал</span>'):'<span class="chip none">ждёт выбора</span>')+'</div>';}).join('');
+    if(ks.length)h+='<h3>Все доклады</h3>';}
   h+=ks.map(function(k){var p=P[k];var lab=p.status==='ok'?'<span class="chip ok">принят +'+p.reward+' ₽</span>':p.status==='no'?'<span class="chip no">на доработке</span>':p.state==='ready'?'<span class="chip new">выступил — проверьте выше</span>':'<span class="chip none">готовит</span>';
     return '<div class="row sp small"><span>🎤 <b>'+esc(p.topic)+'</b> · '+dm(p.d)+'</span>'+lab+'</div>';}).join('');
   $('proj').innerHTML=h||'<p class="small muted">Докладов пока не было. Предложите темы ниже.</p>';
