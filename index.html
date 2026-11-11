@@ -350,6 +350,14 @@ td.best{color:var(--go);font-weight:800}
       </details>
     </div>
 
+    <div class="panel" id="en">
+      <span class="eyebrow">Сверх лимита · 100 ₽ за урок</span>
+      <h2>Курс «Енот Чек»</h2>
+      <p class="small">Курс про то, как не верить на слово: логика, факты и мнения, мошенники, ловушки мышления, проверка новостей. Прошёл урок — отметь его тут, мама спросит, что запомнилось, и засчитает 100 ₽. Это не входит в потолок 1500 ₽ за неделю.</p>
+      <p><a class="btn" href="https://moteam-design.github.io/enot-chek/" target="_blank" rel="noopener">Открыть курс 🦝</a></p>
+      <div id="en-list" style="display:grid;gap:6px"></div>
+    </div>
+
     <div class="panel" id="pj">
       <span class="eyebrow">Доклад 5–7 минут · +400 ₽</span>
       <h2>Проект</h2>
@@ -793,7 +801,7 @@ var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
 // ---------- state ----------
 function get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}}
 function set(k,v){try{localStorage.setItem(k,v);}catch(e){}if(CLAIM_KEYS[k]&&typeof onClaimsChanged==='function')onClaimsChanged();}
-var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1};
+var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1,'sm-enot':1};
 var done={};try{done=JSON.parse(get('sm-done','{}'))||{};}catch(e){done={};}
 var hnames={};try{hnames=JSON.parse(get('sm-hnames','{}'))||{};}catch(e){hnames={};}
 var store=null;
@@ -1025,7 +1033,7 @@ function weekSum(mon){var xp=0,work=0,a=iso(mon),e=new Date(mon.getFullYear(),mo
     Object.keys(c).forEach(function(k){if(isExtra(k))ex+=+c[k]||0;});}
   // everyday points + bonus never exceed WEEK_MAX; books and projects come on top
   var b=work>=6?WEEK_BONUS:0;return {xp:xp+ex,work:work,bonus:b,fine:fn,fl:fl,total:Math.max(0,Math.min(WEEK_MAX,xp+b)+ex-fn)};}
-function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0;}
+function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0||k.indexOf('enot-')===0;}
 function renderEarn(){
   var w=weekSum(monday);
   var ms='';
@@ -1062,7 +1070,7 @@ function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEar
 var momActions=null;
 function applyMom(j){
   if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
-  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();}
+  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();}
 function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
 function loadMom(){
   if(IS_MOM||!window.fetch)return;
@@ -1220,6 +1228,24 @@ document.getElementById('pj-box').addEventListener('click',function(e){
   else return;
   set('sm-proj',JSON.stringify(proj));saveProjHist();renderProj();refreshMom();
 });
+// course «Енот Чек»: {lesson: date passed}; 100 ₽ each once mom confirms, outside the weekly cap
+var ENOT_L=[[1,'Знакомство и азбука логики'],[2,'Азбука логики: часть 2'],[3,'Факт или мнение'],[4,'Суперсила вопросов'],[5,'Осторожно, мошенники'],[6,'Ловушки в рассуждениях'],[7,'Ловушки-2 и неверные выводы'],[8,'Как мозг нас обманывает'],[9,'Проверка новостей'],[10,'Итоговый тест']];
+var enot={};try{enot=JSON.parse(get('sm-enot','{}'))||{};}catch(e){enot={};}
+function renderEnot(){
+  document.getElementById('en-list').innerHTML=ENOT_L.map(function(l){var n=String(l[0]),d=enot[n],m=momItem('enot',n),st;
+    if(m&&m.status==='ok')st='<span class="xp">✅ +100</span>';
+    else if(m&&m.status==='no')st='<span class="muted small">не засчитано</span> <button class="btn ghost" type="button" data-eun="'+n+'">Снять</button>';
+    else if(d)st='<span class="muted small">ждёт маму</span>';
+    else st='<button class="btn ghost" type="button" data-en="'+n+'">Прошёл ✓</button>';
+    return '<div class="row" style="justify-content:space-between;gap:8px"><span class="small"><b>'+n+'.</b> '+esc(l[1])+'</span>'+st+'</div>';}).join('');
+}
+document.getElementById('en-list').addEventListener('click',function(e){
+  var n=e.target.dataset&&(e.target.dataset.en||e.target.dataset.eun);if(!n)return;
+  if(e.target.dataset.en){if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно прошёл?';return;}enot[n]=todayIso;}
+  else delete enot[n];
+  set('sm-enot',JSON.stringify(enot));renderEnot();refreshMom();
+});
+renderEnot();
 // all projects ever picked (mom needs the history to pay for accepted ones)
 var projs={};try{projs=JSON.parse(get('sm-projs','{}'))||{};}catch(e){projs={};}
 function saveProjHist(){if(proj)projs[proj.id]={topic:proj.topic,picked:proj.picked,ready:proj.ready||null,tries:+proj.tries||0};set('sm-projs',JSON.stringify(projs));}
@@ -1230,7 +1256,7 @@ function localClaims(){
   Object.keys(done).forEach(function(k){if(k>=from){d[k]=done[k];Object.keys(done[k]).forEach(function(x){if(x.indexOf('hx')===0&&hnames[x])hn[x]=hnames[x];});}});
   var t={};Object.keys(tests).sort().slice(-5).forEach(function(k){t[k]=tests[k];});
   var pa={};Object.keys(pzAns).sort().slice(-14).forEach(function(k){pa[k]=pzAns[k];});
-  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn};
+  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot};
 }
 // auto-send: key for the private SemReports repo, entered once on this phone by mom
 var REPKEY='';try{REPKEY=localStorage.getItem('sm-rep-key')||'';}catch(e){}
@@ -1277,8 +1303,9 @@ function reportText(){
   L.push('Эта неделя: '+w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+' = '+w.total+' ₽ (тренировок '+w.work+')');
   L.push('Всего: '+t.xp+' XP, уровень «'+LEVELS[level(t.xp)][1]+'», серия '+streak()+' дн.');
   var BL=brainLines();
+  Object.keys(enot).forEach(function(n){var m=momItem('enot',n);if(!m||m.status==='new'){L.push('🦝 Прошёл урок '+n+' курса Енот Чек');BL.push('E|'+enot[n]+'|'+n);}});
   Object.keys(pzAns).sort().slice(-7).forEach(function(d){if(d>=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))){L.push('🧩 Ответ на задачку '+fmtDate(d)+': '+pzAns[d]);BL.push('Z|'+d+'|'+pzAns[d]);}});
-  BL.forEach(function(l){var p=l.split('|');if(p[0]==='Z')return;L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
+  BL.forEach(function(l){var p=l.split('|');if(p[0]==='Z'||p[0]==='E')return;L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
   return L.join('\n')+'\n\n'+D.concat(BL).join('\n');
 }
 if(!(window.claude&&window.claude.use)){
