@@ -19,7 +19,7 @@
   function derive(claims, actions) {
     claims = claims || {};
     var CL = claims.done || {};
-    var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, projects: {}, enot: {}, topics: null,
+    var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, assigned: {}, projects: {}, enot: {}, topics: null,
               puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, updated: claims.updated || null };
     var dec = {}, extra = {};
     Object.keys(claims.books || {}).forEach(function (k) {
@@ -34,6 +34,9 @@
     (actions || []).forEach(function (a) {
       var t = a.t;
       if ((t === 'eok' || t === 'eno') && S.enot[a.ref]) { S.enot[a.ref].status = t === 'eok' ? 'ok' : 'no'; return; }
+      // книга от мамы на срок: к сроку — вся награда, позже — половина
+      if (t === 'book' && a.bid) { S.assigned[a.bid] = { t: a.title || '', a: a.author || '', pg: +a.pg || 0, from: a.from, due: a.due, rw: +a.rw || 0 }; return; }
+      if (t === 'unbook') { delete S.assigned[a.bid]; return; }
       if (t === 'ok' || t === 'no') { if (a.d) dec[a.d] = { s: t, ids: a.ids || CL[a.d] || {} }; }
       else if (t === 'paid') { if (a.mon) S.paid[a.mon] = { sum: +a.sum || 0, at: (a.at || '').slice(0, 10) }; }
       else if (t === 'fine') { S.fines = S.fines.filter(function (f) { return f.id !== a.fid; }); S.fines.push({ id: a.fid, d: a.d, a: +a.a || 0, r: a.r || '' }); }
@@ -44,6 +47,8 @@
       else if (t === 'pz') { if (a.d && a.pid) S.puzzles[a.d] = a.pid; }
       else if (t === 'unpz') { delete S.puzzles[a.d]; }
     });
+    Object.keys(S.books).forEach(function (k) { var as = S.assigned[k], b = S.books[k];
+      if (as) { b.assigned = true; b.due = as.due; b.reward = b.d <= as.due ? as.rw : Math.round(as.rw / 2); b.late = b.d > as.due; } });
     // проект «не принят», а Семён снова нажал «выступил» позже — снова на проверку
     Object.keys(S.projects).forEach(function (k) { var p = S.projects[k], c = (claims.projs || {})[k]; p.cur = (c && c.tries) || 1; if (p.status === 'no' && c && c.ready && p.cur > p.tries) p.status = 'new'; });
     var days = {}; Object.keys(CL).forEach(function (d) { days[d] = 1; }); Object.keys(dec).forEach(function (d) { days[d] = 1; });
@@ -95,5 +100,7 @@
     var body = { message: msg || ('update ' + path), content: b64e(JSON.stringify(data, null, 1)) }; if (sha) body.sha = sha;
     return gh(repo, path, key, 'PUT', body).then(function (r) { if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; } return r.json(); });
   }
-  window.SEM = { C: C, ENOT: ENOT, derive: derive, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
+  // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
+  function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
+  window.SEM = { C: C, ENOT: ENOT, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
 })();
