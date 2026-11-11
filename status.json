@@ -8,10 +8,14 @@
  "projects": {},
  "enot": {},
  "topics": null,
- "puzzles": {},
+ "puzzles": {
+  "2026-11-11": "space-23"
+ },
  "answers": {},
  "tests": {},
  "hnames": {},
- "updated": "2026-11-11T16:21",
- "applied": []
+ "updated": "2026-11-11T16:36",
+ "applied": [
+  "amwc5whc4z9k"
+ ]
 }
