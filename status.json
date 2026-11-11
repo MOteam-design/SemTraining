@@ -49,6 +49,7 @@
  "answers": {},
  "tests": {},
  "hnames": {},
+ "subs": {},
  "items": {
   "2026-11-11": {
    "q-drink": "ok",
@@ -58,7 +59,7 @@
    "str-b": "ok"
   }
  },
- "updated": "2026-11-11T18:36",
+ "updated": "2026-11-11T18:51",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
