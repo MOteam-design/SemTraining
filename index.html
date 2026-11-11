@@ -856,7 +856,7 @@ function renderToday(){
   var items=plan(sel),html='',n=0,total=items.length+QUESTS.length;
   var q='<header><h2>Квесты по еде</h2><span>по 5 XP</span></header>';
   QUESTS.forEach(function(x){var on=!!day[x[0]];if(on)n++;
-    q+='<label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="5"'+(on?' checked':'')+'><span>'+esc(x[1])+'</span><span class="xp">+5</span></label>';});
+    q+='<label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="5"'+(on?' checked':'')+'><span>'+esc(x[1])+momMark(key,x[0])+'</span><span class="xp">+5</span></label>';});
   document.getElementById('quests').innerHTML=q;
   var used=0;Object.keys(day).forEach(function(k){if(isChore(k))used+=+day[k]||0;});
   var dc=DAYCHORE[sel],list=CHORES.slice().sort(function(a,b){return (b[0]===dc)-(a[0]===dc);});
@@ -875,7 +875,7 @@ function renderToday(){
     html+='<div class="item"><div class="time">'+hm(it.m)+'</div>';
     html+='<details class="card'+(on?' done':'')+'" data-kind="'+kind+'">';
     html+='<summary><input class="check" type="checkbox" aria-label="Сделано: '+esc(it.title)+'" data-id="'+it.key+'" data-xp="'+it.xp+'"'+(on?' checked':'')+'>';
-    html+='<span class="sum-main"><b>'+esc(it.title)+'</b><span>'+tag+esc(it.dur||'')+(it.sub?' · '+esc(it.sub):'')+'</span></span><span class="xpb">+'+it.xp+'</span>'+CHEV+'</summary>';
+    html+='<span class="sum-main"><b>'+esc(it.title)+momMark(key,it.key)+'</b><span>'+tag+esc(it.dur||'')+(it.sub?' · '+esc(it.sub):'')+'</span></span><span class="xpb">+'+it.xp+'</span>'+CHEV+'</summary>';
     html+='<div class="body">';
     if(it.lead)html+='<p class="lead">'+esc(it.lead)+'</p>';
     if(it.pre)html+='<p class="note"><b>Еда.</b> Тренировка через 2 часа после обеда или перекуса, иначе будет изжога.</p>';
@@ -888,6 +888,9 @@ function renderToday(){
   document.getElementById('bar').style.width=(n/total*100)+'%';
   paintStatic(tl);
 }
+// mom's per-item decision (GitHub build): ✅ counted / ❌ not counted
+function momMark(day,k){var s=typeof momStatus!=='undefined'&&momStatus&&momStatus.items&&(momStatus.items[day]||{})[k];
+  return s==='ok'?' <span class="tag" style="background:var(--go-soft,#DDF5E7);color:var(--go,#178A4C)">✅ мама засчитала</span>':s==='no'?' <span class="tag" style="background:#FDE3DA;color:#9A3412">❌ мама не засчитала</span>':'';}
 function onCheck(e){
   var t=e.target;if(!t.dataset||!t.dataset.id)return;
   var key=iso(dateOf(sel));done[key]=done[key]||{};
@@ -1078,7 +1081,7 @@ function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEar
 var momActions=null;
 function applyMom(j){
   if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
-  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();}
+  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();renderToday();}
 function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
 function loadMom(){
   if(IS_MOM||!window.fetch)return;
