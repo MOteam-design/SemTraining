@@ -119,7 +119,7 @@
   function dayPlan(dow) {
     var wk = dow >= 1 && dow <= 5, G = [];
     function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
-    g('Утро', [wk && { k: 'wake', t: 'Встал сам и позавтракал', xp: 20 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
+    g('Утро', [wk && { k: 'wake', t: 'Встал сам и позавтракал', xp: 20 }, { k: 'vit', t: 'Витамины D и омега-3', xp: 5 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
     var sport = [];
     if (dow === 1) sport.push({ k: 'str-a', t: 'Сила А: верх тела', xp: 40 }, { k: 'bike', t: 'Велотренажёр 15 мин', xp: 20 });
     if (dow === 2) sport.push({ k: 'bike', t: 'Велотренажёр 30 мин', xp: 30 });
