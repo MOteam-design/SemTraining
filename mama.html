@@ -96,7 +96,7 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 
   <section class="card"><h2>Дни недели</h2><div id="days"></div></section>
 
-  <section class="card"><h2>Книги и доклады</h2><div id="brain"></div></section>
+  <section class="card"><h2>Книги, «Енот Чек», доклады</h2><div id="brain"></div></section>
 
   <section class="card" id="pz-card">
     <div class="row" style="justify-content:space-between"><h2 style="margin:0">Задачки</h2><span class="small muted" id="pz-total"></span></div>
@@ -150,7 +150,7 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 (function(){
 var REPO='MOteam-design/SemTraining';
 var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1},BONUS=100,MAX=1500,GOAL=1000;
-function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0;}
+function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0||k.indexOf('enot-')===0;}
 var NAMES={'wake':'⏰ встал сам и позавтракал','feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка 60','eve':'прогулка 30','guitar':'гитара','read':'чтение','puzzle':'🧩 задача дня','sleep':'отбой',
  'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина',
  'h-room':'🏠 комната','h-dish':'🏠 посуда','h-cook':'🏠 готовил','h-wash':'🏠 стирка','h-closet':'🏠 шкаф','h-shelf':'🏠 полка','h-door':'🏠 дверь','h-pillow':'🏠 подушки','h-plinth':'🏠 плинтуса','h-trash':'🏠 мусор'};
@@ -178,7 +178,7 @@ var now=new Date(),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(
 
 // ---- actions: written to mom.json in the repo (with key) or sent as a Telegram command (without) ----
 function cmd(a){return {ok:'#ок '+a.d,no:'#нет '+a.d,paid:'#выплатила '+a.mon+' '+a.sum,fine:'#штраф '+a.fid+' '+a.d+' '+a.a+' '+a.r,unfine:'#штраф отмена '+a.fid,
-  pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
+  eok:'#енот ок '+a.ref,eno:'#енот нет '+a.ref,pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
   bok:'#книга ок '+a.ref,bno:'#книга нет '+a.ref,pok:'#доклад ок '+a.ref,pno:'#доклад нет '+a.ref,topics:'#темы '+(a.list||[]).join('; ')}[a.t];}
 function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
 function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
@@ -249,7 +249,7 @@ function render(){
     var st=V.status[d]||'none',ids=st==='ok'?V.confirmed[d]:(V.claimed[d]||{}),ks=Object.keys(ids||{});
     var chip={new:'<span class="chip new">ждёт проверки</span>',ok:'<span class="chip ok">подтверждено</span>',no:'<span class="chip no">не засчитано</span>',none:'<span class="chip none">нет отчёта</span>'}[st];
     h+='<div class="day"><div class="day-h"><b>'+DS[dt(d).getDay()]+' '+dm(d)+' · '+rub(sum(ids))+'</b>'+chip+'</div>';
-    if(ks.length)h+='<div class="items">'+ks.map(function(k){return esc(NAMES[k]||(k.indexOf('hx')===0?'🏠 своё дело':k.indexOf('book-')===0?'📖 книга':k.indexOf('proj-')===0?'🎤 доклад':k));}).join(', ')+'</div>';
+    if(ks.length)h+='<div class="items">'+ks.map(function(k){return esc(NAMES[k]||(k.indexOf('hx')===0?'🏠 своё дело':k.indexOf('book-')===0?'📖 книга':k.indexOf('proj-')===0||k.indexOf('enot-')===0?'🎤 доклад':k));}).join(', ')+'</div>';
     if(st==='new')h+='<div class="row"><button class="btn ok" type="button" data-a="ok" data-d="'+d+'">✅ Подтвердить</button><button class="btn no" type="button" data-a="no" data-d="'+d+'">❌ Не засчитывать</button></div>';
     if(st==='no')h+='<div class="row"><button class="btn ok" type="button" data-a="ok" data-d="'+d+'">✅ Всё-таки подтвердить</button></div>';
     h+='</div>';});
@@ -265,7 +265,13 @@ function render(){
     bh+='<div class="day"><div class="day-h"><b>🎤 '+esc(pj.topic)+'</b><span class="chip '+(pj.status==='ok'?'ok':pj.status==='no'?'no':pj.state==='ready'?'new':'none')+'">'+lab+'</span></div>';
     if(pj.state==='ready'&&pj.status==='new')bh+='<div class="row"><button class="btn ok" type="button" data-a="pok" data-ref="'+k+'">✅ Принять доклад +400 ₽</button><button class="btn no" type="button" data-a="pno" data-ref="'+k+'">❌</button></div>';
     bh+='</div>';});
-  document.getElementById('brain').innerHTML=bh||'<p class="small muted">Пока ни одной дочитанной книги и ни одного доклада.</p>';
+  var EL=(window.SEM&&window.SEM.ENOT.LESSONS)||[];
+  Object.keys(V.enot||{}).sort(function(a,b){return a-b;}).forEach(function(n){var e=V.enot[n],nm=(EL.filter(function(l){return String(l[0])===n;})[0]||[0,''])[1];
+    bh+='<div class="day"><div class="day-h"><b>🦝 Енот Чек, урок '+n+': '+esc(nm)+'</b><span class="chip '+e.status+'">'+({new:'прошёл — проверьте',ok:'+100 ₽',no:'не засчитано'}[e.status])+'</span></div><div class="items">'+dm(e.d)+' · сверх лимита недели</div>';
+    if(e.status==='new')bh+='<div class="small muted">Спросите, что запомнилось из урока.</div><div class="row"><button class="btn ok" type="button" data-a="eok" data-ref="'+n+'">✅ Засчитать 100 ₽</button><button class="btn no" type="button" data-a="eno" data-ref="'+n+'">❌</button></div>';
+    if(e.status==='no')bh+='<div class="row"><button class="btn ok" type="button" data-a="eok" data-ref="'+n+'">✅ Всё-таки засчитать</button></div>';
+    bh+='</div>';});
+  document.getElementById('brain').innerHTML=bh||'<p class="small muted">Пока ни одной дочитанной книги, урока «Енот Чек» или доклада.</p>';
   var of=document.getElementById('offer');
   if(V.topics&&V.topics.list){of.hidden=false;var chosen=Object.keys(V.projects||{}).map(function(k){return V.projects[k];}).filter(function(x){return x.status!=='ok';})[0];
     of.innerHTML='<b>Сейчас предложено:</b> '+V.topics.list.map(esc).join(' · ')+(chosen?'<br><b>Семён выбрал:</b> '+esc(chosen.topic):'<br>Семён ещё не выбрал.');}
@@ -335,7 +341,7 @@ document.addEventListener('click',function(e){
   if(t==='pok'||t==='pno')a.tries=(V0.projects[b.dataset.ref]||{}).cur||1;
   if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
   if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
-  if(/^(bok|bno|pok|pno)$/.test(t))a.ref=b.dataset.ref;
+  if(/^(bok|bno|pok|pno|eok|eno)$/.test(t))a.ref=b.dataset.ref;
   if(t==='pz'||t==='unpz'){a.d=b.dataset.d;if(t==='pz'){if(!a.d){toast('Выберите день');return;}a.pid=b.dataset.pid;}}
   act(a);
 });
