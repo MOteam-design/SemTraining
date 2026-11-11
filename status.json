@@ -21,6 +21,16 @@
  "paid": {},
  "fines": [],
  "books": {},
+ "assigned": {
+  "mmwc7zeg5": {
+   "t": "Дары Волхвов",
+   "a": "О.Генри",
+   "pg": 5,
+   "from": "2026-11-11",
+   "due": "2026-11-13",
+   "rw": 50
+  }
+ },
  "projects": {},
  "enot": {},
  "topics": {
@@ -37,11 +47,12 @@
  "answers": {},
  "tests": {},
  "hnames": {},
- "updated": "2026-11-11T17:11",
+ "updated": "2026-11-11T17:36",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
   "amwc749zfu8e",
-  "amwc74k7t0cy"
+  "amwc74k7t0cy",
+  "amwc7zeg5ex2"
  ]
 }
