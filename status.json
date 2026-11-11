@@ -49,7 +49,16 @@
  "answers": {},
  "tests": {},
  "hnames": {},
- "updated": "2026-11-11T18:19",
+ "items": {
+  "2026-11-11": {
+   "q-drink": "ok",
+   "q-dessert": "ok",
+   "out": "ok",
+   "meal": "ok",
+   "str-b": "ok"
+  }
+ },
+ "updated": "2026-11-11T18:36",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
