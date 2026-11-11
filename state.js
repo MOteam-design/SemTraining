@@ -6,16 +6,20 @@
    Та же логика повторена в job_agent/semyon_fetch.py (derive) — менять вместе. */
 (function () {
   var WORK = { 'str-a': 1, 'str-b': 1, 'str-c': 1, 'bike': 1 };
-  var C = { BONUS: 100, MAX: 1500, PROJ: 400, WORK: WORK };
+  var C = { BONUS: 100, MAX: 1500, PROJ: 400, WORK: WORK, ENOT: 100 };
+  // курс «Енот Чек» — 100 ₽ за урок, сверх потолка недели (список как в Саша мотивация/enot.js)
+  var ENOT = { URL: 'https://moteam-design.github.io/enot-chek/', LESSONS: [[1, 'Знакомство и азбука логики'], [2, 'Азбука логики: часть 2'],
+    [3, 'Факт или мнение'], [4, 'Суперсила вопросов'], [5, 'Осторожно, мошенники'], [6, 'Ловушки в рассуждениях'],
+    [7, 'Ловушки-2 и неверные выводы'], [8, 'Как мозг нас обманывает'], [9, 'Проверка новостей'], [10, 'Итоговый тест']] };
   function bookPrice(p) { return Math.round((+p || 0) * 500 / 300 / 10) * 10; }
   function norm(o) { var r = {}; Object.keys(o || {}).sort().forEach(function (k) { r[k] = +o[k] || 0; }); return JSON.stringify(r); }
-  function isExtra(k) { return k.indexOf('book-') === 0 || k.indexOf('proj-') === 0; }
+  function isExtra(k) { return k.indexOf('book-') === 0 || k.indexOf('proj-') === 0 || k.indexOf('enot-') === 0; }
   function copy(o) { var r = {}; for (var k in o) r[k] = o[k]; return r; }
 
   function derive(claims, actions) {
     claims = claims || {};
     var CL = claims.done || {};
-    var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, projects: {}, topics: null,
+    var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, projects: {}, enot: {}, topics: null,
               puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, updated: claims.updated || null };
     var dec = {}, extra = {};
     Object.keys(claims.books || {}).forEach(function (k) {
@@ -26,8 +30,10 @@
       var p = claims.projs[k];
       if (p) S.projects[k] = { d: p.ready || p.picked, state: p.ready ? 'ready' : 'pick', topic: p.topic, status: 'new', reward: C.PROJ };
     });
+    Object.keys(claims.enot || {}).forEach(function (n) { if (claims.enot[n]) S.enot[n] = { d: claims.enot[n], status: 'new', reward: C.ENOT }; });
     (actions || []).forEach(function (a) {
       var t = a.t;
+      if ((t === 'eok' || t === 'eno') && S.enot[a.ref]) { S.enot[a.ref].status = t === 'eok' ? 'ok' : 'no'; return; }
       if (t === 'ok' || t === 'no') { if (a.d) dec[a.d] = { s: t, ids: a.ids || CL[a.d] || {} }; }
       else if (t === 'paid') { if (a.mon) S.paid[a.mon] = { sum: +a.sum || 0, at: (a.at || '').slice(0, 10) }; }
       else if (t === 'fine') { S.fines = S.fines.filter(function (f) { return f.id !== a.fid; }); S.fines.push({ id: a.fid, d: a.d, a: +a.a || 0, r: a.r || '' }); }
@@ -50,6 +56,7 @@
     });
     Object.keys(S.books).forEach(function (k) { var b = S.books[k]; if (b.status === 'ok') (S.confirmed[b.d] = S.confirmed[b.d] || {})['book-' + k] = b.reward; });
     Object.keys(S.projects).forEach(function (k) { var p = S.projects[k]; if (p.status === 'ok') (S.confirmed[p.d] = S.confirmed[p.d] || {})['proj-' + k] = p.reward; });
+    Object.keys(S.enot).forEach(function (n) { var e = S.enot[n]; if (e.status === 'ok') (S.confirmed[e.d] = S.confirmed[e.d] || {})['enot-' + n] = e.reward; });
     S.applied = (actions || []).map(function (a) { return a.id; });
     return S;
   }
@@ -88,5 +95,5 @@
     var body = { message: msg || ('update ' + path), content: b64e(JSON.stringify(data, null, 1)) }; if (sha) body.sha = sha;
     return gh(repo, path, key, 'PUT', body).then(function (r) { if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; } return r.json(); });
   }
-  window.SEM = { C: C, derive: derive, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
+  window.SEM = { C: C, ENOT: ENOT, derive: derive, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
 })();
