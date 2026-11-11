@@ -96,6 +96,21 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 
   <section class="card"><h2>Дни недели</h2><div id="days"></div></section>
 
+  <section class="card" id="asg-card">
+    <h2>Задать книгу</h2>
+    <form class="f" id="a-form" onsubmit="return false">
+      <label class="wide">Название<input type="text" id="a-t" placeholder="например, «Игра Эндера»" autocomplete="off"></label>
+      <label class="wide">Автор<input type="text" id="a-a" autocomplete="off"></label>
+      <label>Страниц<input type="number" id="a-pg" min="1" inputmode="numeric" placeholder="необязательно"></label>
+      <label>Дней на чтение<input type="number" id="a-days" min="1" inputmode="numeric"></label>
+      <label>Награда, ₽<input type="number" id="a-rw" min="0" step="10" inputmode="numeric"></label>
+      <label>Срок<input type="date" id="a-due"></label>
+      <button class="btn wide" type="button" id="a-add">Задать книгу</button>
+    </form>
+    <p class="small muted" id="a-st">Подсказка заполняется сама: примерно 20 страниц в день, награда по правилу «300 страниц = 500 ₽» — можно поменять. Успел к сроку — вся награда, позже — половина. Аудиокнига тоже считается.</p>
+    <div id="a-list" style="display:grid;gap:8px;margin-top:6px"></div>
+  </section>
+
   <section class="card"><h2>Книги, «Енот Чек», доклады</h2><div id="brain"></div></section>
 
   <section class="card" id="pz-card">
@@ -178,7 +193,7 @@ var now=new Date(),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-(
 
 // ---- actions: written to mom.json in the repo (with key) or sent as a Telegram command (without) ----
 function cmd(a){return {ok:'#ок '+a.d,no:'#нет '+a.d,paid:'#выплатила '+a.mon+' '+a.sum,fine:'#штраф '+a.fid+' '+a.d+' '+a.a+' '+a.r,unfine:'#штраф отмена '+a.fid,
-  eok:'#енот ок '+a.ref,eno:'#енот нет '+a.ref,pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
+  book:'#книгазадать '+a.bid,unbook:'#книгаснять '+a.bid,eok:'#енот ок '+a.ref,eno:'#енот нет '+a.ref,pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
   bok:'#книга ок '+a.ref,bno:'#книга нет '+a.ref,pok:'#доклад ок '+a.ref,pno:'#доклад нет '+a.ref,topics:'#темы '+(a.list||[]).join('; ')}[a.t];}
 function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
 function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
@@ -286,7 +301,7 @@ function render(){
   var li=0;LEVELS.forEach(function(l,j){if(all>=l[0])li=j;});
   document.getElementById('lvl').textContent='Всего подтверждено: '+all+' XP · уровень «'+LEVELS[li][1]+'»'+(LEVELS[li+1]?' · до «'+LEVELS[li+1][1]+'» '+(LEVELS[li+1][0]-all)+' XP':'');
   var fl=(V.fines||[]).slice().sort(function(a,b){return a.d<b.d?1:-1;});
-  renderPz(V);
+  renderPz(V);renderAsg(V);
   document.getElementById('fines').innerHTML=fl.length?fl.map(function(f){return '<tr><td>'+dm(f.d)+'</td><td style="white-space:normal">'+esc(f.r)+'</td><td>−'+(+f.a)+'</td><td><button class="btn ghost" type="button" data-a="unfine" data-fid="'+f.id+'">отменить</button></td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Штрафов нет.</td></tr>';
 }
 // puzzle bank (puzzles.js): mom picks the puzzle for a day, sees Semyon's answer next to the solution
@@ -324,6 +339,34 @@ document.getElementById('pz-q').addEventListener('input',function(){pzShow=15;re
 document.getElementById('pz-more').addEventListener('click',function(){pzShow+=15;render();});
 document.getElementById('pz-rand').addEventListener('click',function(){var d=document.getElementById('pz-date').value;if(!d||!pzFiltered.length){toast('Выберите день и фильтр, где есть задачки');return;}
   act({t:'pz',d:d,pid:pzFiltered[Math.floor(Math.random()*pzFiltered.length)].id});});
+// assign a book with a deadline (like Sasha's and Danya's dad app)
+function dlong(s){return dt(s).toLocaleDateString('ru-RU',{day:'numeric',month:'long'});}
+function renderAsg(V){
+  var A=V.assigned||{},ids=Object.keys(A).sort(function(x,y){return A[x].due<A[y].due?-1:1;}),CB=(LIVE&&LIVE.claims.books)||{};
+  document.getElementById('a-list').innerHTML=ids.map(function(id){var a=A[id],fin=(V.books||{})[id],cb=CB[id]||{},left=Math.round((dt(a.due)-dt(iso(now)))/864e5);
+    var st=fin?'<span style="color:var(--go);font-weight:700">прочитана '+dlong(fin.d)+(fin.late?' после срока':' к сроку')+' · '+rub(fin.reward)+(fin.status==='ok'?' ✓':' — засчитайте ниже')+'</span>'
+      :(a.pg?'стр. '+(+cb.pg||0)+' из '+a.pg+' · ':'')+(left<0?'<span style="color:var(--warn);font-weight:700">срок прошёл '+dlong(a.due)+'</span>':'до '+dlong(a.due)+', осталось '+left+' дн.');
+    return '<div class="pzday"><div class="row" style="justify-content:space-between;align-items:flex-start"><span><b>«'+esc(a.t)+'»</b>'+(a.a?' · '+esc(a.a):'')+(a.pg?' · '+a.pg+' стр.':'')+' · награда '+rub(a.rw)+'<br><small>'+st+'</small></span>'+
+      (fin?'':'<button class="btn ghost" type="button" data-a="unbook" data-bid="'+id+'">Снять</button>')+'</div></div>';}).join('')||'<p class="small muted">Вы ещё не задали ни одной книги.</p>';
+}
+var adirty={days:false,rw:false,due:false};
+function aSyncDue(){if(!adirty.due){var n=Math.max(1,+document.getElementById('a-days').value||1);document.getElementById('a-due').value=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+n));}}
+function aReset(){['a-t','a-a','a-pg'].forEach(function(i){document.getElementById(i).value='';});document.getElementById('a-days').value=7;document.getElementById('a-rw').value=200;adirty={days:false,rw:false,due:false};aSyncDue();}
+document.getElementById('a-pg').addEventListener('input',function(){var pg=+this.value||0;
+  if(!adirty.days)document.getElementById('a-days').value=window.SEM?window.SEM.suggestDays(pg):Math.max(3,Math.ceil(pg/20));
+  if(!adirty.rw)document.getElementById('a-rw').value=Math.round(pg*500/300/10)*10||200;aSyncDue();});
+document.getElementById('a-days').addEventListener('input',function(){adirty.days=true;adirty.due=false;aSyncDue();});
+document.getElementById('a-rw').addEventListener('input',function(){adirty.rw=true;});
+document.getElementById('a-due').addEventListener('input',function(){adirty.due=true;var n=Math.round((dt(this.value)-dt(iso(now)))/864e5);if(n>0){document.getElementById('a-days').value=n;adirty.days=true;}});
+document.getElementById('a-add').addEventListener('click',function(){
+  var t=document.getElementById('a-t').value.replace(/[|\n]/g,' ').trim();if(!t){document.getElementById('a-st').textContent='Напишите название книги.';return;}
+  if(!KEY){toast('Чтобы задавать книги, вставьте ключ наверху');document.getElementById('setup').scrollIntoView();return;}
+  var due=document.getElementById('a-due').value||iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+7));
+  var a={t:'book',bid:'m'+Date.now().toString(36),title:t,author:document.getElementById('a-a').value.trim().slice(0,60),pg:Math.max(0,Math.round(+document.getElementById('a-pg').value||0)),
+    from:iso(now),due:due,rw:Math.max(0,Math.round(+document.getElementById('a-rw').value||0))};
+  act(a);document.getElementById('a-st').textContent='Книга «'+t+'» задана: срок до '+dlong(due)+', награда '+a.rw+' ₽. Семён увидит её на вкладке «Голова».';aReset();
+});
+aReset();
 // topic bank
 var th='';Object.keys(TOPICS).forEach(function(g){th+='<h3>'+esc(g)+'</h3>'+TOPICS[g].map(function(t){return '<label class="tp"><input type="checkbox" value="'+esc(t)+'"><span>'+esc(t)+'</span></label>';}).join('');});
 document.getElementById('topics').innerHTML='<details><summary>Выбрать из списка ('+Object.keys(TOPICS).reduce(function(n,g){return n+TOPICS[g].length;},0)+' тем)</summary>'+th+'</details>';
@@ -342,6 +385,7 @@ document.addEventListener('click',function(e){
   if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
   if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
   if(/^(bok|bno|pok|pno|eok|eno)$/.test(t))a.ref=b.dataset.ref;
+  if(t==='unbook'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.bid=b.dataset.bid;}
   if(t==='pz'||t==='unpz'){a.d=b.dataset.d;if(t==='pz'){if(!a.d){toast('Выберите день');return;}a.pid=b.dataset.pid;}}
   act(a);
 });
