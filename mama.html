@@ -16,47 +16,69 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;600;700;800&display=swap">
 <style>
-:root{--bg:#EDF0F5;--surface:#FFFFFF;--ink:#111A2B;--muted:#586379;--line:#D7DDE6;--accent:#1F6FEB;--go:#178A4C;--warn:#C2410C;--soft:#F4F6FA;--head:'Russo One',Impact,'Arial Black',sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#0D121C;--surface:#161D2B;--ink:#E5E9F1;--muted:#98A2B6;--line:#28324A;--accent:#5B9BFF;--go:#37D27A;--warn:#FF8A4C;--soft:#1B2334;color-scheme:dark}}
+:root{--bg:#EDF0F5;--surface:#FFFFFF;--ink:#111A2B;--muted:#586379;--line:#D7DDE6;--accent:#1F6FEB;--go:#178A4C;--go-soft:#DDF5E7;--warn:#C2410C;--warn-soft:#FDE3DA;--new:#8A5300;--new-soft:#FFF1D6;--soft:#F4F6FA;--head:'Russo One',Impact,'Arial Black',sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0D121C;--surface:#161D2B;--ink:#E5E9F1;--muted:#98A2B6;--line:#28324A;--accent:#5B9BFF;--go:#37D27A;--go-soft:#12301F;--warn:#FF8A4C;--warn-soft:#3A1C12;--new:#FFCF73;--new-soft:#3A2E12;--soft:#1B2334;color-scheme:dark}}
 *{box-sizing:border-box}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
 .wrap{max-width:640px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px}
 header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
 h1{font:400 24px var(--head);margin:0;letter-spacing:.3px}
-h2{font:400 17px var(--head);margin:0 0 8px;letter-spacing:.3px;text-wrap:balance}
-h3{font-size:13px;margin:10px 0 4px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+h2{font:400 17px var(--head);margin:0;letter-spacing:.3px;text-wrap:balance}
+h3{font-size:12px;margin:12px 0 4px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+.eyebrow{display:block;font-size:11.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.sec{font:800 12px var(--body);letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:10px 2px -4px}
 .muted{color:var(--muted)}.small{font-size:13px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}
-.big{font:400 40px var(--head);line-height:1.1;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0;display:grid;gap:10px}
+.big{font:400 38px var(--head);line-height:1.1;font-variant-numeric:tabular-nums}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.sp{justify-content:space-between}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .kpis div{background:var(--soft);border-radius:12px;padding:8px 10px}
 .kpis b{display:block;font:400 20px var(--head);font-variant-numeric:tabular-nums}
 .kpis span{font-size:12px;color:var(--muted)}
-.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--go);border-radius:8px}
+.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--go);border-radius:8px}
 .btn{appearance:none;border:0;background:var(--accent);color:#fff;font:700 14px var(--body);border-radius:12px;padding:10px 14px;cursor:pointer;text-decoration:none;display:inline-block}
 .btn.ok{background:var(--go)}.btn.no{background:transparent;color:var(--warn);border:1px solid var(--warn)}
 .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
-.btn:disabled{opacity:.5}
-.day{border-top:1px solid var(--line);padding:10px 0;display:grid;gap:6px}
-.day:first-child{border-top:0}
-.day-h{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:10px}
 .chip{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
-.chip.new{background:#FFF1D6;color:#8A5300}.chip.ok{background:#DDF5E7;color:#0F6B3A}.chip.no{background:#FDE3DA;color:#9A3412}.chip.none{background:var(--soft);color:var(--muted)}
-@media (prefers-color-scheme:dark){.chip.new{background:#3A2E12;color:#FFCF73}.chip.ok{background:#12301F;color:#6FE3A0}.chip.no{background:#3A1C12;color:#FF9C73}}
-.items{font-size:13px;color:var(--muted)}
+.chip.new{background:var(--new-soft);color:var(--new)}.chip.ok{background:var(--go-soft);color:var(--go)}.chip.no{background:var(--warn-soft);color:var(--warn)}.chip.none{background:var(--soft);color:var(--muted)}
+.days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.days button{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:6px 10px;font:700 13px var(--body);cursor:pointer;display:grid;justify-items:center;min-width:52px;position:relative}
+.days button small{font-weight:600;color:var(--muted);font-size:11px}
+.days button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.days button[aria-pressed="true"] small{color:var(--surface)}
+.days button .dot{position:absolute;top:4px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--warn)}
+.grp{display:grid;gap:2px}
+.it{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.grp .it:first-of-type{border-top:0}
+.it .m{font-size:16px;text-align:center}
+.it.todo{color:var(--muted)}
+.it .t{min-width:0}
+.it .t small{color:var(--muted);font-weight:700;margin-left:4px;white-space:nowrap}
+.it .a{display:flex;gap:6px;align-items:center}
+.ib{appearance:none;width:36px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:16px;cursor:pointer;color:var(--ink)}
+.ib.y{background:var(--go);border-color:var(--go);color:#fff}.ib.n{border-color:var(--warn);color:var(--warn)}
+.ans{background:var(--soft);border-radius:10px;padding:8px 10px;font-size:13.5px;grid-column:2/-1}
+.ans b{white-space:pre-wrap}
 .tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:12px;color:var(--muted);font-weight:600}
 form.f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 form.f label{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}.wide{grid-column:1/-1}
 input,select,textarea{font:600 15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
 .note{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:13px}
+.box{background:var(--soft);border-radius:12px;padding:10px 12px;display:grid;gap:6px;font-size:14px}
 .tp{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:3px 0}.tp input{width:auto;margin-top:4px}
-details summary{cursor:pointer;font-weight:700;color:var(--accent)}
+details.fold>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800;color:var(--accent);padding:2px 0}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{content:'▾';transition:transform .2s}
+details.fold[open]>summary::after{transform:rotate(180deg)}
+details.fold>div{display:grid;gap:10px;margin-top:10px}
+.les{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.les:first-child{border-top:0}
 .pz-ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
 .pz-ctl label{display:grid;gap:3px}
-.pz-chk{display:flex!important;align-items:center;gap:6px;padding-bottom:8px}
-.pz-chk input{width:auto}
+.pz-chk{display:flex!important;align-items:center;gap:6px;padding-bottom:8px}.pz-chk input{width:auto}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{appearance:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:5px 11px;font:700 12.5px var(--body);cursor:pointer}
 .chips button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
@@ -66,8 +88,6 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 .pz-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-weight:700}
 .pz-q{font-size:15px;font-weight:600}
 .pz details p{font-size:14px;margin:6px 0 0;background:var(--surface);border-radius:10px;padding:8px 10px}
-.pzday{display:grid;gap:6px;font-size:13.5px;background:var(--soft);border-radius:12px;padding:10px 12px}
-.pzday .ans{white-space:pre-wrap;font-weight:600}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;max-width:calc(100% - 32px);z-index:5}
 </style>
 </head>
@@ -77,14 +97,15 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 
   <section class="card" id="setup" hidden>
     <h2>Подтверждать прямо здесь</h2>
-    <p class="small">Один раз вставьте ключ GitHub (файл <b>semtraining-key.txt</b> на компьютере — тот же ключ). Он сохранится только на этом телефоне. После этого кнопки работают сразу здесь, без Telegram.</p>
+    <p class="small">Один раз вставьте ваш ключ <b>semtraining</b> (файл semtraining-key.txt на компьютере). Он сохранится только на этом телефоне. После этого отметки Семёна видны сразу, а кнопки работают здесь, без Telegram.</p>
     <div class="row"><input id="key" type="password" autocomplete="off" placeholder="github_pat_…" style="flex:1 1 200px"><button class="btn" type="button" id="key-save">Сохранить</button></div>
-    <p class="small muted" id="key-st">Без ключа кнопки открывают Telegram с готовой командой — тоже работает.</p>
+    <p class="small muted" id="key-st">Без ключа приложение показывает данные с задержкой, а кнопки открывают Telegram с готовой командой.</p>
   </section>
 
+  <!-- 1. Деньги недели -->
   <section class="card">
-    <span class="small muted" id="wk-range">Эта неделя</span>
-    <div class="row" style="justify-content:space-between"><div class="big" id="wk-total">0 ₽</div><div id="wk-pay"></div></div>
+    <div class="row sp"><span class="small muted" id="wk-range">Эта неделя</span><span id="wk-pay"></span></div>
+    <div class="big" id="wk-total">0 ₽</div>
     <div class="small" id="wk-sub"></div>
     <div class="bar"><i id="wk-bar" style="width:0"></i></div>
     <div class="kpis">
@@ -94,69 +115,106 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
     </div>
   </section>
 
-  <section class="card"><h2>Дни недели</h2><div id="days"></div></section>
+  <div class="sec">Проверить</div>
 
-  <section class="card" id="asg-card">
-    <h2>Задать книгу</h2>
-    <form class="f" id="a-form" onsubmit="return false">
-      <label class="wide">Название<input type="text" id="a-t" placeholder="например, «Игра Эндера»" autocomplete="off"></label>
-      <label class="wide">Автор<input type="text" id="a-a" autocomplete="off"></label>
-      <label>Страниц<input type="number" id="a-pg" min="1" inputmode="numeric" placeholder="необязательно"></label>
-      <label>Дней на чтение<input type="number" id="a-days" min="1" inputmode="numeric"></label>
-      <label>Награда, ₽<input type="number" id="a-rw" min="0" step="10" inputmode="numeric"></label>
-      <label>Срок<input type="date" id="a-due"></label>
-      <button class="btn wide" type="button" id="a-add">Задать книгу</button>
-    </form>
-    <p class="small muted" id="a-st">Подсказка заполняется сама: примерно 20 страниц в день, награда по правилу «300 страниц = 500 ₽» — можно поменять. Успел к сроку — вся награда, позже — половина. Аудиокнига тоже считается.</p>
-    <div id="a-list" style="display:grid;gap:8px;margin-top:6px"></div>
-  </section>
-
-  <section class="card"><h2>Книги, «Енот Чек», доклады</h2><div id="brain"></div></section>
-
-  <section class="card" id="pz-card">
-    <div class="row" style="justify-content:space-between"><h2 style="margin:0">Задачки</h2><span class="small muted" id="pz-total"></span></div>
-    <p class="small">Выберите задачку на день — у Семёна она заменит автоматическую «задачу дня». Он пишет ответ, вы видите его рядом с разбором и подтверждаете день как обычно. ★★★ — уровень 12–14 лет.</p>
-    <div id="pz-plan" style="display:grid;gap:8px;margin:8px 0"></div>
-    <div class="pz-ctl">
-      <label class="small muted">День<input id="pz-date" type="date"></label>
-      <label class="small muted">Уровень<select id="pz-lvl"><option value="0">все</option><option value="1">★ легко</option><option value="2">★★ средне</option><option value="3" selected>★★★ трудно</option></select></label>
-      <label class="small muted">Поиск<input id="pz-q" type="search" placeholder="слово из условия"></label>
-      <label class="pz-chk small"><input id="pz-new" type="checkbox" checked> только новые</label>
-    </div>
-    <div class="chips" id="pz-groups" style="margin:8px 0"></div>
-    <div class="row" style="margin-bottom:8px"><button class="btn ghost" type="button" id="pz-rand">🎲 Случайная на этот день</button></div>
-    <div class="pzlist" id="pz-list"></div>
-    <button class="btn ghost" type="button" id="pz-more" hidden style="margin-top:8px">Показать ещё</button>
-  </section>
-
+  <!-- 2. День: план и подтверждение по пунктам -->
   <section class="card">
-    <h2>Темы для доклада</h2>
-    <p class="small">Отметьте 3 темы (или впишите свои) и нажмите «Предложить». Семён выберет одну у себя на вкладке «Голова». Доклад 5–7 минут = 400 ₽.</p>
-    <div id="offer" class="note small" hidden></div>
-    <div id="topics"></div>
-    <label class="small muted" style="display:grid;gap:4px;margin-top:8px">Свои темы — по одной на строку<textarea id="own" rows="2" placeholder="например: Как устроен наш город"></textarea></label>
-    <div class="row" style="margin-top:8px"><button class="btn" type="button" id="offer-go">Предложить Семёну</button><span class="small muted" id="offer-n">выбрано 0 из 3</span></div>
+    <div class="row sp"><h2 id="day-title">Сегодня</h2><span class="small muted" id="day-count"></span></div>
+    <div class="days" id="day-chips" aria-label="Дни недели"></div>
+    <div class="bar"><i id="day-bar" style="width:0"></i></div>
+    <div class="row sp"><span class="small" id="day-money"></span><button class="btn ok sm" type="button" id="day-all" hidden></button></div>
+    <div id="day-list" style="display:grid;gap:4px"></div>
   </section>
 
+  <!-- 3. Дополнительное на проверку -->
+  <section class="card" id="extra-card">
+    <h2>Книги, курс, доклады — на проверку</h2>
+    <div id="extra" style="display:grid;gap:8px"></div>
+  </section>
+
+  <!-- 4. Штрафы -->
   <section class="card">
-    <h2>Недели</h2>
+    <h2>Штрафы</h2>
+    <div class="tbl"><table><thead><tr><th>Дата</th><th>За что</th><th>₽</th><th></th></tr></thead><tbody id="fines"></tbody></table></div>
+    <details class="fold"><summary>⚠️ Выписать штраф</summary><div>
+      <form class="f" id="f-form">
+        <label>За что<select id="f-type"><option data-a="50">Игры дольше лимита</option><option data-a="50">Не сделал уроки</option><option data-a="100">Плохая оценка</option><option data-a="50">Другое</option></select></label>
+        <label>Сколько, ₽<input id="f-amount" type="number" inputmode="numeric" min="10" max="1000" value="50" required></label>
+        <label>Дата<input id="f-date" type="date" required></label>
+        <label>Пояснение<input id="f-note" type="text" maxlength="80" placeholder="7 часов без перерыва"></label>
+        <button class="btn wide" type="submit">Выписать штраф</button>
+      </form>
+      <p class="small muted">Не больше 1–2 штрафов в неделю и только по правилам, которые Семён видит у себя. Ниже нуля неделя не уходит, карманные не трогаются.</p>
+    </div></details>
+  </section>
+
+  <!-- 5. Недели и выплаты -->
+  <section class="card">
+    <h2>Недели и выплаты</h2>
     <div class="tbl"><table><thead><tr><th>Неделя</th><th>Подтв.</th><th>Бонус</th><th>Штрафы</th><th>Итого</th><th>Выплата</th></tr></thead><tbody id="weeks"></tbody></table></div>
     <p class="small muted" id="lvl"></p>
   </section>
 
+  <div class="sec">Дополнительные задания · сверх лимита</div>
+
+  <!-- 6. Чтение -->
   <section class="card">
-    <h2>Штраф</h2>
-    <form class="f" id="f-form">
-      <label>За что<select id="f-type"><option data-a="50">Игры дольше лимита</option><option data-a="50">Не сделал уроки</option><option data-a="100">Плохая оценка</option><option data-a="50">Другое</option></select></label>
-      <label>Сколько, ₽<input id="f-amount" type="number" inputmode="numeric" min="10" max="1000" value="50" required></label>
-      <label>Дата<input id="f-date" type="date" required></label>
-      <label>Пояснение<input id="f-note" type="text" maxlength="80" placeholder="7 часов без перерыва"></label>
-      <button class="btn wide" type="submit">Выписать штраф</button>
-    </form>
-    <div class="tbl" style="margin-top:10px"><table><thead><tr><th>Дата</th><th>За что</th><th>₽</th><th></th></tr></thead><tbody id="fines"></tbody></table></div>
+    <h2>📚 Чтение</h2>
+    <div id="read-now" style="display:grid;gap:8px"></div>
+    <h3>Прочитано</h3>
+    <div id="read-done" style="display:grid;gap:6px"></div>
+    <details class="fold" id="asg-fold"><summary>➕ Задать книгу на срок</summary><div>
+      <form class="f" id="a-form" onsubmit="return false">
+        <label class="wide">Название<input type="text" id="a-t" placeholder="например, «Игра Эндера»" autocomplete="off"></label>
+        <label class="wide">Автор<input type="text" id="a-a" autocomplete="off"></label>
+        <label>Страниц<input type="number" id="a-pg" min="1" inputmode="numeric" placeholder="необязательно"></label>
+        <label>Дней на чтение<input type="number" id="a-days" min="1" inputmode="numeric"></label>
+        <label>Награда, ₽<input type="number" id="a-rw" min="0" step="10" inputmode="numeric"></label>
+        <label>Срок<input type="date" id="a-due"></label>
+        <button class="btn wide" type="button" id="a-add">Задать книгу</button>
+      </form>
+      <p class="small muted" id="a-st">Подсказка заполняется сама: примерно 20 страниц в день и «300 страниц = 500 ₽» — можно поменять. Успел к сроку — вся награда, позже — половина.</p>
+    </div></details>
   </section>
 
-  <p class="note">Семён узнаёт о решении от бота в течение 15 минут. Отчёты приходят и в Telegram с кнопками ✅ / ❌ — подтверждать можно и там. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
+  <!-- 7. Енот Чек -->
+  <section class="card">
+    <div class="row sp"><h2>🦝 Курс «Енот Чек»</h2><span class="small muted" id="en-count"></span></div>
+    <div id="en-list"></div>
+    <p class="small muted">100 ₽ за урок. Спросите, что запомнилось из урока, — и засчитайте.</p>
+  </section>
+
+  <!-- 8. Доклады -->
+  <section class="card">
+    <h2>🎤 Доклады</h2>
+    <div id="proj" style="display:grid;gap:8px"></div>
+    <details class="fold"><summary>💡 Предложить темы</summary><div>
+      <p class="small">Отметьте 2–3 темы или впишите свои. Семён выберет одну у себя на вкладке «Голова». Доклад 5–7 минут = 400 ₽.</p>
+      <div id="topics"></div>
+      <label class="small muted" style="display:grid;gap:4px">Свои темы — по одной на строку<textarea id="own" rows="2" placeholder="например: Как устроен наш город"></textarea></label>
+      <div class="row"><button class="btn" type="button" id="offer-go">Предложить Семёну</button><span class="small muted" id="offer-n">выбрано 0 из 3</span></div>
+    </div></details>
+  </section>
+
+  <!-- 9. Задачки -->
+  <section class="card" id="pz-card">
+    <details class="fold" id="pz-fold"><summary>🧩 Задачки на день <span class="small muted" id="pz-total" style="font-weight:600"></span></summary><div>
+      <p class="small">Выберите задачку на день — у Семёна она заменит автоматическую. Его ответ появится в «Дне» рядом с разбором. ★★★ — уровень 12–14 лет.</p>
+      <div id="pz-plan" style="display:grid;gap:8px"></div>
+      <div class="pz-ctl">
+        <label class="small muted">День<input id="pz-date" type="date"></label>
+        <label class="small muted">Уровень<select id="pz-lvl"><option value="0">все</option><option value="1">★ легко</option><option value="2">★★ средне</option><option value="3" selected>★★★ трудно</option></select></label>
+        <label class="small muted">Поиск<input id="pz-q" type="search" placeholder="слово из условия"></label>
+        <label class="pz-chk small"><input id="pz-new" type="checkbox" checked> только новые</label>
+      </div>
+      <div class="chips" id="pz-groups"></div>
+      <div class="row"><button class="btn ghost" type="button" id="pz-rand">🎲 Случайная на этот день</button></div>
+      <div class="pzlist" id="pz-list"></div>
+      <button class="btn ghost" type="button" id="pz-more" hidden>Показать ещё</button>
+    </div></details>
+  </section>
+
+  <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
 <script src="puzzles.js"></script>
@@ -164,11 +222,7 @@ details summary{cursor:pointer;font-weight:700;color:var(--accent)}
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
-var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1},BONUS=100,MAX=1500,GOAL=1000;
-function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0||k.indexOf('enot-')===0;}
-var NAMES={'wake':'⏰ встал сам и позавтракал','feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка 60','eve':'прогулка 30','guitar':'гитара','read':'чтение','puzzle':'🧩 задача дня','sleep':'отбой',
- 'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина',
- 'h-room':'🏠 комната','h-dish':'🏠 посуда','h-cook':'🏠 готовил','h-wash':'🏠 стирка','h-closet':'🏠 шкаф','h-shelf':'🏠 полка','h-door':'🏠 дверь','h-pillow':'🏠 подушки','h-plinth':'🏠 плинтуса','h-trash':'🏠 мусор'};
+var SEM=window.SEM,C=SEM.C,GOAL=1000;
 var LEVELS=[[0,'Новичок'],[500,'Юниор'],[1500,'Игрок дубля'],[3000,'Игрок основы'],[5000,'Капитан'],[8000,'Легенда']];
 var TOPICS={
  'Футбол и спорт':['Как работает VAR и почему из-за него спорят','Тактика: что такое 4-3-3 и прессинг','Сколько стоит футболист и как устроены трансферы','Как Месси и Роналду стали звёздами: путь и привычки','Болезнь Шляттера: почему болят колени у растущих спортсменов','Как делают футбольный мяч и бутсы','История чемпионатов мира в 5 фактах'],
@@ -177,257 +231,284 @@ var TOPICS={
  'История и мир':['Как появились Олимпийские игры','Как строили пирамиды','Кто такие викинги','Как появились деньги','5 изобретений, которые изменили мир','Самые высокие здания мира'],
  'Тело и жизнь':['Как растут мышцы','Зачем подросткам 9 часов сна','Что сахар делает с телом','Почему бывает близорукость и как её остановить','Как устроен мозг подростка'],
  'Деньги и будущее':['Как работает банк и откуда берутся проценты','Как блогеры зарабатывают на самом деле','Профессии будущего','Как делают кроссовки и почему они столько стоят']};
-var DS=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-var S={claimed:{},confirmed:{},status:{},paid:{},fines:[],books:{},projects:{},topics:null,applied:[],puzzles:{},answers:{}};
+var DS=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],DN=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
 var KEY='';try{KEY=localStorage.getItem('sm-gh-key')||'';}catch(e){}
 var PEND=[];try{PEND=JSON.parse(localStorage.getItem('sm-mom-pend')||'[]');}catch(e){PEND=[];}
 function savePend(){try{localStorage.setItem('sm-mom-pend',JSON.stringify(PEND));}catch(e){}}
 function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function dt(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
 function dm(s){var d=dt(s);return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2);}
+function dlong(s){return dt(s).toLocaleDateString('ru-RU',{day:'numeric',month:'long'});}
 function rub(n){return Math.round(n).toLocaleString('ru-RU')+' ₽';}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function sum(ids){var s=0;for(var k in ids)s+=+ids[k]||0;return s;}
-function toast(t){var el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true;},3500);}
-var now=new Date(),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));
+function $(id){return document.getElementById(id);}
+function toast(t){var el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true;},3500);}
+var now=new Date(),TODAY=iso(now),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));
+var DAY=TODAY;
 
-// ---- actions: written to mom.json in the repo (with key) or sent as a Telegram command (without) ----
-function cmd(a){return {ok:'#ок '+a.d,no:'#нет '+a.d,paid:'#выплатила '+a.mon+' '+a.sum,fine:'#штраф '+a.fid+' '+a.d+' '+a.a+' '+a.r,unfine:'#штраф отмена '+a.fid,
-  book:'#книгазадать '+a.bid,unbook:'#книгаснять '+a.bid,eok:'#енот ок '+a.ref,eno:'#енот нет '+a.ref,pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
-  bok:'#книга ок '+a.ref,bno:'#книга нет '+a.ref,pok:'#доклад ок '+a.ref,pno:'#доклад нет '+a.ref,topics:'#темы '+(a.list||[]).join('; ')}[a.t];}
-function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
-function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
-function gh(method,path,body){return fetch('https://api.github.com/repos/'+REPO+'/contents/'+path,{method:method,cache:'no-store',headers:{'Authorization':'Bearer '+KEY,'Accept':'application/vnd.github+json'},body:body?JSON.stringify(body):undefined});}
-function ghAppend(a,retry){
-  return gh('GET','mom.json?t='+Date.now()).then(function(r){
-    if(r.status===404)return {sha:null,data:{actions:[]}};if(!r.ok)throw new Error('GitHub '+r.status);
-    return r.json().then(function(j){return {sha:j.sha,data:JSON.parse(b64d(j.content))};});
-  }).then(function(cur){
-    var acts=(cur.data.actions||[]).concat([a]).slice(-300);
-    var body={message:'mom: '+a.t,content:b64e(JSON.stringify({actions:acts},null,1))};if(cur.sha)body.sha=cur.sha;
-    return gh('PUT','mom.json',body).then(function(r){if(r.status===409&&!retry)return ghAppend(a,true);if(!r.ok)throw new Error('GitHub '+r.status);});
-  });
-}
-function act(a){
-  a.id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);a.at=new Date().toISOString();
-  if(!KEY){location.href='https://t.me/HelpKattyBot?text='+encodeURIComponent(cmd(a));return;}
-  PEND.push(a);savePend();render();
-  ghAppend(a).then(function(){toast('Сохранено ✓ Семён увидит у себя в приложении');load();},function(e){
-    PEND=PEND.filter(function(x){return x.id!==a.id;});savePend();render();toast('Не сохранилось ('+e.message+'). Проверьте ключ и связь.');});
-}
-// apply my not-yet-processed actions on top of status.json, so the screen changes immediately
-// live mode (key with SemReports access): state = window.SEM.derive(claims.json, mom.json + my pending) — no computer needed
-var LIVE=null;
+// ---------- data: claims.json (Семён) + mom.json (мои решения) -> SEM.derive ----------
+var LIVE=null,STATUS=null;
 function view(){
   if(LIVE){var have={};LIVE.acts.forEach(function(a){have[a.id]=1;});
     PEND=PEND.filter(function(a){return !have[a.id]&&(Date.now()-Date.parse(a.at))<3*864e5;});savePend();
-    return window.SEM.derive(LIVE.claims,LIVE.acts.concat(PEND));}
-  var V=JSON.parse(JSON.stringify(S)),done={};(S.applied||[]).forEach(function(i){done[i]=1;});
-  PEND=PEND.filter(function(a){return !done[a.id]&&(Date.now()-Date.parse(a.at))<3*864e5;});savePend();
-  PEND.forEach(function(a){
-    if(a.t==='ok'){V.confirmed[a.d]=V.claimed[a.d]||{};V.status[a.d]='ok';}
-    if(a.t==='no'){delete V.confirmed[a.d];V.status[a.d]='no';}
-    if(a.t==='paid')V.paid[a.mon]={sum:a.sum};
-    if(a.t==='fine')V.fines.push({id:a.fid,d:a.d,a:a.a,r:a.r});
-    if(a.t==='unfine')V.fines=V.fines.filter(function(f){return f.id!==a.fid;});
-    if((a.t==='bok'||a.t==='bno')&&V.books[a.ref])V.books[a.ref].status=a.t==='bok'?'ok':'no';
-    if((a.t==='pok'||a.t==='pno')&&V.projects[a.ref])V.projects[a.ref].status=a.t==='pok'?'ok':'no';
-    if(a.t==='topics')V.topics={id:a.id,list:a.list};
-    if(a.t==='pz')V.puzzles[a.d]=a.pid;
-    if(a.t==='unpz')delete V.puzzles[a.d];
-  });
+    return SEM.derive(LIVE.claims,LIVE.acts.concat(PEND));}
+  var V=STATUS||{};['claimed','confirmed','status','paid','books','assigned','projects','enot','puzzles','answers','items','hnames'].forEach(function(k){V[k]=V[k]||{};});V.fines=V.fines||[];
   return V;
 }
-function week(V,m){var days=[],xp=0,ex=0,work=0,fine=0,pend=0,claimed=0;
-  for(var i=0;i<7;i++){var d=iso(new Date(m.getFullYear(),m.getMonth(),m.getDate()+i));days.push(d);
-    var c=V.confirmed[d]||{};for(var k in c){if(isExtra(k))ex+=+c[k]||0;else xp+=+c[k]||0;if(WORK[k])work++;}
-    if(V.status[d]==='new'){pend++;claimed+=sum(V.claimed[d]);}}
-  (V.fines||[]).forEach(function(f){if(f.d>=days[0]&&f.d<=days[6])fine+=+f.a||0;});
-  // everyday points + bonus are capped at MAX; books and projects on top
-  var b=work>=6?BONUS:0;return {mon:days[0],days:days,xp:xp+ex,work:work,bonus:b,fine:fine,pend:pend,claimed:claimed,capped:xp+b>MAX,total:Math.max(0,Math.min(MAX,xp+b)+ex-fine)};}
+// ---------- actions ----------
+function cmd(a){var ks=a.ids?Object.keys(a.ids).join(' '):'';
+  return {ok:'#ок '+a.d+' '+ks,no:'#нет '+a.d+' '+ks,paid:'#выплатила '+a.mon+' '+a.sum,fine:'#штраф '+a.fid+' '+a.d+' '+a.a+' '+a.r,unfine:'#штраф отмена '+a.fid,
+  eok:'#енот ок '+a.ref,eno:'#енот нет '+a.ref,pz:'#задача '+a.d+' '+a.pid,unpz:'#задача снять '+a.d,
+  bok:'#книга ок '+a.ref,bno:'#книга нет '+a.ref,pok:'#доклад ок '+a.ref,pno:'#доклад нет '+a.ref,topics:'#темы '+(a.list||[]).join('; ')}[a.t];}
+function act(a){
+  a.id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);a.at=new Date().toISOString();
+  if(!KEY){var c=cmd(a);if(!c){toast('Для этого нужен ключ — вставьте его наверху');$('setup').scrollIntoView();return;}location.href='https://t.me/HelpKattyBot?text='+encodeURIComponent(c);return;}
+  PEND.push(a);savePend();render();
+  appendAction(a).then(function(){toast('Сохранено ✓ Семён увидит у себя');load();},function(e){
+    PEND=PEND.filter(function(x){return x.id!==a.id;});savePend();render();toast('Не сохранилось ('+e.message+'). Проверьте связь.');});
+}
+function appendAction(a,retry){
+  return SEM.readJSON('SemTraining','mom.json',KEY).then(function(r){
+    var acts=((r.data&&r.data.actions)||[]).concat([a]);   // журнал не обрезаем: в нём вся история денег
+    return SEM.writeJSON('SemTraining','mom.json',KEY,{actions:acts},r.sha,'mom: '+a.t);
+  }).catch(function(e){if(e&&e.status===409&&!retry)return appendAction(a,true);throw e;});
+}
+
+// ---------- render ----------
+function week(V,m){return SEM.week(V,m);}
+function chipFor(s){return {new:'<span class="chip new">ждёт</span>',ok:'<span class="chip ok">засчитано</span>',no:'<span class="chip no">не засчитано</span>'}[s]||'';}
 function render(){
   var V=view(),w=week(V,mon),e=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+6);
-  document.getElementById('setup').hidden=!!KEY;
-  document.getElementById('wk-range').textContent='Эта неделя · '+dm(w.mon)+'–'+dm(iso(e))+' · подтверждено к выплате';
-  document.getElementById('wk-total').textContent=rub(w.total);
-  document.getElementById('wk-sub').innerHTML=w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+(w.capped?' · упёрся в потолок 1500':'')+(w.pend?' · <b>ещё ждут проверки: '+rub(w.claimed)+'</b>':'');
-  document.getElementById('wk-bar').style.width=Math.min(100,w.total/GOAL*100)+'%';
-  document.getElementById('k-work').textContent=Math.min(w.work,6)+'/6';
-  var bp=Object.keys(V.books||{}).filter(function(k){return V.books[k].status==='new';}).length+Object.keys(V.projects||{}).filter(function(k){return V.projects[k].status==='new'&&V.projects[k].state==='ready';}).length;
-  document.getElementById('k-pend').textContent=w.pend+bp;
-  document.getElementById('k-fine').textContent=w.fine?'−'+rub(w.fine):'0 ₽';
+  $('setup').hidden=!!KEY;
+  // 1. week money
+  $('wk-range').textContent='Неделя '+dm(w.mon)+'–'+dm(iso(e))+' · к выплате';
+  $('wk-total').textContent=rub(w.total);
+  $('wk-sub').innerHTML='Подтверждено '+w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+(w.capped?' · упёрся в потолок 1500':'')+(w.pend?' · <b>ещё ждут проверки: '+rub(w.claimed)+'</b>':'');
+  $('wk-bar').style.width=Math.min(100,w.total/GOAL*100)+'%';
+  $('k-work').textContent=Math.min(w.work,6)+'/6';
+  var xp=extrasPending(V);
+  $('k-pend').textContent=w.pend+xp.length;
+  $('k-fine').textContent=w.fine?'−'+rub(w.fine):'0 ₽';
   var p=V.paid[w.mon];
-  document.getElementById('wk-pay').innerHTML=p?'<span class="chip ok">выплачено '+rub(p.sum)+'</span>':'<button class="btn ghost" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Выплатила</button>';
+  $('wk-pay').innerHTML=p?'<span class="chip ok">выплачено '+rub(p.sum)+'</span>':'<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Выплатила</button>';
+  renderDay(V);renderExtra(V,xp);renderFines(V);renderWeeks(V);renderRead(V);renderEnot(V);renderProj(V);renderPz(V);
+}
+// 2. day: full plan with done / not done, per-item decisions
+function renderDay(V){
+  var chips='';for(var i=6;i>=0;i--){var d=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-i));
+    chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'">'+(V.status[d]==='new'?'<span class="dot"></span>':'')+DS[dt(d).getDay()]+'<small>'+(d===TODAY?'сегодня':dt(d).getDate())+'</small></button>';}
+  $('day-chips').innerHTML=chips;
+  var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow),planKeys={},total=0,doneN=0;
+  $('day-title').textContent=DAY===TODAY?'Сегодня, '+DN[dow].toLowerCase():DN[dow]+', '+dlong(DAY);
+  // chores and own tasks he marked go into their own group
+  var ch=Object.keys(cl).filter(function(k){return k.indexOf('h-')===0||k.indexOf('hx')===0;});
+  G=G.concat(ch.length?[{name:'Дела по дому',items:ch.map(function(k){return {k:k,t:SEM.CHORES[k]||((V.hnames||{})[k]||'Своё дело'),xp:+cl[k]||0,chore:1};})}]:[]);
   var h='';
-  w.days.slice().reverse().forEach(function(d){
-    if(dt(d)>now)return;
-    var st=V.status[d]||'none',ids=st==='ok'?V.confirmed[d]:(V.claimed[d]||{}),ks=Object.keys(ids||{});
-    var chip={new:'<span class="chip new">ждёт проверки</span>',ok:'<span class="chip ok">подтверждено</span>',no:'<span class="chip no">не засчитано</span>',none:'<span class="chip none">нет отчёта</span>'}[st];
-    h+='<div class="day"><div class="day-h"><b>'+DS[dt(d).getDay()]+' '+dm(d)+' · '+rub(sum(ids))+'</b>'+chip+'</div>';
-    if(ks.length)h+='<div class="items">'+ks.map(function(k){return esc(NAMES[k]||(k.indexOf('hx')===0?'🏠 своё дело':k.indexOf('book-')===0?'📖 книга':k.indexOf('proj-')===0||k.indexOf('enot-')===0?'🎤 доклад':k));}).join(', ')+'</div>';
-    if(st==='new')h+='<div class="row"><button class="btn ok" type="button" data-a="ok" data-d="'+d+'">✅ Подтвердить</button><button class="btn no" type="button" data-a="no" data-d="'+d+'">❌ Не засчитывать</button></div>';
-    if(st==='no')h+='<div class="row"><button class="btn ok" type="button" data-a="ok" data-d="'+d+'">✅ Всё-таки подтвердить</button></div>';
+  G.forEach(function(g){
+    h+='<div class="grp"><h3>'+esc(g.name)+'</h3>';
+    g.items.forEach(function(x){planKeys[x.k]=1;if(!x.chore)total++;
+      var did=x.k in cl,s=it[x.k]||(did?'new':''),pts=did?+cl[x.k]||0:x.xp;if(did&&!x.chore)doneN++;
+      h+='<div class="it'+(did?'':' todo')+'"><span class="m">'+(did?(s==='ok'?'✅':s==='no'?'❌':'✔️'):'○')+'</span>'+
+        '<span class="t">'+esc(x.t)+'<small>'+(did?'+':'')+pts+'</small></span><span class="a">'+(did?itemBtns(DAY,x.k,s):'<span class="small muted">не сделано</span>')+'</span>';
+      if(x.k==='puzzle')h+=puzzleAnswer(V,DAY);
+      h+='</div>';});
     h+='</div>';});
-  document.getElementById('days').innerHTML=h||'<p class="muted small">На этой неделе отчётов пока нет.</p>';
-  // books & projects
-  var bh='',bk=Object.keys(V.books||{}).sort(function(a,b){return V.books[a].d<V.books[b].d?1:-1;});
-  bk.forEach(function(k){var b=V.books[k];
-    bh+='<div class="day"><div class="day-h"><b>📖 '+esc(b.title)+'</b><span class="chip '+(b.status||'new')+'">'+({new:'дочитал — проверьте',ok:'+'+b.reward+' ₽',no:'не засчитано'}[b.status||'new'])+'</span></div><div class="items">'+b.pages+' стр. · '+dm(b.d)+' · к начислению '+rub(b.reward)+'</div>';
-    if(b.status==='new')bh+='<div class="small muted">Попросите рассказать за 3 минуты: о чём книга, кто главный герой, что запомнилось.</div><div class="row"><button class="btn ok" type="button" data-a="bok" data-ref="'+k+'">✅ Засчитать '+rub(b.reward)+'</button><button class="btn no" type="button" data-a="bno" data-ref="'+k+'">❌</button></div>';
-    bh+='</div>';});
-  Object.keys(V.projects||{}).forEach(function(k){var pj=V.projects[k];
-    var lab=pj.status==='ok'?'принят +'+pj.reward+' ₽':pj.status==='no'?'не принят':pj.state==='ready'?'выступил — примите':'готовит';
-    bh+='<div class="day"><div class="day-h"><b>🎤 '+esc(pj.topic)+'</b><span class="chip '+(pj.status==='ok'?'ok':pj.status==='no'?'no':pj.state==='ready'?'new':'none')+'">'+lab+'</span></div>';
-    if(pj.state==='ready'&&pj.status==='new')bh+='<div class="row"><button class="btn ok" type="button" data-a="pok" data-ref="'+k+'">✅ Принять доклад +400 ₽</button><button class="btn no" type="button" data-a="pno" data-ref="'+k+'">❌</button></div>';
-    bh+='</div>';});
-  var EL=(window.SEM&&window.SEM.ENOT.LESSONS)||[];
-  Object.keys(V.enot||{}).sort(function(a,b){return a-b;}).forEach(function(n){var e=V.enot[n],nm=(EL.filter(function(l){return String(l[0])===n;})[0]||[0,''])[1];
-    bh+='<div class="day"><div class="day-h"><b>🦝 Енот Чек, урок '+n+': '+esc(nm)+'</b><span class="chip '+e.status+'">'+({new:'прошёл — проверьте',ok:'+100 ₽',no:'не засчитано'}[e.status])+'</span></div><div class="items">'+dm(e.d)+' · сверх лимита недели</div>';
-    if(e.status==='new')bh+='<div class="small muted">Спросите, что запомнилось из урока.</div><div class="row"><button class="btn ok" type="button" data-a="eok" data-ref="'+n+'">✅ Засчитать 100 ₽</button><button class="btn no" type="button" data-a="eno" data-ref="'+n+'">❌</button></div>';
-    if(e.status==='no')bh+='<div class="row"><button class="btn ok" type="button" data-a="eok" data-ref="'+n+'">✅ Всё-таки засчитать</button></div>';
-    bh+='</div>';});
-  document.getElementById('brain').innerHTML=bh||'<p class="small muted">Пока ни одной дочитанной книги, урока «Енот Чек» или доклада.</p>';
-  var of=document.getElementById('offer');
-  if(V.topics&&V.topics.list){of.hidden=false;var chosen=Object.keys(V.projects||{}).map(function(k){return V.projects[k];}).filter(function(x){return x.status!=='ok';})[0];
-    of.innerHTML='<b>Сейчас предложено:</b> '+V.topics.list.map(esc).join(' · ')+(chosen?'<br><b>Семён выбрал:</b> '+esc(chosen.topic):'<br>Семён ещё не выбрал.');}
-  else of.hidden=true;
-  // weeks
+  // anything else he marked that is not in today's plan
+  var other=Object.keys(cl).filter(function(k){return !planKeys[k];});
+  if(other.length){h+='<div class="grp"><h3>Ещё отмечено</h3>'+other.map(function(k){var s=it[k]||'new';return '<div class="it"><span class="m">✔️</span><span class="t">'+esc(k)+'<small>+'+cl[k]+'</small></span><span class="a">'+itemBtns(DAY,k,s)+'</span></div>';}).join('')+'</div>';}
+  $('day-list').innerHTML=h;
+  $('day-count').textContent='сделано '+doneN+' из '+total;
+  $('day-bar').style.width=(total?doneN/total*100:0)+'%';
+  var claimed=sum(cl),conf=sum(V.confirmed[DAY]||{}),pend={};Object.keys(cl).forEach(function(k){if((it[k]||'new')==='new')pend[k]=cl[k];});
+  $('day-money').innerHTML=Object.keys(cl).length?'Отмечено '+rub(claimed)+' · засчитано <b>'+rub(conf)+'</b>':'<span class="muted">Семён ещё ничего не отметил за этот день.</span>';
+  var pb=$('day-all');pb.hidden=!Object.keys(pend).length;pb.textContent='✅ Засчитать все отмеченные (+'+sum(pend)+')';
+}
+function itemBtns(d,k,s){
+  if(s==='new')return '<button class="ib y" type="button" title="Засчитать" data-a="iok" data-d="'+d+'" data-k="'+esc(k)+'">✓</button><button class="ib n" type="button" title="Не засчитывать" data-a="ino" data-d="'+d+'" data-k="'+esc(k)+'">✕</button>';
+  if(s==='ok')return chipFor('ok')+'<button class="ib" type="button" title="Отменить" data-a="ino" data-d="'+d+'" data-k="'+esc(k)+'">✕</button>';
+  return chipFor('no')+'<button class="ib" type="button" title="Всё-таки засчитать" data-a="iok" data-d="'+d+'" data-k="'+esc(k)+'">✓</button>';
+}
+function puzzleAnswer(V,d){
+  var a=(V.answers||{})[d],pid=(V.puzzles||{})[d],P=window.PUZZLES,p=P&&pid?P.BY[pid]:null;
+  if(!a&&!p)return '';
+  return '<div class="ans">'+(p?'<div class="muted">Задачка: '+esc(p.q)+'</div>':'')+(a?'<div>Ответ Семёна: <b>'+esc(a)+'</b></div>':'<div class="muted">Ответа пока нет.</div>')+(p?'<details><summary class="small">Разбор</summary><div class="small">'+esc(p.a)+'</div></details>':'')+'</div>';
+}
+// 3. extras waiting for a decision
+function extrasPending(V){var L=[];
+  Object.keys(V.books||{}).forEach(function(k){if(V.books[k].status==='new')L.push(['b',k]);});
+  Object.keys(V.enot||{}).forEach(function(k){if(V.enot[k].status==='new')L.push(['e',k]);});
+  Object.keys(V.projects||{}).forEach(function(k){var p=V.projects[k];if(p.status==='new'&&p.state==='ready')L.push(['p',k]);});
+  return L;}
+function lessonName(n){var l=(SEM.ENOT.LESSONS.filter(function(x){return String(x[0])===String(n);})[0]||[0,''])[1];return l;}
+function renderExtra(V,L){
+  $('extra-card').hidden=!L.length;
+  $('extra').innerHTML=L.map(function(x){
+    if(x[0]==='b'){var b=V.books[x[1]];return '<div class="box"><div class="row sp"><b>📖 Дочитал «'+esc(b.title)+'»</b><b>+'+b.reward+' ₽</b></div><span class="small muted">'+(b.pages?b.pages+' стр. · ':'')+dlong(b.d)+(b.assigned?(b.late?' · после срока — половина':' · к сроку'):'')+'</span><span class="small">Попросите рассказать за 3 минуты: о чём книга, что запомнилось.</span><div class="row"><button class="btn ok sm" type="button" data-a="bok" data-ref="'+x[1]+'">✅ Засчитать</button><button class="btn no sm" type="button" data-a="bno" data-ref="'+x[1]+'">Не засчитывать</button></div></div>';}
+    if(x[0]==='e'){var e=V.enot[x[1]];return '<div class="box"><div class="row sp"><b>🦝 Урок '+x[1]+': '+esc(lessonName(x[1]))+'</b><b>+100 ₽</b></div><span class="small muted">'+dlong(e.d)+' · спросите, что запомнилось</span><div class="row"><button class="btn ok sm" type="button" data-a="eok" data-ref="'+x[1]+'">✅ Засчитать</button><button class="btn no sm" type="button" data-a="eno" data-ref="'+x[1]+'">Не засчитывать</button></div></div>';}
+    var p=V.projects[x[1]];return '<div class="box"><div class="row sp"><b>🎤 Выступил: «'+esc(p.topic)+'»</b><b>+400 ₽</b></div><div class="row"><button class="btn ok sm" type="button" data-a="pok" data-ref="'+x[1]+'">✅ Принять</button><button class="btn no sm" type="button" data-a="pno" data-ref="'+x[1]+'">Доработать</button></div></div>';
+  }).join('');
+}
+// 4. fines
+function renderFines(V){
+  var fl=(V.fines||[]).slice().sort(function(a,b){return a.d<b.d?1:-1;}).slice(0,12);
+  $('fines').innerHTML=fl.length?fl.map(function(f){return '<tr><td>'+dm(f.d)+'</td><td style="white-space:normal">'+esc(f.r)+'</td><td>−'+(+f.a)+'</td><td><button class="btn ghost sm" type="button" data-a="unfine" data-fid="'+f.id+'">отменить</button></td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Штрафов нет 👍</td></tr>';
+}
+// 5. weeks
+function renderWeeks(V){
   var rows='',all=0;
   for(var i=0;i<10;i++){var m=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-7*i),x=week(V,m);if(!x.xp&&!x.fine&&!x.pend&&i)continue;
     var pp=V.paid[x.mon];
-    rows+='<tr><td>'+dm(x.mon)+'</td><td>'+x.xp+'</td><td>'+(x.bonus?'+'+x.bonus:'—')+'</td><td>'+(x.fine?'−'+x.fine:'—')+'</td><td><b>'+rub(x.total)+'</b></td><td>'+(pp?'✓ '+rub(pp.sum):(i?'<button class="btn ghost" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">отметить</button>':'—'))+'</td></tr>';}
-  document.getElementById('weeks').innerHTML=rows;
+    rows+='<tr><td>'+dm(x.mon)+'</td><td>'+x.xp+'</td><td>'+(x.bonus?'+'+x.bonus:'—')+'</td><td>'+(x.fine?'−'+x.fine:'—')+'</td><td><b>'+rub(x.total)+'</b></td><td>'+(pp?'✓ '+rub(pp.sum):(i?'<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">отметить</button>':'—'))+'</td></tr>';}
+  $('weeks').innerHTML=rows;
   for(var d in V.confirmed)all+=sum(V.confirmed[d]);
   var li=0;LEVELS.forEach(function(l,j){if(all>=l[0])li=j;});
-  document.getElementById('lvl').textContent='Всего подтверждено: '+all+' XP · уровень «'+LEVELS[li][1]+'»'+(LEVELS[li+1]?' · до «'+LEVELS[li+1][1]+'» '+(LEVELS[li+1][0]-all)+' XP':'');
-  var fl=(V.fines||[]).slice().sort(function(a,b){return a.d<b.d?1:-1;});
-  renderPz(V);renderAsg(V);
-  document.getElementById('fines').innerHTML=fl.length?fl.map(function(f){return '<tr><td>'+dm(f.d)+'</td><td style="white-space:normal">'+esc(f.r)+'</td><td>−'+(+f.a)+'</td><td><button class="btn ghost" type="button" data-a="unfine" data-fid="'+f.id+'">отменить</button></td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Штрафов нет.</td></tr>';
+  $('lvl').textContent='Всего подтверждено: '+all+' XP · уровень «'+LEVELS[li][1]+'»'+(LEVELS[li+1]?' · до «'+LEVELS[li+1][1]+'» '+(LEVELS[li+1][0]-all)+' XP':'');
 }
-// puzzle bank (puzzles.js): mom picks the puzzle for a day, sees Semyon's answer next to the solution
-var PZ=window.PUZZLES||null,pzGroup='all',pzShow=15;
-function pzDay(s){return dt(s).toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'short'});}
+// 6. reading: assigned now + history
+function renderRead(V){
+  var A=V.assigned||{},CB=(LIVE&&LIVE.claims.books)||{},now_='';
+  Object.keys(A).sort(function(x,y){return A[x].due<A[y].due?-1:1;}).forEach(function(id){var a=A[id];if((V.books||{})[id])return;
+    var cb=CB[id]||{},pg=+cb.pg||0,left=Math.round((dt(a.due)-dt(TODAY))/864e5);
+    now_+='<div class="box"><div class="row sp"><b>«'+esc(a.t)+'»</b><span>+'+rub(a.rw)+'</span></div><span class="small muted">'+(a.a?esc(a.a)+' · ':'')+(a.pg?a.pg+' стр. · ':'')+'срок до '+dlong(a.due)+'</span>'+
+      (a.pg?'<div class="bar"><i style="width:'+Math.min(100,Math.round(pg/a.pg*100))+'%"></i></div><span class="small">Страница '+pg+' из '+a.pg+'</span>':'')+
+      '<span class="small'+(left<0?'" style="color:var(--warn)':'"')+'>'+(left<0?'Срок прошёл — дочитает за половину':left===0?'Сегодня последний день':'Осталось дней: '+left)+'</span>'+
+      '<div><button class="btn ghost sm" type="button" data-a="unbook" data-bid="'+id+'">Снять книгу</button></div></div>';});
+  Object.keys(CB).forEach(function(id){var b=CB[id];if(b.mom||b.f||A[id])return;now_+='<div class="box"><b>Своя книга: «'+esc(b.t)+'»</b><span class="small muted">'+b.p+' стр. · начал '+dlong(b.s)+'</span></div>';});
+  $('read-now').innerHTML=now_||'<p class="small muted">Сейчас ничего не читает. Задайте книгу ниже.</p>';
+  var B=V.books||{},ks=Object.keys(B).sort(function(a,b){return B[a].d<B[b].d?1:-1;});
+  $('read-done').innerHTML=ks.length?ks.map(function(k){var b=B[k];return '<div class="row sp small"><span>📖 <b>«'+esc(b.title)+'»</b>'+(b.pages?' · '+b.pages+' стр.':'')+' · '+dm(b.d)+'</span>'+(b.status==='ok'?'<span class="chip ok">+'+b.reward+' ₽</span>':chipFor(b.status))+'</div>';}).join(''):'<p class="small muted">Пока ни одной.</p>';
+}
+// 7. enot: all 10 lessons
+function renderEnot(V){
+  var E=V.enot||{},n=0;
+  $('en-list').innerHTML=SEM.ENOT.LESSONS.map(function(l){var k=String(l[0]),e=E[k],st;
+    if(e&&e.status==='ok'){n++;st='<span class="chip ok">✓ +100 · '+dm(e.d)+'</span>';}
+    else if(e&&e.status==='new')st='<span class="chip new">прошёл '+dm(e.d)+' — проверьте выше</span>';
+    else if(e&&e.status==='no')st='<span class="chip no">не засчитано</span>';
+    else st='<span class="chip none">не пройден</span>';
+    return '<div class="les"><span>'+k+'. '+esc(l[1])+'</span>'+st+'</div>';}).join('');
+  $('en-count').textContent='засчитано '+n+' из '+SEM.ENOT.LESSONS.length;
+}
+// 8. projects + topics on offer
+function renderProj(V){
+  var P=V.projects||{},ks=Object.keys(P),h='';
+  if(V.topics&&V.topics.list)h+='<div class="box small"><b>Предложено:</b> '+V.topics.list.map(esc).join(' · ')+'</div>';
+  h+=ks.map(function(k){var p=P[k];var lab=p.status==='ok'?'<span class="chip ok">принят +'+p.reward+' ₽</span>':p.status==='no'?'<span class="chip no">на доработке</span>':p.state==='ready'?'<span class="chip new">выступил — проверьте выше</span>':'<span class="chip none">готовит</span>';
+    return '<div class="row sp small"><span>🎤 <b>'+esc(p.topic)+'</b> · '+dm(p.d)+'</span>'+lab+'</div>';}).join('');
+  $('proj').innerHTML=h||'<p class="small muted">Докладов пока не было. Предложите темы ниже.</p>';
+}
+// 9. puzzles (folded)
+var PZ=window.PUZZLES||null,pzGroup='all',pzShow=15,pzFiltered=[];
 function renderPz(V){
-  var card=document.getElementById('pz-card');if(!PZ){card.hidden=true;return;}
+  if(!PZ){$('pz-card').hidden=true;return;}
   var P=V.puzzles||{},A=V.answers||{},used={};for(var d in P)used[P[d]]=(used[P[d]]||[]).concat(d);
-  document.getElementById('pz-total').textContent=PZ.LIST.length+' задачек';
-  var gb=document.getElementById('pz-groups');
+  $('pz-total').textContent='· '+PZ.LIST.length;
+  if(!$('pz-fold').open)return;
+  var gb=$('pz-groups');
   if(!gb.children.length)[['all','Все']].concat(Object.keys(PZ.GROUPS).map(function(k){return [k,PZ.GROUPS[k]];})).forEach(function(x){
     var b=document.createElement('button');b.type='button';b.dataset.g=x[0];b.textContent=x[1]+(x[0]==='all'?'':' · '+PZ.LIST.filter(function(p){return p.g===x[0];}).length);gb.appendChild(b);});
   [].forEach.call(gb.children,function(b){b.setAttribute('aria-pressed',String(b.dataset.g===pzGroup));});
-  var from=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7));
-  var plan=Object.keys(P).filter(function(d){return d>=from;}).sort().reverse();
-  document.getElementById('pz-plan').innerHTML=plan.map(function(d){var p=PZ.BY[P[d]],a=A[d];
-    return '<div class="pzday"><div class="row" style="justify-content:space-between"><b>'+pzDay(d)+'</b>'+(a?'<span class="chip new">есть ответ</span>':'<span class="chip none">ждём ответ</span>')+'</div>'+
-      '<div>'+esc(p?p.q:P[d])+'</div>'+(a?'<div>Семён: <span class="ans">'+esc(a)+'</span></div>':'')+
-      (p?'<details'+(a?' open':'')+'><summary>Разбор</summary><p>'+esc(p.a)+'</p></details>':'')+
-      (a?'<div class="small muted">Засчитать: подтвердите этот день в «Днях недели».</div>':'<div><button class="btn ghost" type="button" data-a="unpz" data-d="'+d+'">Снять</button></div>')+'</div>';}).join('');
-  var lv=+document.getElementById('pz-lvl').value,q=document.getElementById('pz-q').value.trim().toLowerCase(),onlyNew=document.getElementById('pz-new').checked,day=document.getElementById('pz-date').value;
+  var plan=Object.keys(P).filter(function(d){return d>=TODAY;}).sort();
+  $('pz-plan').innerHTML=plan.map(function(d){var p=PZ.BY[P[d]];
+    return '<div class="box"><div class="row sp"><b>'+dt(d).toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'short'})+'</b><button class="btn ghost sm" type="button" data-a="unpz" data-d="'+d+'">Снять</button></div><div class="small">'+esc(p?p.q:P[d])+'</div></div>';}).join('');
+  var lv=+$('pz-lvl').value,q=$('pz-q').value.trim().toLowerCase(),onlyNew=$('pz-new').checked,day=$('pz-date').value;
   var L=PZ.LIST.filter(function(p){return (pzGroup==='all'||p.g===pzGroup)&&(!lv||p.l===lv)&&(!q||(p.q+' '+p.a).toLowerCase().indexOf(q)>=0)&&(!onlyNew||!used[p.id]);});
   var dl=day?dt(day).toLocaleDateString('ru-RU',{day:'numeric',month:'short'}):'';
-  document.getElementById('pz-list').innerHTML=L.slice(0,pzShow).map(function(p){var u=used[p.id]||[];
-    return '<div class="pz'+(u.length?' used':'')+'"><div class="pz-meta"><span>'+esc(PZ.GROUPS[p.g])+' · '+'★'.repeat(p.l)+'</span><span>'+(u.length?'задана '+u.map(dm).join(', '):'')+'</span></div><div class="pz-q">'+esc(p.q)+'</div><details><summary>Ответ</summary><p>'+esc(p.a)+'</p></details>'+
-      '<div class="row">'+(P[day]===p.id?'<span class="chip ok">✓ задана на '+dl+'</span>':'<button class="btn" type="button" data-a="pz" data-d="'+day+'" data-pid="'+p.id+'">Задать на '+dl+'</button>')+'</div></div>';}).join('')||'<p class="small muted">Ничего не найдено — смените группу или снимите «только новые».</p>';
-  document.getElementById('pz-more').hidden=L.length<=pzShow;
+  $('pz-list').innerHTML=L.slice(0,pzShow).map(function(p){var u=used[p.id]||[];
+    return '<div class="pz'+(u.length?' used':'')+'"><div class="pz-meta"><span>'+esc(PZ.GROUPS[p.g])+' · '+'★'.repeat(p.l)+'</span><span>'+(u.length?'задана '+u.map(dm).join(', '):'')+'</span></div><div class="pz-q">'+esc(p.q)+'</div><details><summary class="small">Ответ</summary><p>'+esc(p.a)+'</p></details>'+
+      '<div class="row">'+(P[day]===p.id?'<span class="chip ok">✓ задана на '+dl+'</span>':'<button class="btn sm" type="button" data-a="pz" data-d="'+day+'" data-pid="'+p.id+'">Задать на '+dl+'</button>')+'</div></div>';}).join('')||'<p class="small muted">Ничего не найдено — смените группу или снимите «только новые».</p>';
+  $('pz-more').hidden=L.length<=pzShow;
   pzFiltered=L;
 }
-var pzFiltered=[];
-document.getElementById('pz-date').value=iso(now);
-document.getElementById('pz-groups').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;pzGroup=b.dataset.g;pzShow=15;render();});
-['pz-lvl','pz-new','pz-date'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){pzShow=15;render();});});
-document.getElementById('pz-q').addEventListener('input',function(){pzShow=15;render();});
-document.getElementById('pz-more').addEventListener('click',function(){pzShow+=15;render();});
-document.getElementById('pz-rand').addEventListener('click',function(){var d=document.getElementById('pz-date').value;if(!d||!pzFiltered.length){toast('Выберите день и фильтр, где есть задачки');return;}
+$('pz-fold').addEventListener('toggle',function(){if(this.open)render();});
+$('pz-date').value=TODAY;
+$('pz-groups').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;pzGroup=b.dataset.g;pzShow=15;render();});
+['pz-lvl','pz-new','pz-date'].forEach(function(id){$(id).addEventListener('change',function(){pzShow=15;render();});});
+$('pz-q').addEventListener('input',function(){pzShow=15;render();});
+$('pz-more').addEventListener('click',function(){pzShow+=15;render();});
+$('pz-rand').addEventListener('click',function(){var d=$('pz-date').value;if(!d||!pzFiltered.length){toast('Выберите день и фильтр, где есть задачки');return;}
   act({t:'pz',d:d,pid:pzFiltered[Math.floor(Math.random()*pzFiltered.length)].id});});
-// assign a book with a deadline (like Sasha's and Danya's dad app)
-function dlong(s){return dt(s).toLocaleDateString('ru-RU',{day:'numeric',month:'long'});}
-function renderAsg(V){
-  var A=V.assigned||{},ids=Object.keys(A).sort(function(x,y){return A[x].due<A[y].due?-1:1;}),CB=(LIVE&&LIVE.claims.books)||{};
-  document.getElementById('a-list').innerHTML=ids.map(function(id){var a=A[id],fin=(V.books||{})[id],cb=CB[id]||{},left=Math.round((dt(a.due)-dt(iso(now)))/864e5);
-    var st=fin?'<span style="color:var(--go);font-weight:700">прочитана '+dlong(fin.d)+(fin.late?' после срока':' к сроку')+' · '+rub(fin.reward)+(fin.status==='ok'?' ✓':' — засчитайте ниже')+'</span>'
-      :(a.pg?'стр. '+(+cb.pg||0)+' из '+a.pg+' · ':'')+(left<0?'<span style="color:var(--warn);font-weight:700">срок прошёл '+dlong(a.due)+'</span>':'до '+dlong(a.due)+', осталось '+left+' дн.');
-    return '<div class="pzday"><div class="row" style="justify-content:space-between;align-items:flex-start"><span><b>«'+esc(a.t)+'»</b>'+(a.a?' · '+esc(a.a):'')+(a.pg?' · '+a.pg+' стр.':'')+' · награда '+rub(a.rw)+'<br><small>'+st+'</small></span>'+
-      (fin?'':'<button class="btn ghost" type="button" data-a="unbook" data-bid="'+id+'">Снять</button>')+'</div></div>';}).join('')||'<p class="small muted">Вы ещё не задали ни одной книги.</p>';
-}
+// assign book form
 var adirty={days:false,rw:false,due:false};
-function aSyncDue(){if(!adirty.due){var n=Math.max(1,+document.getElementById('a-days').value||1);document.getElementById('a-due').value=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+n));}}
-function aReset(){['a-t','a-a','a-pg'].forEach(function(i){document.getElementById(i).value='';});document.getElementById('a-days').value=7;document.getElementById('a-rw').value=200;adirty={days:false,rw:false,due:false};aSyncDue();}
-document.getElementById('a-pg').addEventListener('input',function(){var pg=+this.value||0;
-  if(!adirty.days)document.getElementById('a-days').value=window.SEM?window.SEM.suggestDays(pg):Math.max(3,Math.ceil(pg/20));
-  if(!adirty.rw)document.getElementById('a-rw').value=Math.round(pg*500/300/10)*10||200;aSyncDue();});
-document.getElementById('a-days').addEventListener('input',function(){adirty.days=true;adirty.due=false;aSyncDue();});
-document.getElementById('a-rw').addEventListener('input',function(){adirty.rw=true;});
-document.getElementById('a-due').addEventListener('input',function(){adirty.due=true;var n=Math.round((dt(this.value)-dt(iso(now)))/864e5);if(n>0){document.getElementById('a-days').value=n;adirty.days=true;}});
-document.getElementById('a-add').addEventListener('click',function(){
-  var t=document.getElementById('a-t').value.replace(/[|\n]/g,' ').trim();if(!t){document.getElementById('a-st').textContent='Напишите название книги.';return;}
-  if(!KEY){toast('Чтобы задавать книги, вставьте ключ наверху');document.getElementById('setup').scrollIntoView();return;}
-  var due=document.getElementById('a-due').value||iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+7));
-  var a={t:'book',bid:'m'+Date.now().toString(36),title:t,author:document.getElementById('a-a').value.trim().slice(0,60),pg:Math.max(0,Math.round(+document.getElementById('a-pg').value||0)),
-    from:iso(now),due:due,rw:Math.max(0,Math.round(+document.getElementById('a-rw').value||0))};
-  act(a);document.getElementById('a-st').textContent='Книга «'+t+'» задана: срок до '+dlong(due)+', награда '+a.rw+' ₽. Семён увидит её на вкладке «Голова».';aReset();
+function aSyncDue(){if(!adirty.due){var n=Math.max(1,+$('a-days').value||1);$('a-due').value=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+n));}}
+function aReset(){['a-t','a-a','a-pg'].forEach(function(i){$(i).value='';});$('a-days').value=7;$('a-rw').value=200;adirty={days:false,rw:false,due:false};aSyncDue();}
+$('a-pg').addEventListener('input',function(){var pg=+this.value||0;if(!adirty.days)$('a-days').value=SEM.suggestDays(pg);if(!adirty.rw)$('a-rw').value=Math.round(pg*500/300/10)*10||200;aSyncDue();});
+$('a-days').addEventListener('input',function(){adirty.days=true;adirty.due=false;aSyncDue();});
+$('a-rw').addEventListener('input',function(){adirty.rw=true;});
+$('a-due').addEventListener('input',function(){adirty.due=true;var n=Math.round((dt(this.value)-dt(TODAY))/864e5);if(n>0){$('a-days').value=n;adirty.days=true;}});
+$('a-add').addEventListener('click',function(){
+  var t=$('a-t').value.replace(/[|\n]/g,' ').trim();if(!t){$('a-st').textContent='Напишите название книги.';return;}
+  if(!KEY){toast('Чтобы задавать книги, вставьте ключ наверху');$('setup').scrollIntoView();return;}
+  var due=$('a-due').value||iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+7));
+  var a={t:'book',bid:'m'+Date.now().toString(36),title:t,author:$('a-a').value.trim().slice(0,60),pg:Math.max(0,Math.round(+$('a-pg').value||0)),from:TODAY,due:due,rw:Math.max(0,Math.round(+$('a-rw').value||0))};
+  act(a);$('a-st').textContent='Книга «'+t+'» задана: срок до '+dlong(due)+', награда '+a.rw+' ₽.';aReset();$('asg-fold').open=false;
 });
 aReset();
-// topic bank
+// topics
 var th='';Object.keys(TOPICS).forEach(function(g){th+='<h3>'+esc(g)+'</h3>'+TOPICS[g].map(function(t){return '<label class="tp"><input type="checkbox" value="'+esc(t)+'"><span>'+esc(t)+'</span></label>';}).join('');});
-document.getElementById('topics').innerHTML='<details><summary>Выбрать из списка ('+Object.keys(TOPICS).reduce(function(n,g){return n+TOPICS[g].length;},0)+' тем)</summary>'+th+'</details>';
+$('topics').innerHTML=th;
 function picked(){var l=[].map.call(document.querySelectorAll('#topics input:checked'),function(i){return i.value;});
-  document.getElementById('own').value.split('\n').forEach(function(s){s=s.replace(/[;|\n]/g,' ').trim();if(s)l.push(s.slice(0,80));});return l;}
-function cnt(){document.getElementById('offer-n').textContent='выбрано '+picked().length+' из 3';}
-document.getElementById('topics').addEventListener('change',cnt);document.getElementById('own').addEventListener('input',cnt);
-document.getElementById('offer-go').addEventListener('click',function(){var l=picked();if(l.length<2){toast('Отметьте 2–3 темы');return;}if(l.length>3){toast('Не больше 3 тем — так проще выбрать');return;}
-  act({t:'topics',list:l});[].forEach.call(document.querySelectorAll('#topics input:checked'),function(i){i.checked=false;});document.getElementById('own').value='';cnt();});
-// buttons
+  $('own').value.split('\n').forEach(function(s){s=s.replace(/[;|\n]/g,' ').trim();if(s)l.push(s.slice(0,80));});return l;}
+function cnt(){$('offer-n').textContent='выбрано '+picked().length+' из 3';}
+$('topics').addEventListener('change',cnt);$('own').addEventListener('input',cnt);
+$('offer-go').addEventListener('click',function(){var l=picked();if(l.length<2){toast('Отметьте 2–3 темы');return;}if(l.length>3){toast('Не больше 3 тем — так проще выбрать');return;}
+  act({t:'topics',list:l});[].forEach.call(document.querySelectorAll('#topics input:checked'),function(i){i.checked=false;});$('own').value='';cnt();});
+// day chips + bulk confirm
+$('day-chips').addEventListener('click',function(e){var b=e.target.closest('button[data-day]');if(!b)return;DAY=b.dataset.day;render();});
+$('day-all').addEventListener('click',function(){var V=view(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},ids={};
+  Object.keys(cl).forEach(function(k){if((it[k]||'new')==='new')ids[k]=cl[k];});if(Object.keys(ids).length)act({t:'ok',d:DAY,ids:ids});});
+// all other buttons
 document.addEventListener('click',function(e){
-  var b=e.target.closest&&e.target.closest('button[data-a]');if(!b)return;var t=b.dataset.a,a={t:t};
-  var V0=view();
-  if(t==='ok'||t==='no'){a.d=b.dataset.d;a.ids=V0.claimed[a.d]||{};}
+  var b=e.target.closest&&e.target.closest('button[data-a]');if(!b)return;var t=b.dataset.a,a={t:t},V0=view();
+  if(t==='iok'||t==='ino'){var cl=V0.claimed[b.dataset.d]||{},conf=V0.confirmed[b.dataset.d]||{},k=b.dataset.k,ids={};ids[k]=k in cl?cl[k]:(conf[k]||0);a={t:t==='iok'?'ok':'no',d:b.dataset.d,ids:ids};}
   if(t==='pok'||t==='pno')a.tries=(V0.projects[b.dataset.ref]||{}).cur||1;
   if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
   if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
   if(/^(bok|bno|pok|pno|eok|eno)$/.test(t))a.ref=b.dataset.ref;
-  if(t==='unbook'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.bid=b.dataset.bid;}
+  if(t==='unbook'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно снять?';return;}a.bid=b.dataset.bid;}
   if(t==='pz'||t==='unpz'){a.d=b.dataset.d;if(t==='pz'){if(!a.d){toast('Выберите день');return;}a.pid=b.dataset.pid;}}
   act(a);
 });
-document.getElementById('f-date').value=iso(now);
-document.getElementById('f-type').addEventListener('change',function(e){document.getElementById('f-amount').value=e.target.selectedOptions[0].dataset.a;});
-document.getElementById('f-form').addEventListener('submit',function(e){
-  e.preventDefault();var d=document.getElementById('f-date').value,a=+document.getElementById('f-amount').value,t=document.getElementById('f-type').value,n=document.getElementById('f-note').value.trim();
-  if(!d||!a)return;act({t:'fine',fid:'f'+Date.now().toString(36),d:d,a:a,r:(t+(n?': '+n:'')).replace(/[|\n]/g,' ')});document.getElementById('f-note').value='';
+// fines form
+$('f-date').value=TODAY;
+$('f-type').addEventListener('change',function(e){$('f-amount').value=e.target.selectedOptions[0].dataset.a;});
+$('f-form').addEventListener('submit',function(e){
+  e.preventDefault();var d=$('f-date').value,a=+$('f-amount').value,t=$('f-type').value,n=$('f-note').value.trim();
+  if(!d||!a)return;act({t:'fine',fid:'f'+Date.now().toString(36),d:d,a:a,r:(t+(n?': '+n:'')).replace(/[|\n]/g,' ')});$('f-note').value='';e.target.closest('details').open=false;
 });
 // key
-document.getElementById('key-save').addEventListener('click',function(){
-  var k=document.getElementById('key').value.trim();if(!k)return;var st=document.getElementById('key-st');st.textContent='Проверяю…';
+$('key-save').addEventListener('click',function(){
+  var k=$('key').value.trim();if(!k)return;var st=$('key-st');st.textContent='Проверяю…';
   fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+k}}).then(function(r){return r.json();}).then(function(j){
-    if(j&&j.permissions&&j.permissions.push){KEY=k;try{localStorage.setItem('sm-gh-key',k);}catch(e){}document.getElementById('key').value='';
-      fetch('https://api.github.com/repos/'+REPO.split('/')[0]+'/SemReports',{headers:{'Authorization':'Bearer '+k}}).then(function(r){
-        toast(r.ok?'Ключ сохранён ✓ Отметки Семёна видны сразу':'Ключ сохранён, но у него нет доступа к SemReports — отметки будут приходить с задержкой');});
+    if(j&&j.permissions&&j.permissions.push){KEY=k;try{localStorage.setItem('sm-gh-key',k);}catch(e){}$('key').value='';
+      fetch('https://api.github.com/repos/MOteam-design/SemReports',{headers:{'Authorization':'Bearer '+k}}).then(function(r){
+        toast(r.ok?'Ключ сохранён ✓ Отметки Семёна видны сразу':'Ключ сохранён, но у него нет доступа к SemReports');});
       load();}
-    else st.textContent='Ключ не подходит: нужен доступ к SemTraining с правом Contents: Read and write.';
+    else st.textContent='Ключ не подходит: это ключ Семёна? Нужен ваш ключ semtraining.';
   }).catch(function(){st.textContent='Не удалось проверить ключ — нет связи?';});
 });
-document.getElementById('key-reset').addEventListener('click',function(e){e.preventDefault();if(KEY){if(this.dataset.sure!=='1'){this.dataset.sure='1';this.textContent='Удалить ключ с телефона? Нажмите ещё раз';return;}KEY='';try{localStorage.removeItem('sm-gh-key');}catch(x){}}render();document.getElementById('setup').scrollIntoView();});
+$('key-reset').addEventListener('click',function(e){e.preventDefault();if(KEY){if(this.dataset.sure!=='1'){this.dataset.sure='1';this.textContent='Удалить ключ с телефона? Нажмите ещё раз';return;}KEY='';try{localStorage.removeItem('sm-gh-key');}catch(x){}}render();$('setup').scrollIntoView();});
+// load
+function stamp(s){return s?new Date(s).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';}
 function load(){
-  if(KEY&&window.SEM){
-    Promise.all([window.SEM.readJSON('SemReports','claims.json',KEY),window.SEM.readJSON('SemTraining','mom.json',KEY)]).then(function(r){
+  if(KEY){
+    Promise.all([SEM.readJSON('SemReports','claims.json',KEY),SEM.readJSON('SemTraining','mom.json',KEY)]).then(function(r){
       LIVE={claims:r[0].data||{},acts:(r[1].data&&r[1].data.actions)||[]};
-      var u=LIVE.claims.updated?new Date(LIVE.claims.updated):null;
-      document.getElementById('upd').textContent=u?'Семён отмечал '+u.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Семён ещё ничего не отправлял';
+      $('upd').textContent=LIVE.claims.updated?'Семён отмечал '+stamp(LIVE.claims.updated):'Семён ещё ничего не отправлял';
       render();
-    },function(e){LIVE=null;loadStatus();});
+    },function(){LIVE=null;loadStatus();});
     return;}
   loadStatus();
 }
 function loadStatus(){
   fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(j){
-    S=j;['claimed','confirmed','status','paid','books','projects','puzzles','answers'].forEach(function(k){S[k]=S[k]||{};});S.fines=S.fines||[];S.applied=S.applied||[];
-    var u=j.updated?new Date(j.updated):null;document.getElementById('upd').textContent=u?'обновлено '+u.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
-    render();
-  }).catch(function(){document.getElementById('upd').textContent='данных пока нет';render();});
+    STATUS=j;$('upd').textContent=j.updated?'обновлено '+stamp(j.updated):'';render();
+  }).catch(function(){$('upd').textContent='данных пока нет';render();});
 }
 document.addEventListener('visibilitychange',function(){if(!document.hidden)load();});
 setInterval(function(){if(!document.hidden)load();},60000);
-load();
+render();load();
 })();
 </script>
 </body>
