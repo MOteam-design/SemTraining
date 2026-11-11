@@ -4,7 +4,8 @@
    "q-drink": 5,
    "q-dessert": 5,
    "out": 5,
-   "meal": 5
+   "meal": 5,
+   "str-b": 40
   }
  },
  "confirmed": {
@@ -12,7 +13,8 @@
    "q-drink": 5,
    "q-dessert": 5,
    "out": 5,
-   "meal": 5
+   "meal": 5,
+   "str-b": 40
   }
  },
  "status": {
@@ -47,12 +49,13 @@
  "answers": {},
  "tests": {},
  "hnames": {},
- "updated": "2026-11-11T17:36",
+ "updated": "2026-11-11T18:19",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
   "amwc749zfu8e",
   "amwc74k7t0cy",
-  "amwc7zeg5ex2"
+  "amwc7zeg5ex2",
+  "amwc9bz0zb8d"
  ]
 }
