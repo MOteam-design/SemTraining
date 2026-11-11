@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -314,6 +314,7 @@ td.best{color:var(--go);font-weight:800}
       <h2 id="pz-title">Задача</h2>
       <p id="pz-q"></p>
       <form class="hadd" id="pz-form"><input id="pz-a" type="text" inputmode="text" maxlength="30" placeholder="Ответ" autocomplete="off"><button class="btn" type="submit">Проверить</button></form>
+      <div id="pz-mom" hidden style="display:grid;gap:8px"><textarea id="pz-mtext" rows="3" maxlength="300" placeholder="Ответ и как ты рассуждал" style="width:100%;font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)"></textarea><button class="btn" type="button" id="pz-msend">Отправить ответ</button></div>
       <p class="small" id="pz-st"></p>
       <details class="bank-set"><summary>Подсказка</summary><p class="small" id="pz-h"></p></details>
     </div>
@@ -1055,7 +1056,7 @@ function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEar
 if(!IS_MOM&&window.fetch){
   fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
-    momStatus=j;setFines(m);renderBooks();renderProj();}).catch(function(){});
+    momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();}).catch(function(){});
 }
 var fineForm=document.getElementById('f-form');
 if(fineForm){
@@ -1131,12 +1132,29 @@ var PUZ=[
 ];
 function norm(s){return String(s||'').toLowerCase().replace(/ё/g,'е').replace(/[\s.,!]+/g,'').replace(/(руб|₽|кг|км|минут|мин|лет|года|год|дней|дня|день)$/,'');}
 var pzIdx=Math.floor(new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()/864e5)%PUZ.length;
+// mom can pick a puzzle for the day from the big bank (puzzles.js, GitHub build only); then the answer is free text and mom checks it
+var pzAns={};try{pzAns=JSON.parse(get('sm-pzans','{}'))||{};}catch(e){pzAns={};}
+function momPuzzle(){var B=window.PUZZLES,id=momStatus&&momStatus.puzzles&&momStatus.puzzles[todayIso];return B&&id&&B.BY[id]?B.BY[id]:null;}
 function renderPuzzle(){
-  var p=PUZ[pzIdx],ok=!!(done[todayIso]||{}).puzzle;
+  var mp=momPuzzle(),ok=!!(done[todayIso]||{}).puzzle,box=document.getElementById('pz-mom');
+  document.getElementById('pz-form').hidden=!!mp||ok;box.hidden=!mp;
+  document.querySelector('#pz details').hidden=!!mp;
+  if(mp){
+    document.getElementById('pz-title').textContent='Задачка от мамы · '+window.PUZZLES.GROUPS[mp.g]+' · '+'★'.repeat(mp.l);
+    document.getElementById('pz-q').textContent=mp.q;
+    var my=pzAns[todayIso];
+    document.getElementById('pz-mtext').hidden=!!my;document.getElementById('pz-msend').hidden=!!my;
+    document.getElementById('pz-st').innerHTML=my?'<b>Твой ответ отправится маме с отчётом.</b><br>Ты написал: '+esc(my)+'<br><br><b>Разбор:</b> '+esc(mp.a):'Напиши ответ и объясни, как думал. Мама проверит и засчитает +10 ₽.';
+    return;}
+  var p=PUZ[pzIdx];
   document.getElementById('pz-title').textContent=p[0];document.getElementById('pz-q').textContent=p[1];document.getElementById('pz-h').textContent=p[3];
   document.getElementById('pz-st').innerHTML=ok?'<b>✅ Решено! +10 ₽.</b> Ответ: '+esc(p[2][0])+'. Новая задача — завтра.':'';
-  document.getElementById('pz-form').hidden=ok;
 }
+document.getElementById('pz-msend').addEventListener('click',function(){
+  var v=document.getElementById('pz-mtext').value.replace(/[|\r\n]+/g,' ').trim().slice(0,300);if(!v){document.getElementById('pz-mtext').focus();return;}
+  pzAns[todayIso]=v;set('sm-pzans',JSON.stringify(pzAns));
+  done[todayIso]=done[todayIso]||{};done[todayIso].puzzle=10;saveDay(todayIso);renderPuzzle();renderToday();renderStats();
+});
 document.getElementById('pz-form').addEventListener('submit',function(e){
   e.preventDefault();var p=PUZ[pzIdx],a=norm(document.getElementById('pz-a').value);if(!a)return;
   if(p[2].some(function(x){return norm(x)===a;})){done[todayIso]=done[todayIso]||{};done[todayIso].puzzle=10;saveDay(todayIso);renderPuzzle();renderToday();renderStats();}
@@ -1209,7 +1227,8 @@ function reportText(){
   L.push('Эта неделя: '+w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+' = '+w.total+' ₽ (тренировок '+w.work+')');
   L.push('Всего: '+t.xp+' XP, уровень «'+LEVELS[level(t.xp)][1]+'», серия '+streak()+' дн.');
   var BL=brainLines();
-  BL.forEach(function(l){var p=l.split('|');L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
+  Object.keys(pzAns).sort().slice(-7).forEach(function(d){if(d>=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))){L.push('🧩 Ответ на задачку '+fmtDate(d)+': '+pzAns[d]);BL.push('Z|'+d+'|'+pzAns[d]);}});
+  BL.forEach(function(l){var p=l.split('|');if(p[0]==='Z')return;L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
   return L.join('\n')+'\n\n'+D.concat(BL).join('\n');
 }
 if(!(window.claude&&window.claude.use)){
