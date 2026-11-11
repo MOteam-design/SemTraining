@@ -37,7 +37,12 @@
       // книга от мамы на срок: к сроку — вся награда, позже — половина
       if (t === 'book' && a.bid) { S.assigned[a.bid] = { t: a.title || '', a: a.author || '', pg: +a.pg || 0, from: a.from, due: a.due, rw: +a.rw || 0 }; return; }
       if (t === 'unbook') { delete S.assigned[a.bid]; return; }
-      if (t === 'ok' || t === 'no') { if (a.d) dec[a.d] = { s: t, ids: a.ids || CL[a.d] || {} }; }
+      // решения по делам дня копятся по-пунктно: ok — засчитать эти пункты, no — не засчитывать эти пункты
+      if (t === 'ok' || t === 'no') {
+        if (!a.d) return;
+        var x = dec[a.d] || (dec[a.d] = { ok: {}, no: {} }), ids = a.ids || CL[a.d] || {};
+        Object.keys(ids).forEach(function (k) { if (t === 'ok') { x.ok[k] = +ids[k] || 0; delete x.no[k]; } else { x.no[k] = 1; delete x.ok[k]; } });
+      }
       else if (t === 'paid') { if (a.mon) S.paid[a.mon] = { sum: +a.sum || 0, at: (a.at || '').slice(0, 10) }; }
       else if (t === 'fine') { S.fines = S.fines.filter(function (f) { return f.id !== a.fid; }); S.fines.push({ id: a.fid, d: a.d, a: +a.a || 0, r: a.r || '' }); }
       else if (t === 'unfine') { S.fines = S.fines.filter(function (f) { return f.id !== a.fid; }); }
@@ -52,12 +57,19 @@
     // проект «не принят», а Семён снова нажал «выступил» позже — снова на проверку
     Object.keys(S.projects).forEach(function (k) { var p = S.projects[k], c = (claims.projs || {})[k]; p.cur = (c && c.tries) || 1; if (p.status === 'no' && c && c.ready && p.cur > p.tries) p.status = 'new'; });
     var days = {}; Object.keys(CL).forEach(function (d) { days[d] = 1; }); Object.keys(dec).forEach(function (d) { days[d] = 1; });
+    S.items = {};
     Object.keys(days).forEach(function (d) {
-      var cl = CL[d] || {}, x = dec[d];
-      if (x) {
-        if (x.s === 'ok') S.confirmed[d] = copy(x.ids);
-        S.status[d] = norm(cl) === norm(x.ids) || !Object.keys(cl).length ? x.s : 'new';
-      } else if (Object.keys(cl).length) S.status[d] = 'new';
+      var cl = CL[d] || {}, x = dec[d] || { ok: {}, no: {} }, it = {}, conf = {}, has = Object.keys(cl).length;
+      Object.keys(cl).forEach(function (k) {
+        it[k] = (k in x.ok && x.ok[k] === (+cl[k] || 0)) ? 'ok' : (k in x.no ? 'no' : 'new');
+        if (it[k] === 'ok') conf[k] = x.ok[k];
+      });
+      if (!has) Object.keys(x.ok).forEach(function (k) { it[k] = 'ok'; conf[k] = x.ok[k]; });   // отметки стёрты, а подтверждённое остаётся
+      var v = Object.keys(it).map(function (k) { return it[k]; });
+      if (!v.length) return;
+      S.items[d] = it;
+      if (Object.keys(conf).length) S.confirmed[d] = conf;
+      S.status[d] = v.indexOf('new') >= 0 ? 'new' : v.indexOf('ok') >= 0 ? 'ok' : 'no';
     });
     Object.keys(S.books).forEach(function (k) { var b = S.books[k]; if (b.status === 'ok') (S.confirmed[b.d] = S.confirmed[b.d] || {})['book-' + k] = b.reward; });
     Object.keys(S.projects).forEach(function (k) { var p = S.projects[k]; if (p.status === 'ok') (S.confirmed[p.d] = S.confirmed[p.d] || {})['proj-' + k] = p.reward; });
@@ -100,7 +112,32 @@
     var body = { message: msg || ('update ' + path), content: b64e(JSON.stringify(data, null, 1)) }; if (sha) body.sha = sha;
     return gh(repo, path, key, 'PUT', body).then(function (r) { if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; } return r.json(); });
   }
+  // план дня (для списка «что он должен сделать» у мамы) — те же ключи и баллы, что в plan() на странице Семёна
+  var QUESTS = [['q-drink', 'Без сладких напитков'], ['q-dessert', 'Сладкое только после еды'], ['q-prot', 'Белковый завтрак'], ['q-fiber', '3 порции фруктов/овощей'], ['q-late', 'Не ел после ужина']];
+  var CHORES = { 'h-room': 'Убрался в комнате', 'h-dish': 'Помыл посуду', 'h-cook': 'Приготовил еду', 'h-wash': 'Постирал своё', 'h-closet': 'Сложил вещи в шкафу',
+    'h-shelf': 'Пыль на полке', 'h-door': 'Пыль на двери', 'h-pillow': 'Взбил подушки', 'h-plinth': 'Протёр плинтуса', 'h-trash': 'Вынес мусор' };
+  function dayPlan(dow) {
+    var wk = dow >= 1 && dow <= 5, G = [];
+    function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
+    g('Утро', [wk && { k: 'wake', t: 'Встал сам и позавтракал', xp: 20 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
+    var sport = [];
+    if (dow === 1) sport.push({ k: 'str-a', t: 'Сила А: верх тела', xp: 40 }, { k: 'bike', t: 'Велотренажёр 15 мин', xp: 20 });
+    if (dow === 2) sport.push({ k: 'bike', t: 'Велотренажёр 30 мин', xp: 30 });
+    if (dow === 3) sport.push({ k: 'str-b', t: 'Сила Б: пресс и ягодицы', xp: 40 });
+    if (dow === 4) sport.push({ k: 'bike', t: 'Велотренажёр, интервалы', xp: 35 });
+    if (dow === 5) sport.push({ k: 'str-c', t: 'Сила В: круговая', xp: 40 });
+    if (dow === 6) sport.push({ k: 'bike', t: 'Велотренажёр 40 мин', xp: 40 });
+    if (dow === 0) sport.push({ k: 'long', t: 'Прогулка 60 мин', xp: 30 });
+    sport.push({ k: 'stretch', t: 'Растяжка', xp: 10 });
+    if (wk) sport.push({ k: 'out', t: 'Из школы пешком, улица', xp: 5 });
+    sport.push({ k: 'eve', t: 'Прогулка 30 мин после ужина', xp: 15 });
+    g('Спорт и движение', sport);
+    g('Голова и гитара', [{ k: 'guitar', t: 'Гитара 20 мин', xp: 30 }, { k: 'read', t: 'Чтение 20 мин', xp: 20 }, { k: 'puzzle', t: 'Задача дня', xp: 10 }]);
+    g('Еда', [wk && { k: 'meal', t: 'Обед после школы', xp: 5 }].concat(QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; })));
+    g('Вечер', [{ k: 'sleep', t: 'Отбой вовремя', xp: 5 }]);
+    return G;
+  }
   // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
   function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
-  window.SEM = { C: C, ENOT: ENOT, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
+  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
 })();
