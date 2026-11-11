@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -40,7 +40,7 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,t
 .xpchip b{font:400 18px/1 var(--display);color:var(--accent)}
 .xpchip small{font-size:11px;color:var(--muted)}
 .tabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
-.tabs a{text-align:center;text-decoration:none;color:var(--muted);font-weight:700;font-size:13px;padding:7px 2px;border-radius:10px;min-width:0}
+.tabs a{text-align:center;text-decoration:none;color:var(--muted);font-weight:700;font-size:12px;padding:7px 1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:10px;min-width:0}
 .tabs a[aria-current="page"]{background:var(--ink);color:var(--surface)}
 
 .view{display:grid;gap:14px;padding-top:6px}
@@ -183,6 +183,7 @@ td.best{color:var(--go);font-weight:800}
     <nav class="tabs" aria-label="Разделы">
       <a href="#today" data-tab="today">Сегодня</a>
       <a href="#progress" data-tab="progress">Прогресс</a>
+      <a href="#brain" data-tab="brain">Голова</a>
       <a href="#food" data-tab="food">Еда</a>
       <a href="#rules" data-tab="rules">Нельзя</a>
       
@@ -234,6 +235,7 @@ td.best{color:var(--go);font-weight:800}
     <div class="panel" id="earn">
       <span class="eyebrow">1 балл = 1 ₽</span>
       <h2>Заработано на этой неделе</h2>
+      <p class="small muted">Потолок недели — 1500 ₽ за всё ежедневное: спорт, гитару, чтение, еду, дела. Книги и доклады — сверху.</p>
       <div class="bank-sum"><b id="e-week">0 ₽</b><span id="e-of">цель недели — 1000 ₽</span></div>
       <div class="progress"><i id="e-bar"></i></div>
       <p class="small muted" id="e-hint"></p>
@@ -302,6 +304,62 @@ td.best{color:var(--go);font-weight:800}
       <h2>Лестница уровней</h2>
       <div class="ladder" id="ladder"></div>
       <p class="small muted">Силовая — 40 XP, велотренажёр — 20–40, прогулка — 15–30, обед вовремя — 10, стопы — 10, растяжка — 15, каждый квест по еде — 10, отбой вовремя — 10.</p>
+    </div>
+  </section>
+
+  <!-- ===================== BRAIN ===================== -->
+  <section class="view" id="v-brain" hidden>
+    <div class="panel" id="pz">
+      <span class="eyebrow">Задача дня · +10 ₽</span>
+      <h2 id="pz-title">Задача</h2>
+      <p id="pz-q"></p>
+      <form class="hadd" id="pz-form"><input id="pz-a" type="text" inputmode="text" maxlength="30" placeholder="Ответ" autocomplete="off"><button class="btn" type="submit">Проверить</button></form>
+      <p class="small" id="pz-st"></p>
+      <details class="bank-set"><summary>Подсказка</summary><p class="small" id="pz-h"></p></details>
+    </div>
+
+    <div class="panel" id="bk">
+      <span class="eyebrow">300 страниц = 500 ₽</span>
+      <h2>Книги</h2>
+      <p class="small">За каждую дочитанную книгу — деньги сразу, по страницам: 300 страниц = 500 ₽, 150 страниц = 250 ₽. Плюс каждый день «Чтение 20 минут» в плане. Дочитал — нажми «Дочитал!» и расскажи маме за 3 минуты, о чём книга и что зацепило. После этого мама подтвердит.</p>
+      <form class="grid" id="bk-form">
+        <label class="wide" for="bk-title">Что читаю<input id="bk-title" type="text" maxlength="60" placeholder="название и автор" required></label>
+        <label for="bk-pages">Страниц<input id="bk-pages" type="number" inputmode="numeric" min="20" max="2000" required></label>
+        <button class="btn" type="submit">Начал читать</button>
+      </form>
+      <div class="tblwrap"><table id="bk-table"><thead><tr><th>Книга</th><th>Стр.</th><th>₽</th><th></th></tr></thead><tbody></tbody></table></div>
+      <details class="bank-set"><summary>Что почитать — на выбор</summary>
+        <ul class="small">
+          <li><b>«Дневник слабака»</b>, Джефф Кинни — смешно, с картинками, читается за пару вечеров</li>
+          <li><b>«Перси Джексон и похититель молний»</b>, Рик Риордан — греческие боги в наше время</li>
+          <li><b>«Бегущий в лабиринте»</b>, Джеймс Дэшнер — как сериал, не оторваться</li>
+          <li><b>«Игра Эндера»</b>, Орсон Скотт Кард — мальчик-геймер спасает Землю</li>
+          <li><b>«Артемис Фаул»</b>, Йон Колфер — 12-летний гений против волшебного мира</li>
+          <li><b>«Гарри Поттер»</b>, Джоан Роулинг — если ещё не читал</li>
+          <li><b>«Хоббит»</b>, Толкин — приключение с драконом</li>
+          <li><b>«Остров сокровищ»</b>, Стивенсон — пираты и клад</li>
+          <li><b>«Шерлок Холмс»</b>, Конан Дойл — рассказы, каждый на один вечер</li>
+          <li><b>«Чудо»</b>, Р. Дж. Паласио — про мальчика, который не такой, как все</li>
+        </ul>
+        <p class="small muted">Аудиокнига тоже считается, если потом пересказал. Комиксы и манга — за полцены.</p>
+      </details>
+    </div>
+
+    <div class="panel" id="pj">
+      <span class="eyebrow">Доклад 5–7 минут · +400 ₽</span>
+      <h2>Проект</h2>
+      <p class="small">Мама предлагает 3 темы — ты выбираешь одну. Готовишь доклад на 5–7 минут: можно со слайдами, картинками или видео. Выступаешь перед семьёй — мама принимает и начисляет 400 ₽.</p>
+      <div id="pj-box"></div>
+      <details class="bank-set"><summary>Как сделать доклад за неделю</summary>
+        <ol class="small">
+          <li>День 1: найди 3–5 интересных фактов (видео на YouTube, статьи, спроси ИИ — но проверь).</li>
+          <li>День 2: придумай начало, которое цепляет: вопрос, неожиданный факт или история.</li>
+          <li>День 3: план из 3 частей — что это, почему интересно, что из этого следует.</li>
+          <li>День 4: 5–7 слайдов: на слайде картинка и 3–5 слов, остальное говоришь сам.</li>
+          <li>День 5: прогон вслух с таймером. 5–7 минут — идеально.</li>
+          <li>Выступление: в конце спроси «Есть вопросы?» — это по-взрослому.</li>
+        </ol>
+      </details>
     </div>
   </section>
 
@@ -687,9 +745,10 @@ function plan(dow){
   var wk=dow>=1&&dow<=5,it=[];
   // School: wake 7:30, lessons 8:30–15:00 (Thu till 16:00). Training 2 h after the after-school meal (reflux).
   var end=dow===4?960:900,T=dow===4?1110:1050;
+  if(wk)it.push({m:450,key:'wake',kind:'rest',title:'Встал сам и позавтракал',sub:'без маминого «вставай»',dur:'до 8:05',xp:20,lead:'Будильник в 7:30 — и сразу встать, не «ещё 5 минут». Позавтракать дома: голодным в школе тянет на булки и сладкое. Что помогает: телефон-будильник положить вечером на другой конец комнаты; сразу включить свет и умыться холодной водой; одежду и рюкзак собрать с вечера; лечь в 22:15 — тогда в 7:30 встаётся легко. Быстрый завтрак за 5 минут: омлет в микроволновке, творог с ягодами и мёдом, бутерброд с курицей и сыром, сырники, которые мама сделала с вечера, или шейк из молока с творогом.'});
   it.push({m:wk?455:570,key:'feet',kind:'feet',title:'Стопы',sub:'против плоскостопия',dur:'4 мин',xp:10,ex:['shortfoot','towel','calfraise'],lead:wk?'Сразу после подъёма, босиком, пока не надел носки. До выхода в школу хватит времени.':'Босиком, утром.'});
-  if(wk)it.push({m:end,key:'out',kind:'walk',title:'Из школы пешком и улица',dur:'всего за день до 2 часов',xp:20,lead:'Дорога из школы пешком, гулять с друзьями до тренировки. Дневной свет тормозит рост близорукости. Цель — 8–10 тысяч шагов.'});
-  if(wk)it.push({m:end+30,key:'meal',kind:'rest',title:'Обед после школы',dur:'тарелка, а не перекусы',xp:10,lead:'Нормальная еда с белком — суп, мясо или курица с гарниром. После неё до тренировки ничего не ешь: через 2 часа тренироваться можно без изжоги.'});
+  if(wk)it.push({m:end,key:'out',kind:'walk',title:'Из школы пешком и улица',dur:'всего за день до 2 часов',xp:5,lead:'Дорога из школы пешком, гулять с друзьями до тренировки. Дневной свет тормозит рост близорукости. Цель — 8–10 тысяч шагов.'});
+  if(wk)it.push({m:end+30,key:'meal',kind:'rest',title:'Обед после школы',dur:'тарелка, а не перекусы',xp:5,lead:'Нормальная еда с белком — суп, мясо или курица с гарниром. После неё до тренировки ничего не ешь: через 2 часа тренироваться можно без изжоги.'});
   var w=null,c=null;
   if(dow===1)w={m:T,key:'str-a',title:'Сила А · грудь, спина, плечи, руки',sub:'гантели 3 и 1 кг',dur:'35 мин',xp:40,ex:SA,note:DOSE};
   if(dow===3)w={m:T,key:'str-b',title:'Сила Б · пресс, ягодицы, бёдра',sub:'колено не нагружается',dur:'35 мин',xp:40,ex:SB,note:DOSE};
@@ -700,12 +759,13 @@ function plan(dow){
   if(dow===4)c={m:T,key:'bike',title:'Велотренажёр · интервалы',sub:'8 ускорений',dur:'25 мин',xp:35,ex:['bike','shadow'],note:BIKENOTE,lead:'5 минут разминка. Потом 8 раз: 30 секунд быстро (частота 100+, сопротивление не прибавлять) и 90 секунд спокойно. 4 минуты заминка. В конце — 3 раунда боя с тенью.'};
   if(dow===6)c={m:720,key:'bike',title:'Велотренажёр · длинная',sub:'или большая прогулка',dur:'40 мин',xp:40,ex:['bike'],note:BIKENOTE,lead:'Ровный темп 40 минут. Хорошая погода — замени прогулкой 60–90 минут.'};
   if(c){c.pre=!w;it.push(c);}
-  if(w||c){var base=Math.max(w?w.m+40:0,c?c.m+(dow===1?20:dow===6?45:35):0);it.push({m:base,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:15,ex:STR_});}
+  if(w||c){var base=Math.max(w?w.m+40:0,c?c.m+(dow===1?20:dow===6?45:35):0);it.push({m:base,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
   if(dow===0){it.push({m:720,key:'long',kind:'walk',title:'Прогулка',dur:'60 мин',xp:30,lead:'День отдыха от тренировок, но не от движения.'});
-    it.push({m:1140,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:15,ex:STR_});}
-  it.push({m:(dow===4||dow===1)?1200:1170,key:'eve',kind:'walk',title:'Прогулка после ужина',sub:'на улице, не по квартире',dur:'30 мин',xp:30,lead:'30 минут на улице сразу после еды: ходьба снижает сахар и инсулин, а дневной и вечерний свет полезен глазам. Можно с другом, с музыкой, в магазин — главное ногами и на улице.'});
+    it.push({m:1140,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
+  it.push({m:(dow===4||dow===1)?1200:1170,key:'eve',kind:'walk',title:'Прогулка после ужина',sub:'на улице, не по квартире',dur:'30 мин',xp:15,lead:'30 минут на улице сразу после еды: ходьба снижает сахар и инсулин, а дневной и вечерний свет полезен глазам. Можно с другом, с музыкой, в магазин — главное ногами и на улице.'});
   it.push({m:wk?1230:660,key:'guitar',kind:'rest',title:'Гитара',sub:'каждый день',dur:'20 мин',xp:30,lead:'20 минут без телефона рядом: 5 минут разогреть пальцы и повторить аккорды, 10 минут разбирать новое, 5 минут играть то, что уже получается. Сидеть ровно, гитару на левое бедро или с ремнём — спина скажет спасибо.'});
-  it.push({m:wk?1335:1380,key:'sleep',kind:'rest',title:'Отбой',dur:'сон 9 часов',xp:10,lead:'Подъём в 7:30, значит лечь в 22:15–22:30. Телефон на зарядку вне комнаты за 30 минут до сна. Мышцы растут во сне, а недосып тянет к сладкому.'});
+  it.push({m:wk?1260:900,key:'read',kind:'rest',title:'Чтение 20 минут',sub:'бумажная, электронная или аудио',dur:'20 мин',xp:20,lead:'Любая книга, которая сейчас на вкладке «Голова». 20 минут — это примерно 15–20 страниц: книга в 300 страниц выходит за 3 недели, а за неё ещё +500 ₽. Не идёт книга — смени, это не экзамен.'});
+  it.push({m:wk?1335:1380,key:'sleep',kind:'rest',title:'Отбой',dur:'сон 9 часов',xp:5,lead:'Подъём в 7:30, значит лечь в 22:15–22:30. Телефон на зарядку вне комнаты за 30 минут до сна. Мышцы растут во сне, а недосып тянет к сладкому.'});
   it.sort(function(a,b){return a.m-b.m;});
   return it;
 }
@@ -720,7 +780,7 @@ var QUESTS=[
 var CHORES=[['h-room','Убрался в комнате: стол, пол, кровать',10],['h-dish','Помыл посуду',10],['h-cook','Приготовил вкусняшку или ужин',10],['h-wash','Сам постирал свои носки и трусы',10],
  ['h-closet','Аккуратно сложил вещи в шкафу',5],['h-shelf','Протёр пыль на своей полке',5],['h-door','Протёр пыль на двери',5],['h-pillow','Взбил подушки на диване',5],['h-plinth','Протёр плинтуса',5],['h-trash','Вынес мусор',5]];
 var DAYCHORE={1:'h-closet',2:'h-dish',3:'h-shelf',4:'h-trash',5:'h-plinth',6:'h-room',0:'h-cook'};
-var CHORE_CAP=20,CHORE_OWN=5;
+var CHORE_CAP=15,CHORE_OWN=5;
 function isChore(k){return k.indexOf('h-')===0||k.indexOf('hx')===0;}
 var LEVELS=[[0,'Новичок'],[500,'Юниор'],[1500,'Игрок дубля'],[3000,'Игрок основы'],[5000,'Капитан'],[8000,'Легенда']];
 var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
@@ -772,9 +832,9 @@ function renderToday(){
   var d=dateOf(sel),key=iso(d),day=done[key]||{};
   document.getElementById('dayname').textContent=DN[sel]+(sel===todayDow?', сегодня':'');
   var items=plan(sel),html='',n=0,total=items.length+QUESTS.length;
-  var q='<header><h2>Квесты по еде</h2><span>по 10 XP</span></header>';
+  var q='<header><h2>Квесты по еде</h2><span>по 5 XP</span></header>';
   QUESTS.forEach(function(x){var on=!!day[x[0]];if(on)n++;
-    q+='<label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="10"'+(on?' checked':'')+'><span>'+esc(x[1])+'</span><span class="xp">+10</span></label>';});
+    q+='<label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="5"'+(on?' checked':'')+'><span>'+esc(x[1])+'</span><span class="xp">+5</span></label>';});
   document.getElementById('quests').innerHTML=q;
   var used=0;Object.keys(day).forEach(function(k){if(isChore(k))used+=+day[k]||0;});
   var dc=DAYCHORE[sel],list=CHORES.slice().sort(function(a,b){return (b[0]===dc)-(a[0]===dc);});
@@ -945,7 +1005,7 @@ document.getElementById('d-table').addEventListener('click',function(e){
 function dmsg(t){var s=document.getElementById('d-status');if(s)s.textContent=t;}
 
 // ---------- earnings: 1 XP = 1 rub, weekly bonus for 6+ workouts ----------
-var WEEK_BONUS=150,WEEK_GOAL=1000,IS_MOM=!!(window.claude&&window.claude.use);
+var WEEK_BONUS=100,WEEK_MAX=1500,WEEK_GOAL=1000,IS_MOM=!!(window.claude&&window.claude.use);
 var pay={};try{pay=JSON.parse(get('sm-pay','{}'))||{};}catch(e){pay={};}
 // fines: mom adds them on her page (db `fines`) and sends to the bot; the bot script publishes fines.json next to the GitHub page
 var fines={};try{fines=JSON.parse(get('sm-fines','{}'))||{};}catch(e){fines={};}
@@ -953,14 +1013,26 @@ function weekSum(mon){var xp=0,work=0,a=iso(mon),e=new Date(mon.getFullYear(),mo
   for(var i=0;i<7;i++){var d=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i),ids=done[iso(d)]||{};
     Object.keys(ids).forEach(function(k){xp+=+ids[k]||0;if(WORK[k])work++;});}
   Object.keys(fines).forEach(function(k){var f=fines[k];if(f&&f.d>=a&&f.d<=b2){fn+=+f.a||0;fl.push(f);}});
-  var b=work>=6?WEEK_BONUS:0;return {xp:xp,work:work,bonus:b,fine:fn,fl:fl,total:Math.max(0,xp+b-fn)};}
+  // book and project rewards exist only once mom confirmed them
+  var ex=0;
+  if(momStatus&&momStatus.confirmed)for(var j=0;j<7;j++){var c=momStatus.confirmed[iso(new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+j))]||{};
+    Object.keys(c).forEach(function(k){if(isExtra(k))ex+=+c[k]||0;});}
+  // everyday points + bonus never exceed WEEK_MAX; books and projects come on top
+  var b=work>=6?WEEK_BONUS:0;return {xp:xp+ex,work:work,bonus:b,fine:fn,fl:fl,total:Math.max(0,Math.min(WEEK_MAX,xp+b)+ex-fn)};}
+function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0;}
 function renderEarn(){
   var w=weekSum(monday);
-  document.getElementById('e-fines').innerHTML=w.fl.length?'<div class="stop"><b>Штрафы на этой неделе: −'+rub(w.fine)+'</b><ul>'+w.fl.sort(function(x,y){return x.d<y.d?-1:1;}).map(function(f){return '<li>'+fmtDate(f.d)+' — '+esc(f.r)+': −'+rub(+f.a)+'</li>';}).join('')+'</ul></div>':'';
+  var ms='';
+  if(momStatus&&momStatus.confirmed){var cx=0,cex=0,wt=0,pend=[],no=[];
+    for(var i=0;i<7;i++){var dd=iso(new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i)),c=momStatus.confirmed[dd]||{},st=(momStatus.status||{})[dd];
+      Object.keys(c).forEach(function(k){if(isExtra(k))cex+=+c[k]||0;else cx+=+c[k]||0;if(WORK[k])wt++;});if(st==='new')pend.push(dd);if(st==='no')no.push(dd);}
+    var ct=Math.max(0,Math.min(WEEK_MAX,cx+(wt>=6?WEEK_BONUS:0))+cex-w.fine),pd=(momStatus.paid||{})[iso(monday)];
+    ms='<p class="small"><b>✅ Мама подтвердила: '+rub(ct)+'</b>'+(pend.length?' · ждут проверки дней: '+pend.length:'')+(no.length?' · не засчитано: '+no.map(fmtDate).join(', '):'')+(pd?' · 💸 выплачено '+rub(pd.sum):'')+'</p>';}
+  document.getElementById('e-fines').innerHTML=ms+(w.fl.length?'<div class="stop"><b>Штрафы на этой неделе: −'+rub(w.fine)+'</b><ul>'+w.fl.sort(function(x,y){return x.d<y.d?-1:1;}).map(function(f){return '<li>'+fmtDate(f.d)+' — '+esc(f.r)+': −'+rub(+f.a)+'</li>';}).join('')+'</ul></div>':'');
   document.getElementById('e-week').textContent=rub(w.total);
   document.getElementById('e-of').textContent=w.total>=WEEK_GOAL?'цель недели 1000 ₽ — есть!':'до 1000 ₽ — ещё '+rub(WEEK_GOAL-w.total);
   document.getElementById('e-bar').style.width=Math.min(100,w.total/WEEK_GOAL*100)+'%';
-  document.getElementById('e-hint').textContent='Каждый балл — рубль. Тренировок за неделю: '+w.work+' из 7. Сделаешь 6 — бонус +'+WEEK_BONUS+' ₽. '+(IS_MOM?'':'Деньги засчитываются по отчёту: вечером нажимай «Отправить маме». ')+'Выплата по воскресеньям.';
+  document.getElementById('e-hint').textContent='Каждый балл — рубль, максимум '+WEEK_MAX+' ₽ в неделю (книги и доклады — сверху). Тренировок за неделю: '+w.work+' из 7. Сделаешь 6 — бонус +'+WEEK_BONUS+' ₽. '+(IS_MOM?'':'Деньги засчитываются по отчёту: вечером нажимай «Отправить маме». ')+'Выплата по воскресеньям.';
   var weeks=[];for(var i=0;i<8;i++){var m=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()-7*i),s=weekSum(m);if(s.xp||s.fine||i===0)weeks.push([m,s]);}
   [].forEach.call(document.querySelectorAll('.e-paid'),function(th){th.hidden=!IS_MOM;});
   document.querySelector('#e-table tbody').innerHTML=weeks.map(function(x){var m=x[0],s=x[1],k=iso(m),e=new Date(m.getFullYear(),m.getMonth(),m.getDate()+6);
@@ -978,11 +1050,12 @@ document.getElementById('e-table').addEventListener('click',function(e){
   renderEarn();
 });
 
-var renderFines=null;
+var renderFines=null,momStatus=null;
 function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEarn();if(renderFines)renderFines();}
 if(!IS_MOM&&window.fetch){
-  fetch('fines.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(arr){
-    if(!Array.isArray(arr))return;var m={};arr.forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});setFines(m);}).catch(function(){});
+  fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
+    momStatus=j;setFines(m);renderBooks();renderProj();}).catch(function(){});
 }
 var fineForm=document.getElementById('f-form');
 if(fineForm){
@@ -1013,8 +1086,116 @@ if(fineForm){
   renderFines();
 }
 
+// ---------- brain: puzzle of the day, books, projects ----------
+var PUZ=[
+ ['Отец и сын','Отцу и сыну вместе 36 лет. Отец старше сына на 30 лет. Сколько лет сыну?',['3'],'Если сыну x, то отцу x+30. Сложи и приравняй к 36.'],
+ ['Улитка','Улитка ползёт вверх по столбу высотой 10 м: за день поднимается на 3 м, за ночь сползает на 2 м. На какой день она доползёт до верха?',['8'],'Последним днём она поднимется на 3 м и уже не сползёт.'],
+ ['Пробка','Бутылка с пробкой стоят 110 ₽. Бутылка дороже пробки на 100 ₽. Сколько стоит пробка?',['5'],'Не 10! Проверь: пробка + (пробка + 100) = 110.'],
+ ['Станки','5 станков делают 5 деталей за 5 минут. За сколько минут 100 станков сделают 100 деталей?',['5'],'Один станок делает одну деталь за 5 минут.'],
+ ['Кувшинки','Кувшинки на озере каждый день удваиваются. Всё озеро покрылось за 48 дней. За сколько дней покрылась половина?',['47'],'Подумай про день перед последним.'],
+ ['Ряд','Продолжи ряд: 2, 6, 12, 20, 30, …',['42'],'Посмотри на разницу между соседними числами.'],
+ ['Фибоначчи','Продолжи: 1, 1, 2, 3, 5, 8, 13, …',['21'],'Каждое число — сумма двух предыдущих.'],
+ ['Пополам','Раздели 30 на половину и прибавь 10. Сколько получится?',['70'],'«Разделить на половину» — это не «разделить пополам».'],
+ ['Турнир','В турнире 6 команд, каждая играет с каждой по одному разу. Сколько всего матчей?',['15'],'Каждая сыграет 5 матчей, но каждый матч считается для двух команд.'],
+ ['Бревно','Сколько распилов нужно, чтобы распилить бревно на 10 частей?',['9'],'Начни с 2 частей: сколько распилов?'],
+ ['Тоннель','Поезд длиной 1 км едет со скоростью 1 км в минуту через тоннель длиной 1 км. Сколько минут пройдёт от въезда головы до выезда хвоста?',['2'],'Хвост должен проехать и сам тоннель, и длину поезда.'],
+ ['Забег','В забеге ты обогнал того, кто бежал вторым. Каким ты стал? (напиши цифрой)',['2'],'Ты занял его место.'],
+ ['Куры','3 курицы за 3 дня несут 3 яйца. Сколько яиц снесут 12 куриц за 12 дней?',['48'],'Одна курица — одно яйцо за 3 дня.'],
+ ['Братья','Трём братьям вместе 30 лет, каждый следующий старше предыдущего на 2 года. Сколько лет младшему?',['8'],'x + (x+2) + (x+4) = 30.'],
+ ['Вата и железо','Что тяжелее: килограмм ваты или килограмм железа? (одно слово)',['одинаково','равно','поровну','ничего','никто'],'Прочитай вопрос ещё раз медленно.'],
+ ['Степени','Продолжи: 3, 9, 27, 81, …',['243'],'Каждый раз умножаем на одно и то же.'],
+ ['Месяцы','Сколько месяцев в году, в которых есть 28 дней?',['12'],'Не только февраль…'],
+ ['Лестница','С 1-го на 2-й этаж — 20 ступенек. Сколько ступенек с 1-го на 5-й этаж?',['80'],'Сколько пролётов между 1 и 5 этажом?'],
+ ['Мяч и бита','Мяч и бита стоят 1100 ₽. Бита дороже мяча на 1000 ₽. Сколько стоит мяч?',['50'],'Это та же задача, что про пробку.'],
+ ['Шахматы','Сколько чёрных клеток на шахматной доске 8×8?',['32'],'Всего клеток 64.'],
+ ['Кубик','Кубик 3×3×3 покрасили снаружи и распилили на 27 маленьких кубиков. Сколько кубиков совсем без краски?',['1'],'Он спрятан в самой середине.'],
+ ['Кубик-2','Тот же кубик 3×3×3. Сколько маленьких кубиков окрашены с трёх сторон?',['8'],'Это углы большого куба.'],
+ ['Гаусс','Чему равна сумма всех чисел от 1 до 100?',['5050'],'1+100, 2+99, 3+98… сколько таких пар?'],
+ ['Квадраты','Сколько всего квадратов (любого размера) в квадрате 4×4 клетки?',['30'],'Посчитай квадраты 1×1, 2×2, 3×3 и 4×4 отдельно.'],
+ ['Часы','Часы отстают на 2 минуты каждый час. На сколько минут они отстанут за сутки?',['48'],'В сутках 24 часа.'],
+ ['Кубы','Какое число пропущено: 8, 27, 64, …, 216?',['125'],'2×2×2, 3×3×3…'],
+ ['Воскресенья','Какое наибольшее число воскресений может быть в одном месяце?',['5'],'В месяце до 31 дня — это 4 недели и ещё 3 дня.'],
+ ['Велосипед','Велосипедист едет 20 км/ч. Сколько км он проедет за 30 минут?',['10'],'30 минут — половина часа.'],
+ ['Арбуз','Арбуз весом 10 кг на 99% состоит из воды. Он подсох, и воды стало 98%. Сколько теперь весит арбуз? (кг)',['5'],'«Сухой» части было 100 г, и она не изменилась. Теперь она — 2%.'],
+ ['Класс','В классе 30 человек: 18 любят футбол, 15 — компьютерные игры, 5 не любят ни то, ни другое. Сколько любят и то, и другое?',['8'],'Сначала узнай, сколько любят хоть что-то.'],
+ ['Коты','3 кота ловят 3 мышей за 3 минуты. Сколько котов нужно, чтобы поймать 100 мышей за 100 минут?',['3'],'Один кот ловит одну мышь за 3 минуты.'],
+ ['Цифры','Двузначное число: сумма цифр 10, а если переставить цифры, число увеличится на 36. Что за число?',['37'],'Перебери пары цифр с суммой 10.'],
+ ['Единицы','Сколько раз цифра 1 встречается в записи всех чисел от 1 до 20?',['12'],'Не забудь, что в 11 их две.'],
+ ['Остатки','Найди наименьшее число, которое при делении на 2, 3, 4, 5 и 6 даёт остаток 1, а на 7 делится без остатка.',['301'],'Число на 1 больше, чем кратное 60.'],
+ ['Нули','Сколько нулей на конце у числа 1×2×3×4×5×6×7×8×9×10?',['2'],'Ноль на конце дают пары 2×5.'],
+ ['Кошки','В комнате 4 угла, в каждом сидит кошка. Напротив каждой кошки сидят 3 кошки. Сколько всего кошек?',['4'],'Не умножай — нарисуй.'],
+ ['Футбол','Команда сыграла 5 матчей, в каждом забила по 3 гола, а всего пропустила 6. Какая у неё разница мячей?',['9','+9'],'Забитые минус пропущенные.'],
+ ['Семья','У Маши братьев столько же, сколько сестёр. А у её брата сестёр вдвое больше, чем братьев. Сколько детей в семье?',['7'],'Маша не считает себя, брат не считает себя.'],
+ ['Секунды','Сколько секунд в одном часе?',['3600'],'60 × 60.'],
+ ['Совпадения','Сколько раз за сутки часовая и минутная стрелки совпадают?',['22'],'Не 24: за 12 часов они совпадают 11 раз.']
+];
+function norm(s){return String(s||'').toLowerCase().replace(/ё/g,'е').replace(/[\s.,!]+/g,'').replace(/(руб|₽|кг|км|минут|мин|лет|года|год|дней|дня|день)$/,'');}
+var pzIdx=Math.floor(new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()/864e5)%PUZ.length;
+function renderPuzzle(){
+  var p=PUZ[pzIdx],ok=!!(done[todayIso]||{}).puzzle;
+  document.getElementById('pz-title').textContent=p[0];document.getElementById('pz-q').textContent=p[1];document.getElementById('pz-h').textContent=p[3];
+  document.getElementById('pz-st').innerHTML=ok?'<b>✅ Решено! +10 ₽.</b> Ответ: '+esc(p[2][0])+'. Новая задача — завтра.':'';
+  document.getElementById('pz-form').hidden=ok;
+}
+document.getElementById('pz-form').addEventListener('submit',function(e){
+  e.preventDefault();var p=PUZ[pzIdx],a=norm(document.getElementById('pz-a').value);if(!a)return;
+  if(p[2].some(function(x){return norm(x)===a;})){done[todayIso]=done[todayIso]||{};done[todayIso].puzzle=10;saveDay(todayIso);renderPuzzle();renderToday();renderStats();}
+  else{document.getElementById('pz-st').textContent='Пока нет. Попробуй ещё раз или открой подсказку.';}
+});
+
+var books={};try{books=JSON.parse(get('sm-books','{}'))||{};}catch(e){books={};}
+var proj=null;try{proj=JSON.parse(get('sm-proj','null'));}catch(e){proj=null;}
+function bookPrice(p){return Math.round((+p||0)*500/300/10)*10;}
+function clean(s){return String(s||'').replace(/[|\n\r,:]/g,' ').trim().slice(0,60);}
+function momItem(kind,id){return momStatus&&momStatus[kind]&&momStatus[kind][id];}
+function renderBooks(){
+  var ks=Object.keys(books).sort(function(a,b){return books[a].s<books[b].s?1:-1;});
+  document.querySelector('#bk-table tbody').innerHTML=ks.length?ks.map(function(k){var b=books[k],m=momItem('books',k),st;
+    if(m&&m.status==='ok')st='<span class="xp">✅ +'+(m.reward||bookPrice(b.p))+'</span>';
+    else if(m&&m.status==='no')st='<span class="muted small">не засчитано</span>';
+    else if(b.f)st='<span class="muted small">ждёт маму</span>';
+    else st='<button class="btn" type="button" data-bfin="'+k+'">Дочитал!</button>';
+    return '<tr><td style="white-space:normal">'+esc(b.t)+'</td><td>'+b.p+'</td><td>'+bookPrice(b.p)+'</td><td>'+st+'</td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Начни любую книгу из списка ниже или свою.</td></tr>';
+}
+document.getElementById('bk-form').addEventListener('submit',function(e){
+  e.preventDefault();var t=clean(document.getElementById('bk-title').value),p=+document.getElementById('bk-pages').value;if(!t||!p)return;
+  books['b'+Date.now().toString(36)]={t:t,p:p,s:todayIso,f:null};set('sm-books',JSON.stringify(books));e.target.reset();renderBooks();
+});
+document.getElementById('bk-table').addEventListener('click',function(e){
+  var k=e.target.dataset&&e.target.dataset.bfin;if(!k)return;
+  if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно дочитал?';return;}
+  books[k].f=todayIso;set('sm-books',JSON.stringify(books));renderBooks();
+});
+function renderProj(){
+  var box=document.getElementById('pj-box'),T=(momStatus&&momStatus.topics)||null,h='';
+  var m=proj&&momItem('projects',proj.id);
+  if(proj&&m&&m.status==='ok'){h='<p class="small"><b>✅ Доклад «'+esc(proj.topic)+'» принят: +'+(m.reward||400)+' ₽.</b></p>';if(T&&T.id!==proj.offer)h+='<p class="small">Мама предложила новые темы — выбирай следующую:</p>';else{box.innerHTML=h;return;}}
+  else if(proj&&!(m&&m.status==='ok')){
+    var rej=m&&m.status==='no';
+    h='<p class="small">Твоя тема: <b>'+esc(proj.topic)+'</b>'+(rej?' — <b>мама пока не приняла, спроси, что доделать</b>':proj.ready?' — <span class="muted">ждёт, когда мама примет выступление</span>':'')+'</p>';
+    if(rej){proj.ready=null;set('sm-proj',JSON.stringify(proj));}
+    if(!proj.ready)h+='<div class="row"><button class="btn" type="button" id="pj-ready">Я выступил!</button><button class="btn ghost" type="button" id="pj-drop">Сменить тему</button></div>';
+    box.innerHTML=h;return;}
+  if(!T||!T.list||!T.list.length){box.innerHTML=h+'<p class="small muted">Мама скоро предложит 3 темы. Есть своя идея — скажи ей, она добавит.</p>';return;}
+  h+=T.list.map(function(t,i){return '<label class="q"><input type="radio" name="pj-t" value="'+i+'"><span>'+esc(t)+'</span></label>';}).join('')+'<button class="btn" type="button" id="pj-pick">Беру эту тему</button>';
+  box.innerHTML=h;
+}
+document.getElementById('pj-box').addEventListener('click',function(e){
+  var id=e.target.id,T=(momStatus&&momStatus.topics)||{};
+  if(id==='pj-pick'){var r=document.querySelector('input[name="pj-t"]:checked');if(!r)return;proj={id:'p'+Date.now().toString(36),offer:T.id,topic:clean(T.list[+r.value]),picked:todayIso,ready:null};}
+  else if(id==='pj-ready'){proj.ready=todayIso;}
+  else if(id==='pj-drop'){if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно сменить?';return;}proj=null;}
+  else return;
+  set('sm-proj',JSON.stringify(proj));renderProj();
+});
+function brainLines(){var L=[];
+  Object.keys(books).forEach(function(k){var b=books[k];if(b.f&&!momItem('books',k))L.push('B|'+b.f+'|'+k+'|'+b.p+'|'+clean(b.t));});
+  if(proj){var m=momItem('projects',proj.id);if(!m||(proj.ready&&(m.state!=='ready'||m.status==='no')))L.push('P|'+(proj.ready||proj.picked)+'|'+proj.id+'|'+(proj.ready?'ready':'pick')+'|'+clean(proj.topic));}
+  return L;}
+renderPuzzle();renderBooks();renderProj();
+
 // ---------- report to mom via Telegram (only outside the claude.ai viewer, i.e. the GitHub build) ----------
-var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка','eve':'шаги после ужина','guitar':'гитара','sleep':'отбой вовремя',
+var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка','eve':'прогулка 30','wake':'встал сам и позавтракал','guitar':'гитара','read':'чтение','puzzle':'задача дня','sleep':'отбой вовремя',
   'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина'};
 function reportText(){
   var L=['#семён отчёт'],D=[];
@@ -1027,7 +1208,9 @@ function reportText(){
   var t=totals(),w=weekSum(monday);
   L.push('Эта неделя: '+w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+' = '+w.total+' ₽ (тренировок '+w.work+')');
   L.push('Всего: '+t.xp+' XP, уровень «'+LEVELS[level(t.xp)][1]+'», серия '+streak()+' дн.');
-  return L.join('\n')+'\n\n'+D.join('\n');
+  var BL=brainLines();
+  BL.forEach(function(l){var p=l.split('|');L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
+  return L.join('\n')+'\n\n'+D.concat(BL).join('\n');
 }
 if(!(window.claude&&window.claude.use)){
   var sp=document.getElementById('send');sp.hidden=false;
@@ -1047,7 +1230,7 @@ if(!(window.claude&&window.claude.use)){
 }
 
 // ---------- tabs ----------
-var TABS=['today','progress','food','rules','parent'].filter(function(t){return document.getElementById('v-'+t);});
+var TABS=['today','progress','brain','food','rules','parent'].filter(function(t){return document.getElementById('v-'+t);});
 function route(){
   var h=(location.hash||'').slice(1);if(TABS.indexOf(h)<0)h='today';
   TABS.forEach(function(t){document.getElementById('v-'+t).hidden=t!==h;});

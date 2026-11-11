@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1F6FEB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Семён ₽">
+<title>Семён · мама</title>
+<link rel="manifest" href="mama.webmanifest">
+<link rel="icon" type="image/png" href="mama-192.png">
+<link rel="apple-touch-icon" href="mama-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#EDF0F5;--surface:#FFFFFF;--ink:#111A2B;--muted:#586379;--line:#D7DDE6;--accent:#1F6FEB;--go:#178A4C;--warn:#C2410C;--soft:#F4F6FA;--head:'Russo One',Impact,'Arial Black',sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0D121C;--surface:#161D2B;--ink:#E5E9F1;--muted:#98A2B6;--line:#28324A;--accent:#5B9BFF;--go:#37D27A;--warn:#FF8A4C;--soft:#1B2334;color-scheme:dark}}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+.wrap{max-width:640px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+h1{font:400 24px var(--head);margin:0;letter-spacing:.3px}
+h2{font:400 17px var(--head);margin:0 0 8px;letter-spacing:.3px;text-wrap:balance}
+h3{font-size:13px;margin:10px 0 4px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}
+.big{font:400 40px var(--head);line-height:1.1;font-variant-numeric:tabular-nums}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.kpis div{background:var(--soft);border-radius:12px;padding:8px 10px}
+.kpis b{display:block;font:400 20px var(--head);font-variant-numeric:tabular-nums}
+.kpis span{font-size:12px;color:var(--muted)}
+.bar{height:8px;background:var(--soft);border-radius:8px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--go);border-radius:8px}
+.btn{appearance:none;border:0;background:var(--accent);color:#fff;font:700 14px var(--body);border-radius:12px;padding:10px 14px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ok{background:var(--go)}.btn.no{background:transparent;color:var(--warn);border:1px solid var(--warn)}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+.day{border-top:1px solid var(--line);padding:10px 0;display:grid;gap:6px}
+.day:first-child{border-top:0}
+.day-h{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.chip{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.chip.new{background:#FFF1D6;color:#8A5300}.chip.ok{background:#DDF5E7;color:#0F6B3A}.chip.no{background:#FDE3DA;color:#9A3412}.chip.none{background:var(--soft);color:var(--muted)}
+@media (prefers-color-scheme:dark){.chip.new{background:#3A2E12;color:#FFCF73}.chip.ok{background:#12301F;color:#6FE3A0}.chip.no{background:#3A1C12;color:#FF9C73}}
+.items{font-size:13px;color:var(--muted)}
+.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line);white-space:nowrap}th{font-size:12px;color:var(--muted);font-weight:600}
+form.f{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+form.f label{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}.wide{grid-column:1/-1}
+input,select,textarea{font:600 15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
+.note{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:13px}
+.tp{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:3px 0}.tp input{width:auto;margin-top:4px}
+details summary{cursor:pointer;font-weight:700;color:var(--accent)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:14px;max-width:calc(100% - 32px);z-index:5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Семён · мама</h1><span class="small muted" id="upd">загружаю…</span></header>
+
+  <section class="card" id="setup" hidden>
+    <h2>Подтверждать прямо здесь</h2>
+    <p class="small">Один раз вставьте ключ GitHub (файл <b>semtraining-key.txt</b> на компьютере — тот же ключ). Он сохранится только на этом телефоне. После этого кнопки работают сразу здесь, без Telegram.</p>
+    <div class="row"><input id="key" type="password" autocomplete="off" placeholder="github_pat_…" style="flex:1 1 200px"><button class="btn" type="button" id="key-save">Сохранить</button></div>
+    <p class="small muted" id="key-st">Без ключа кнопки открывают Telegram с готовой командой — тоже работает.</p>
+  </section>
+
+  <section class="card">
+    <span class="small muted" id="wk-range">Эта неделя</span>
+    <div class="row" style="justify-content:space-between"><div class="big" id="wk-total">0 ₽</div><div id="wk-pay"></div></div>
+    <div class="small" id="wk-sub"></div>
+    <div class="bar"><i id="wk-bar" style="width:0"></i></div>
+    <div class="kpis">
+      <div><b id="k-work">0/6</b><span>тренировок до бонуса</span></div>
+      <div><b id="k-pend">0</b><span>ждут проверки</span></div>
+      <div><b id="k-fine">0 ₽</b><span>штрафы</span></div>
+    </div>
+  </section>
+
+  <section class="card"><h2>Дни недели</h2><div id="days"></div></section>
+
+  <section class="card"><h2>Книги и доклады</h2><div id="brain"></div></section>
+
+  <section class="card">
+    <h2>Темы для доклада</h2>
+    <p class="small">Отметьте 3 темы (или впишите свои) и нажмите «Предложить». Семён выберет одну у себя на вкладке «Голова». Доклад 5–7 минут = 400 ₽.</p>
+    <div id="offer" class="note small" hidden></div>
+    <div id="topics"></div>
+    <label class="small muted" style="display:grid;gap:4px;margin-top:8px">Свои темы — по одной на строку<textarea id="own" rows="2" placeholder="например: Как устроен наш город"></textarea></label>
+    <div class="row" style="margin-top:8px"><button class="btn" type="button" id="offer-go">Предложить Семёну</button><span class="small muted" id="offer-n">выбрано 0 из 3</span></div>
+  </section>
+
+  <section class="card">
+    <h2>Недели</h2>
+    <div class="tbl"><table><thead><tr><th>Неделя</th><th>Подтв.</th><th>Бонус</th><th>Штрафы</th><th>Итого</th><th>Выплата</th></tr></thead><tbody id="weeks"></tbody></table></div>
+    <p class="small muted" id="lvl"></p>
+  </section>
+
+  <section class="card">
+    <h2>Штраф</h2>
+    <form class="f" id="f-form">
+      <label>За что<select id="f-type"><option data-a="50">Игры дольше лимита</option><option data-a="50">Не сделал уроки</option><option data-a="100">Плохая оценка</option><option data-a="50">Другое</option></select></label>
+      <label>Сколько, ₽<input id="f-amount" type="number" inputmode="numeric" min="10" max="1000" value="50" required></label>
+      <label>Дата<input id="f-date" type="date" required></label>
+      <label>Пояснение<input id="f-note" type="text" maxlength="80" placeholder="7 часов без перерыва"></label>
+      <button class="btn wide" type="submit">Выписать штраф</button>
+    </form>
+    <div class="tbl" style="margin-top:10px"><table><thead><tr><th>Дата</th><th>За что</th><th>₽</th><th></th></tr></thead><tbody id="fines"></tbody></table></div>
+  </section>
+
+  <p class="note">Семён узнаёт о решении от бота в течение 15 минут. Отчёты приходят и в Telegram с кнопками ✅ / ❌ — подтверждать можно и там. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
+</div>
+<div id="toast" hidden></div>
+<script>
+(function(){
+var REPO='MOteam-design/SemTraining';
+var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1},BONUS=100,MAX=1500,GOAL=1000;
+function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0;}
+var NAMES={'wake':'⏰ встал сам и позавтракал','feet':'стопы','out':'улица','meal':'обед','str-a':'сила А','str-b':'сила Б','str-c':'сила В','bike':'вело','stretch':'растяжка','long':'прогулка 60','eve':'прогулка 30','guitar':'гитара','read':'чтение','puzzle':'🧩 задача дня','sleep':'отбой',
+ 'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина',
+ 'h-room':'🏠 комната','h-dish':'🏠 посуда','h-cook':'🏠 готовил','h-wash':'🏠 стирка','h-closet':'🏠 шкаф','h-shelf':'🏠 полка','h-door':'🏠 дверь','h-pillow':'🏠 подушки','h-plinth':'🏠 плинтуса','h-trash':'🏠 мусор'};
+var LEVELS=[[0,'Новичок'],[500,'Юниор'],[1500,'Игрок дубля'],[3000,'Игрок основы'],[5000,'Капитан'],[8000,'Легенда']];
+var TOPICS={
+ 'Футбол и спорт':['Как работает VAR и почему из-за него спорят','Тактика: что такое 4-3-3 и прессинг','Сколько стоит футболист и как устроены трансферы','Как Месси и Роналду стали звёздами: путь и привычки','Болезнь Шляттера: почему болят колени у растущих спортсменов','Как делают футбольный мяч и бутсы','История чемпионатов мира в 5 фактах'],
+ 'Игры и технологии':['Как делают компьютерные игры — от идеи до релиза','История Minecraft','Как работает нейросеть — простыми словами','Киберспорт: спорт или нет?','Почему игры затягивают: что такое дофамин','Как устроен интернет','Как работает видеокарта'],
+ 'Космос и наука':['Чёрные дыры','Как люди полетят на Марс','Как живут космонавты на МКС','Почему небо голубое, а закат красный','Как работает ракета','Есть ли жизнь на других планетах','Почему вымерли динозавры','Вулканы: как они устроены'],
+ 'История и мир':['Как появились Олимпийские игры','Как строили пирамиды','Кто такие викинги','Как появились деньги','5 изобретений, которые изменили мир','Самые высокие здания мира'],
+ 'Тело и жизнь':['Как растут мышцы','Зачем подросткам 9 часов сна','Что сахар делает с телом','Почему бывает близорукость и как её остановить','Как устроен мозг подростка'],
+ 'Деньги и будущее':['Как работает банк и откуда берутся проценты','Как блогеры зарабатывают на самом деле','Профессии будущего','Как делают кроссовки и почему они столько стоят']};
+var DS=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+var S={claimed:{},confirmed:{},status:{},paid:{},fines:[],books:{},projects:{},topics:null,applied:[]};
+var KEY='';try{KEY=localStorage.getItem('sm-gh-key')||'';}catch(e){}
+var PEND=[];try{PEND=JSON.parse(localStorage.getItem('sm-mom-pend')||'[]');}catch(e){PEND=[];}
+function savePend(){try{localStorage.setItem('sm-mom-pend',JSON.stringify(PEND));}catch(e){}}
+function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function dt(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+function dm(s){var d=dt(s);return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2);}
+function rub(n){return Math.round(n).toLocaleString('ru-RU')+' ₽';}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+function sum(ids){var s=0;for(var k in ids)s+=+ids[k]||0;return s;}
+function toast(t){var el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true;},3500);}
+var now=new Date(),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));
+
+// ---- actions: written to mom.json in the repo (with key) or sent as a Telegram command (without) ----
+function cmd(a){return {ok:'#ок '+a.d,no:'#нет '+a.d,paid:'#выплатила '+a.mon+' '+a.sum,fine:'#штраф '+a.fid+' '+a.d+' '+a.a+' '+a.r,unfine:'#штраф отмена '+a.fid,
+  bok:'#книга ок '+a.ref,bno:'#книга нет '+a.ref,pok:'#доклад ок '+a.ref,pno:'#доклад нет '+a.ref,topics:'#темы '+(a.list||[]).join('; ')}[a.t];}
+function b64e(s){return btoa(unescape(encodeURIComponent(s)));}
+function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
+function gh(method,path,body){return fetch('https://api.github.com/repos/'+REPO+'/contents/'+path,{method:method,cache:'no-store',headers:{'Authorization':'Bearer '+KEY,'Accept':'application/vnd.github+json'},body:body?JSON.stringify(body):undefined});}
+function ghAppend(a,retry){
+  return gh('GET','mom.json?t='+Date.now()).then(function(r){
+    if(r.status===404)return {sha:null,data:{actions:[]}};if(!r.ok)throw new Error('GitHub '+r.status);
+    return r.json().then(function(j){return {sha:j.sha,data:JSON.parse(b64d(j.content))};});
+  }).then(function(cur){
+    var acts=(cur.data.actions||[]).concat([a]).slice(-300);
+    var body={message:'mom: '+a.t,content:b64e(JSON.stringify({actions:acts},null,1))};if(cur.sha)body.sha=cur.sha;
+    return gh('PUT','mom.json',body).then(function(r){if(r.status===409&&!retry)return ghAppend(a,true);if(!r.ok)throw new Error('GitHub '+r.status);});
+  });
+}
+function act(a){
+  a.id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);a.at=new Date().toISOString();
+  if(!KEY){location.href='https://t.me/HelpKattyBot?text='+encodeURIComponent(cmd(a));return;}
+  PEND.push(a);savePend();render();
+  ghAppend(a).then(function(){toast('Сохранено ✓ Семён узнает в течение 15 минут');},function(e){
+    PEND=PEND.filter(function(x){return x.id!==a.id;});savePend();render();toast('Не сохранилось ('+e.message+'). Проверьте ключ и связь.');});
+}
+// apply my not-yet-processed actions on top of status.json, so the screen changes immediately
+function view(){
+  var V=JSON.parse(JSON.stringify(S)),done={};(S.applied||[]).forEach(function(i){done[i]=1;});
+  PEND=PEND.filter(function(a){return !done[a.id]&&(Date.now()-Date.parse(a.at))<3*864e5;});savePend();
+  PEND.forEach(function(a){
+    if(a.t==='ok'){V.confirmed[a.d]=V.claimed[a.d]||{};V.status[a.d]='ok';}
+    if(a.t==='no'){delete V.confirmed[a.d];V.status[a.d]='no';}
+    if(a.t==='paid')V.paid[a.mon]={sum:a.sum};
+    if(a.t==='fine')V.fines.push({id:a.fid,d:a.d,a:a.a,r:a.r});
+    if(a.t==='unfine')V.fines=V.fines.filter(function(f){return f.id!==a.fid;});
+    if((a.t==='bok'||a.t==='bno')&&V.books[a.ref])V.books[a.ref].status=a.t==='bok'?'ok':'no';
+    if((a.t==='pok'||a.t==='pno')&&V.projects[a.ref])V.projects[a.ref].status=a.t==='pok'?'ok':'no';
+    if(a.t==='topics')V.topics={id:a.id,list:a.list};
+  });
+  return V;
+}
+function week(V,m){var days=[],xp=0,ex=0,work=0,fine=0,pend=0,claimed=0;
+  for(var i=0;i<7;i++){var d=iso(new Date(m.getFullYear(),m.getMonth(),m.getDate()+i));days.push(d);
+    var c=V.confirmed[d]||{};for(var k in c){if(isExtra(k))ex+=+c[k]||0;else xp+=+c[k]||0;if(WORK[k])work++;}
+    if(V.status[d]==='new'){pend++;claimed+=sum(V.claimed[d]);}}
+  (V.fines||[]).forEach(function(f){if(f.d>=days[0]&&f.d<=days[6])fine+=+f.a||0;});
+  // everyday points + bonus are capped at MAX; books and projects on top
+  var b=work>=6?BONUS:0;return {mon:days[0],days:days,xp:xp+ex,work:work,bonus:b,fine:fine,pend:pend,claimed:claimed,capped:xp+b>MAX,total:Math.max(0,Math.min(MAX,xp+b)+ex-fine)};}
+function render(){
+  var V=view(),w=week(V,mon),e=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+6);
+  document.getElementById('setup').hidden=!!KEY;
+  document.getElementById('wk-range').textContent='Эта неделя · '+dm(w.mon)+'–'+dm(iso(e))+' · подтверждено к выплате';
+  document.getElementById('wk-total').textContent=rub(w.total);
+  document.getElementById('wk-sub').innerHTML=w.xp+' баллов'+(w.bonus?' + бонус '+w.bonus:'')+(w.fine?' − штрафы '+w.fine:'')+(w.capped?' · упёрся в потолок 1500':'')+(w.pend?' · <b>ещё ждут проверки: '+rub(w.claimed)+'</b>':'');
+  document.getElementById('wk-bar').style.width=Math.min(100,w.total/GOAL*100)+'%';
+  document.getElementById('k-work').textContent=Math.min(w.work,6)+'/6';
+  var bp=Object.keys(V.books||{}).filter(function(k){return V.books[k].status==='new';}).length+Object.keys(V.projects||{}).filter(function(k){return V.projects[k].status==='new'&&V.projects[k].state==='ready';}).length;
+  document.getElementById('k-pend').textContent=w.pend+bp;
+  document.getElementById('k-fine').textContent=w.fine?'−'+rub(w.fine):'0 ₽';
+  var p=V.paid[w.mon];
+  document.getElementById('wk-pay').innerHTML=p?'<span class="chip ok">выплачено '+rub(p.sum)+'</span>':'<button class="btn ghost" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Выплатила</button>';
+  var h='';
+  w.days.slice().reverse().forEach(function(d){
+    if(dt(d)>now)return;
+    var st=V.status[d]||'none',ids=st==='ok'?V.confirmed[d]:(V.claimed[d]||{}),ks=Object.keys(ids||{});
+    var chip={new:'<span class="chip new">ждёт проверки</span>',ok:'<span class="chip ok">подтверждено</span>',no:'<span class="chip no">не засчитано</span>',none:'<span class="chip none">нет отчёта</span>'}[st];
+    h+='<div class="day"><div class="day-h"><b>'+DS[dt(d).getDay()]+' '+dm(d)+' · '+rub(sum(ids))+'</b>'+chip+'</div>';
+    if(ks.length)h+='<div class="items">'+ks.map(function(k){return esc(NAMES[k]||(k.indexOf('hx')===0?'🏠 своё дело':k.indexOf('book-')===0?'📖 книга':k.indexOf('proj-')===0?'🎤 доклад':k));}).join(', ')+'</div>';
+    if(st==='new')h+='<div class="row"><button class="btn ok" type="button" data-a="ok" data-d="'+d+'">✅ Подтвердить</button><button class="btn no" type="button" data-a="no" data-d="'+d+'">❌ Не засчитывать</button></div>';
+    if(st==='no')h+='<div class="row"><button class="btn ok" type="button" data-a="ok" data-d="'+d+'">✅ Всё-таки подтвердить</button></div>';
+    h+='</div>';});
+  document.getElementById('days').innerHTML=h||'<p class="muted small">На этой неделе отчётов пока нет.</p>';
+  // books & projects
+  var bh='',bk=Object.keys(V.books||{}).sort(function(a,b){return V.books[a].d<V.books[b].d?1:-1;});
+  bk.forEach(function(k){var b=V.books[k];
+    bh+='<div class="day"><div class="day-h"><b>📖 '+esc(b.title)+'</b><span class="chip '+(b.status||'new')+'">'+({new:'дочитал — проверьте',ok:'+'+b.reward+' ₽',no:'не засчитано'}[b.status||'new'])+'</span></div><div class="items">'+b.pages+' стр. · '+dm(b.d)+' · к начислению '+rub(b.reward)+'</div>';
+    if(b.status==='new')bh+='<div class="small muted">Попросите рассказать за 3 минуты: о чём книга, кто главный герой, что запомнилось.</div><div class="row"><button class="btn ok" type="button" data-a="bok" data-ref="'+k+'">✅ Засчитать '+rub(b.reward)+'</button><button class="btn no" type="button" data-a="bno" data-ref="'+k+'">❌</button></div>';
+    bh+='</div>';});
+  Object.keys(V.projects||{}).forEach(function(k){var pj=V.projects[k];
+    var lab=pj.status==='ok'?'принят +'+pj.reward+' ₽':pj.status==='no'?'не принят':pj.state==='ready'?'выступил — примите':'готовит';
+    bh+='<div class="day"><div class="day-h"><b>🎤 '+esc(pj.topic)+'</b><span class="chip '+(pj.status==='ok'?'ok':pj.status==='no'?'no':pj.state==='ready'?'new':'none')+'">'+lab+'</span></div>';
+    if(pj.state==='ready'&&pj.status==='new')bh+='<div class="row"><button class="btn ok" type="button" data-a="pok" data-ref="'+k+'">✅ Принять доклад +400 ₽</button><button class="btn no" type="button" data-a="pno" data-ref="'+k+'">❌</button></div>';
+    bh+='</div>';});
+  document.getElementById('brain').innerHTML=bh||'<p class="small muted">Пока ни одной дочитанной книги и ни одного доклада.</p>';
+  var of=document.getElementById('offer');
+  if(V.topics&&V.topics.list){of.hidden=false;var chosen=Object.keys(V.projects||{}).map(function(k){return V.projects[k];}).filter(function(x){return x.status!=='ok';})[0];
+    of.innerHTML='<b>Сейчас предложено:</b> '+V.topics.list.map(esc).join(' · ')+(chosen?'<br><b>Семён выбрал:</b> '+esc(chosen.topic):'<br>Семён ещё не выбрал.');}
+  else of.hidden=true;
+  // weeks
+  var rows='',all=0;
+  for(var i=0;i<10;i++){var m=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-7*i),x=week(V,m);if(!x.xp&&!x.fine&&!x.pend&&i)continue;
+    var pp=V.paid[x.mon];
+    rows+='<tr><td>'+dm(x.mon)+'</td><td>'+x.xp+'</td><td>'+(x.bonus?'+'+x.bonus:'—')+'</td><td>'+(x.fine?'−'+x.fine:'—')+'</td><td><b>'+rub(x.total)+'</b></td><td>'+(pp?'✓ '+rub(pp.sum):(i?'<button class="btn ghost" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">отметить</button>':'—'))+'</td></tr>';}
+  document.getElementById('weeks').innerHTML=rows;
+  for(var d in V.confirmed)all+=sum(V.confirmed[d]);
+  var li=0;LEVELS.forEach(function(l,j){if(all>=l[0])li=j;});
+  document.getElementById('lvl').textContent='Всего подтверждено: '+all+' XP · уровень «'+LEVELS[li][1]+'»'+(LEVELS[li+1]?' · до «'+LEVELS[li+1][1]+'» '+(LEVELS[li+1][0]-all)+' XP':'');
+  var fl=(V.fines||[]).slice().sort(function(a,b){return a.d<b.d?1:-1;});
+  document.getElementById('fines').innerHTML=fl.length?fl.map(function(f){return '<tr><td>'+dm(f.d)+'</td><td style="white-space:normal">'+esc(f.r)+'</td><td>−'+(+f.a)+'</td><td><button class="btn ghost" type="button" data-a="unfine" data-fid="'+f.id+'">отменить</button></td></tr>';}).join(''):'<tr><td colspan="4" class="muted">Штрафов нет.</td></tr>';
+}
+// topic bank
+var th='';Object.keys(TOPICS).forEach(function(g){th+='<h3>'+esc(g)+'</h3>'+TOPICS[g].map(function(t){return '<label class="tp"><input type="checkbox" value="'+esc(t)+'"><span>'+esc(t)+'</span></label>';}).join('');});
+document.getElementById('topics').innerHTML='<details><summary>Выбрать из списка ('+Object.keys(TOPICS).reduce(function(n,g){return n+TOPICS[g].length;},0)+' тем)</summary>'+th+'</details>';
+function picked(){var l=[].map.call(document.querySelectorAll('#topics input:checked'),function(i){return i.value;});
+  document.getElementById('own').value.split('\n').forEach(function(s){s=s.replace(/[;|\n]/g,' ').trim();if(s)l.push(s.slice(0,80));});return l;}
+function cnt(){document.getElementById('offer-n').textContent='выбрано '+picked().length+' из 3';}
+document.getElementById('topics').addEventListener('change',cnt);document.getElementById('own').addEventListener('input',cnt);
+document.getElementById('offer-go').addEventListener('click',function(){var l=picked();if(l.length<2){toast('Отметьте 2–3 темы');return;}if(l.length>3){toast('Не больше 3 тем — так проще выбрать');return;}
+  act({t:'topics',list:l});[].forEach.call(document.querySelectorAll('#topics input:checked'),function(i){i.checked=false;});document.getElementById('own').value='';cnt();});
+// buttons
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('button[data-a]');if(!b)return;var t=b.dataset.a,a={t:t};
+  if(t==='ok'||t==='no')a.d=b.dataset.d;
+  if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
+  if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
+  if(/^(bok|bno|pok|pno)$/.test(t))a.ref=b.dataset.ref;
+  act(a);
+});
+document.getElementById('f-date').value=iso(now);
+document.getElementById('f-type').addEventListener('change',function(e){document.getElementById('f-amount').value=e.target.selectedOptions[0].dataset.a;});
+document.getElementById('f-form').addEventListener('submit',function(e){
+  e.preventDefault();var d=document.getElementById('f-date').value,a=+document.getElementById('f-amount').value,t=document.getElementById('f-type').value,n=document.getElementById('f-note').value.trim();
+  if(!d||!a)return;act({t:'fine',fid:'f'+Date.now().toString(36),d:d,a:a,r:(t+(n?': '+n:'')).replace(/[|\n]/g,' ')});document.getElementById('f-note').value='';
+});
+// key
+document.getElementById('key-save').addEventListener('click',function(){
+  var k=document.getElementById('key').value.trim();if(!k)return;var st=document.getElementById('key-st');st.textContent='Проверяю…';
+  fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+k}}).then(function(r){return r.json();}).then(function(j){
+    if(j&&j.permissions&&j.permissions.push){KEY=k;try{localStorage.setItem('sm-gh-key',k);}catch(e){}document.getElementById('key').value='';render();toast('Ключ сохранён на этом телефоне ✓');}
+    else st.textContent='Ключ не подходит: нужен доступ к SemTraining с правом Contents: Read and write.';
+  }).catch(function(){st.textContent='Не удалось проверить ключ — нет связи?';});
+});
+document.getElementById('key-reset').addEventListener('click',function(e){e.preventDefault();if(KEY){if(this.dataset.sure!=='1'){this.dataset.sure='1';this.textContent='Удалить ключ с телефона? Нажмите ещё раз';return;}KEY='';try{localStorage.removeItem('sm-gh-key');}catch(x){}}render();document.getElementById('setup').scrollIntoView();});
+function load(){
+  fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(j){
+    S=j;['claimed','confirmed','status','paid','books','projects'].forEach(function(k){S[k]=S[k]||{};});S.fines=S.fines||[];S.applied=S.applied||[];
+    var u=j.updated?new Date(j.updated):null;document.getElementById('upd').textContent=u?'обновлено '+u.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+    render();
+  }).catch(function(){document.getElementById('upd').textContent='данных пока нет';render();});
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)load();});
+load();
+})();
+</script>
+</body>
+</html>
