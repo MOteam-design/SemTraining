@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261111b"></script><script src="state.js?v=20261111b"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261111c"></script><script src="state.js?v=20261111c"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -110,6 +110,7 @@ details[open] .chev{transform:rotate(180deg)}
 .panel ul,.panel ol{margin:0;padding-left:20px;display:grid;gap:5px}
 .muted{color:var(--muted)}
 .row{display:flex;flex-wrap:wrap;gap:8px}
+.subrow{display:grid;gap:4px;margin:2px 0 8px}.subrow select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .as-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
 #send{margin-top:16px}
 .small{font-size:13px}
@@ -809,7 +810,7 @@ var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
 // ---------- state ----------
 function get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}}
 function set(k,v){try{localStorage.setItem(k,v);}catch(e){}if(CLAIM_KEYS[k]&&typeof onClaimsChanged==='function')onClaimsChanged();}
-var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1,'sm-enot':1};
+var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1,'sm-enot':1,'sm-subs':1};
 var done={};try{done=JSON.parse(get('sm-done','{}'))||{};}catch(e){done={};}
 var hnames={};try{hnames=JSON.parse(get('sm-hnames','{}'))||{};}catch(e){hnames={};}
 var store=null;
@@ -875,8 +876,10 @@ function renderToday(){
     html+='<div class="item"><div class="time">'+hm(it.m)+'</div>';
     html+='<details class="card'+(on?' done':'')+'" data-kind="'+kind+'">';
     html+='<summary><input class="check" type="checkbox" aria-label="Сделано: '+esc(it.title)+'" data-id="'+it.key+'" data-xp="'+it.xp+'"'+(on?' checked':'')+'>';
-    html+='<span class="sum-main"><b>'+esc(it.title)+momMark(key,it.key)+'</b><span>'+tag+esc(it.dur||'')+(it.sub?' · '+esc(it.sub):'')+'</span></span><span class="xpb">+'+it.xp+'</span>'+CHEV+'</summary>';
+    var sb=(subs[key]||{})[it.key];
+    html+='<span class="sum-main"><b>'+esc(it.title)+momMark(key,it.key)+'</b><span>'+(sb?'<span class="tag">🔄 вместо: '+esc(sb)+'</span>':tag+esc(it.dur||'')+(it.sub?' · '+esc(it.sub):''))+'</span></span><span class="xpb">+'+it.xp+'</span>'+CHEV+'</summary>';
     html+='<div class="body">';
+    if(SUBBABLE[it.key])html+='<label class="small subrow">🔄 Сделал другое вместо этого<select class="subsel" data-sk="'+it.key+'" data-xp="'+it.xp+'"><option value="">— нет, делал по плану —</option>'+SUBS.map(function(s){return '<option'+(s===sb?' selected':'')+'>'+esc(s)+'</option>';}).join('')+(sb&&SUBS.indexOf(sb)<0?'<option selected>'+esc(sb)+'</option>':'')+'</select></label>';
     if(it.lead)html+='<p class="lead">'+esc(it.lead)+'</p>';
     if(it.pre)html+='<p class="note"><b>Еда.</b> Тренировка через 2 часа после обеда или перекуса, иначе будет изжога.</p>';
     if(it.note)html+='<p class="note">'+it.note+'</p>';
@@ -888,6 +891,17 @@ function renderToday(){
   document.getElementById('bar').style.width=(n/total*100)+'%';
   paintStatic(tl);
 }
+// substitutions: «крутил велотренажёр вместо силовой» — the item counts, mom sees what he did instead
+var SUBBABLE={'str-a':1,'str-b':1,'str-c':1,'bike':1,'long':1,'eve':1,'stretch':1};
+var SUBS=['Велотренажёр 30 мин','Другая силовая из плана','Прогулка 60 мин','Бассейн','Растяжка и пресс 20 мин','Физкультура в школе (без бега и прыжков)'];
+var subs={};try{subs=JSON.parse(get('sm-subs','{}'))||{};}catch(e){subs={};}
+document.getElementById('tl').addEventListener('change',function(e){
+  var s=e.target;if(!s.classList||!s.classList.contains('subsel'))return;
+  var key=iso(dateOf(sel)),k=s.dataset.sk;subs[key]=subs[key]||{};
+  if(s.value){subs[key][k]=s.value;done[key]=done[key]||{};done[key][k]=+s.dataset.xp;saveDay(key);}
+  else{delete subs[key][k];if(!Object.keys(subs[key]).length)delete subs[key];}
+  set('sm-subs',JSON.stringify(subs));renderToday();renderStats();
+});
 // mom's per-item decision (GitHub build): ✅ counted / ❌ not counted
 function momMark(day,k){var s=typeof momStatus!=='undefined'&&momStatus&&momStatus.items&&(momStatus.items[day]||{})[k];
   return s==='ok'?' <span class="tag" style="background:var(--go-soft,#DDF5E7);color:var(--go,#178A4C)">✅ мама засчитала</span>':s==='no'?' <span class="tag" style="background:#FDE3DA;color:#9A3412">❌ мама не засчитала</span>':'';}
@@ -1296,7 +1310,8 @@ function localClaims(){
   Object.keys(done).forEach(function(k){if(k>=from){d[k]=done[k];Object.keys(done[k]).forEach(function(x){if(x.indexOf('hx')===0&&hnames[x])hn[x]=hnames[x];});}});
   var t={};Object.keys(tests).sort().slice(-5).forEach(function(k){t[k]=tests[k];});
   var pa={};Object.keys(pzAns).sort().slice(-14).forEach(function(k){pa[k]=pzAns[k];});
-  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot};
+  var sbs={};Object.keys(subs).forEach(function(k){if(k>=from)sbs[k]=subs[k];});
+  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot,subs:sbs};
 }
 // auto-send: key for the private SemReports repo, entered once on this phone by mom
 var REPKEY='';try{REPKEY=localStorage.getItem('sm-rep-key')||'';}catch(e){}
