@@ -19,6 +19,7 @@
 :root{--bg:#EDF0F5;--surface:#FFFFFF;--ink:#111A2B;--muted:#586379;--line:#D7DDE6;--accent:#1F6FEB;--go:#178A4C;--go-soft:#DDF5E7;--warn:#C2410C;--warn-soft:#FDE3DA;--new:#8A5300;--new-soft:#FFF1D6;--soft:#F4F6FA;--head:'Russo One',Impact,'Arial Black',sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
 @media (prefers-color-scheme:dark){:root{--bg:#0D121C;--surface:#161D2B;--ink:#E5E9F1;--muted:#98A2B6;--line:#28324A;--accent:#5B9BFF;--go:#37D27A;--go-soft:#12301F;--warn:#FF8A4C;--warn-soft:#3A1C12;--new:#FFCF73;--new-soft:#3A2E12;--soft:#1B2334;color-scheme:dark}}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
 .wrap{max-width:640px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px}
@@ -217,8 +218,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js"></script>
-<script src="state.js"></script>
+<script src="puzzles.js?v=20261111b"></script>
+<script src="state.js?v=20261111b"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -292,11 +293,11 @@ function render(){
   $('k-fine').textContent=w.fine?'−'+rub(w.fine):'0 ₽';
   var p=V.paid[w.mon];
   $('wk-pay').innerHTML=p?'<span class="chip ok">выплачено '+rub(p.sum)+'</span>':'<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Выплатила</button>';
-  renderDay(V);renderExtra(V,xp);renderFines(V);renderWeeks(V);renderRead(V);renderEnot(V);renderProj(V);renderPz(V);
+  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderRead,renderEnot,renderProj,renderTopics,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
 }
 // 2. day: full plan with done / not done, per-item decisions
 function renderDay(V){
-  var chips='';for(var i=6;i>=0;i--){var d=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-i));
+  var chips='';for(var i=0;i<=6;i++){var d=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-i));
     chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'">'+(V.status[d]==='new'?'<span class="dot"></span>':'')+DS[dt(d).getDay()]+'<small>'+(d===TODAY?'сегодня':dt(d).getDate())+'</small></button>';}
   $('day-chips').innerHTML=chips;
   var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow),planKeys={},total=0,doneN=0;
@@ -446,8 +447,22 @@ $('a-add').addEventListener('click',function(){
 });
 aReset();
 // topics
-var th='';Object.keys(TOPICS).forEach(function(g){th+='<h3>'+esc(g)+'</h3>'+TOPICS[g].map(function(t){return '<label class="tp"><input type="checkbox" value="'+esc(t)+'"><span>'+esc(t)+'</span></label>';}).join('');});
-$('topics').innerHTML=th;
+// topics: 📌 offered before, 🎤 he picked it, ✅ + strikethrough — report accepted
+function renderTopics(V){
+  var keep={};[].forEach.call(document.querySelectorAll('#topics input:checked'),function(i){keep[i.value]=1;});
+  var offered={},acts=((LIVE&&LIVE.acts)||[]).concat(PEND);
+  acts.forEach(function(a){if(a.t==='topics')(a.list||[]).forEach(function(s){offered[s]=(a.at||'').slice(0,10);});});
+  var byTopic={};Object.keys(V.projects||{}).forEach(function(k){var p=V.projects[k];byTopic[p.topic]=p;});
+  function line(t){var p=byTopic[t],mark='',st='';
+    if(p&&p.status==='ok'){mark=' <span class="chip ok">✅ доклад принят</span>';st=' style="text-decoration:line-through;opacity:.65"';}
+    else if(p)mark=' <span class="chip new">🎤 выбрал'+(p.state==='ready'?', выступил':'')+'</span>';
+    else if(offered[t])mark=' <span class="chip none">📌 предлагалась'+(offered[t]?' '+dm(offered[t]):'')+'</span>';
+    return '<label class="tp"><input type="checkbox" value="'+esc(t)+'"'+(keep[t]?' checked':'')+(p&&p.status==='ok'?' disabled':'')+'><span'+st+'>'+esc(t)+mark+'</span></label>';}
+  var all={},th='';Object.keys(TOPICS).forEach(function(g){TOPICS[g].forEach(function(t){all[t]=1;});th+='<h3>'+esc(g)+'</h3>'+TOPICS[g].map(line).join('');});
+  var own=Object.keys(offered).concat(Object.keys(byTopic)).filter(function(t,i,a){return !all[t]&&a.indexOf(t)===i;});
+  if(own.length)th='<h3>Ваши темы</h3>'+own.map(line).join('')+th;
+  $('topics').innerHTML=th;cnt();
+}
 function picked(){var l=[].map.call(document.querySelectorAll('#topics input:checked'),function(i){return i.value;});
   $('own').value.split('\n').forEach(function(s){s=s.replace(/[;|\n]/g,' ').trim();if(s)l.push(s.slice(0,80));});return l;}
 function cnt(){$('offer-n').textContent='выбрано '+picked().length+' из 3';}
