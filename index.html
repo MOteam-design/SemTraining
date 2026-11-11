@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js"></script><script src="state.js"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -207,12 +207,16 @@ td.best{color:var(--go);font-weight:800}
     <div class="quests" id="chores"></div>
     <div class="panel" id="send" hidden>
       <span class="eyebrow">Отчёт маме</span>
-      <h2>Отправить отметки в Telegram</h2>
-      <p>Раз в день вечером нажми кнопку. Откроется чат с ботом @HelpKattyBot, там уже будет готовый текст — просто нажми «Отправить». В отчёт попадут последние 7 дней и рекорды.</p>
+      <div id="as-on" hidden><h2>✓ Мама видит отметки сразу</h2><p class="small muted" id="as-st"></p></div>
+      <div id="as-off"><h2>Автоотправка маме</h2><p class="small">Попроси маму один раз вставить сюда ключ — и отметки будут уходить ей сами, ничего отправлять не нужно.</p>
+        <div class="hadd"><input id="as-key" type="password" autocomplete="off" placeholder="ключ от мамы"><button class="btn" type="button" id="as-save">Сохранить</button></div><p class="small muted" id="as-msg"></p></div>
+      <details class="bank-set" id="s-manual"><summary>Запасной способ: отправить в Telegram</summary>
+      <p>Нажми кнопку. Откроется чат с ботом @HelpKattyBot, там уже будет готовый текст — просто нажми «Отправить». В отчёт попадут последние 7 дней и рекорды.</p>
       <p class="muted" id="s-last"></p>
       <div class="row"><button class="btn" type="button" id="s-go">Отправить маме</button><button class="btn ghost" type="button" id="s-copy">Скопировать текст</button></div>
       <p class="muted" id="s-status"></p>
       <textarea id="s-text" rows="6" readonly hidden style="width:100%;font:inherit;font-size:13px"></textarea>
+      </details>
     </div>
     <div class="foot">
       <p><b>Неделя:</b> 3 силовые (Пн — верх тела, Ср — пресс и ягодицы, Пт — круговая) и 4 раза велотренажёр (Пн, Вт, Чт, Сб). Когда верхняя граница повторов даётся легко — добавь 2 повтора или возьми гантель потяжелее. Если колено ноет сильнее 2 из 10 или утром хуже, чем вчера, следующую тренировку делай легче.</p>
@@ -788,7 +792,8 @@ var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
 
 // ---------- state ----------
 function get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}}
-function set(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function set(k,v){try{localStorage.setItem(k,v);}catch(e){}if(CLAIM_KEYS[k]&&typeof onClaimsChanged==='function')onClaimsChanged();}
+var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1};
 var done={};try{done=JSON.parse(get('sm-done','{}'))||{};}catch(e){done={};}
 var hnames={};try{hnames=JSON.parse(get('sm-hnames','{}'))||{};}catch(e){hnames={};}
 var store=null;
@@ -1053,11 +1058,20 @@ document.getElementById('e-table').addEventListener('click',function(e){
 
 var renderFines=null,momStatus=null;
 function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEarn();if(renderFines)renderFines();}
-if(!IS_MOM&&window.fetch){
-  fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
-    if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
-    momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();}).catch(function(){});
+// mom's decisions: read mom.json straight from GitHub and derive the state with my own marks (works without mom's computer)
+var momActions=null;
+function applyMom(j){
+  if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
+  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();}
+function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
+function loadMom(){
+  if(IS_MOM||!window.fetch)return;
+  if(window.SEM)window.SEM.readJSON('SemTraining','mom.json',null).then(function(r){momActions=(r.data&&r.data.actions)||[];refreshMom();},loadStatusFile);
+  else loadStatusFile();
 }
+function loadStatusFile(){fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(applyMom).catch(function(){});}
+loadMom();
+document.addEventListener('visibilitychange',function(){if(!document.hidden){loadMom();syncNow();}});
 var fineForm=document.getElementById('f-form');
 if(fineForm){
   var fstore=null;
@@ -1191,7 +1205,7 @@ function renderProj(){
   else if(proj&&!(m&&m.status==='ok')){
     var rej=m&&m.status==='no';
     h='<p class="small">Твоя тема: <b>'+esc(proj.topic)+'</b>'+(rej?' — <b>мама пока не приняла, спроси, что доделать</b>':proj.ready?' — <span class="muted">ждёт, когда мама примет выступление</span>':'')+'</p>';
-    if(rej){proj.ready=null;set('sm-proj',JSON.stringify(proj));}
+    if(rej&&proj.ready){proj.ready=null;set('sm-proj',JSON.stringify(proj));saveProjHist();}
     if(!proj.ready)h+='<div class="row"><button class="btn" type="button" id="pj-ready">Я выступил!</button><button class="btn ghost" type="button" id="pj-drop">Сменить тему</button></div>';
     box.innerHTML=h;return;}
   if(!T||!T.list||!T.list.length){box.innerHTML=h+'<p class="small muted">Мама скоро предложит 3 темы. Есть своя идея — скажи ей, она добавит.</p>';return;}
@@ -1200,12 +1214,48 @@ function renderProj(){
 }
 document.getElementById('pj-box').addEventListener('click',function(e){
   var id=e.target.id,T=(momStatus&&momStatus.topics)||{};
-  if(id==='pj-pick'){var r=document.querySelector('input[name="pj-t"]:checked');if(!r)return;proj={id:'p'+Date.now().toString(36),offer:T.id,topic:clean(T.list[+r.value]),picked:todayIso,ready:null};}
-  else if(id==='pj-ready'){proj.ready=todayIso;}
-  else if(id==='pj-drop'){if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно сменить?';return;}proj=null;}
+  if(id==='pj-pick'){var r=document.querySelector('input[name="pj-t"]:checked');if(!r)return;proj={id:'p'+Date.now().toString(36),offer:T.id,topic:clean(T.list[+r.value]),picked:todayIso,ready:null,tries:0};}
+  else if(id==='pj-ready'){proj.ready=todayIso;proj.tries=(+proj.tries||0)+1;}
+  else if(id==='pj-drop'){if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно сменить?';return;}if(projs[proj.id]&&!projs[proj.id].tries)delete projs[proj.id];proj=null;}
   else return;
-  set('sm-proj',JSON.stringify(proj));renderProj();
+  set('sm-proj',JSON.stringify(proj));saveProjHist();renderProj();refreshMom();
 });
+// all projects ever picked (mom needs the history to pay for accepted ones)
+var projs={};try{projs=JSON.parse(get('sm-projs','{}'))||{};}catch(e){projs={};}
+function saveProjHist(){if(proj)projs[proj.id]={topic:proj.topic,picked:proj.picked,ready:proj.ready||null,tries:+proj.tries||0};set('sm-projs',JSON.stringify(projs));}
+if(proj&&!projs[proj.id])saveProjHist();
+// what I marked — this goes to SemReports/claims.json
+function localClaims(){
+  var from=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-35)),d={},hn={};
+  Object.keys(done).forEach(function(k){if(k>=from){d[k]=done[k];Object.keys(done[k]).forEach(function(x){if(x.indexOf('hx')===0&&hnames[x])hn[x]=hnames[x];});}});
+  var t={};Object.keys(tests).sort().slice(-5).forEach(function(k){t[k]=tests[k];});
+  var pa={};Object.keys(pzAns).sort().slice(-14).forEach(function(k){pa[k]=pzAns[k];});
+  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn};
+}
+// auto-send: key for the private SemReports repo, entered once on this phone by mom
+var REPKEY='';try{REPKEY=localStorage.getItem('sm-rep-key')||'';}catch(e){}
+var syncT=null,syncing=false,syncAgain=false;
+function asUI(msg){
+  var on=!!REPKEY&&!IS_MOM;document.getElementById('as-on').hidden=!on;document.getElementById('as-off').hidden=on||IS_MOM;
+  if(msg!=null)document.getElementById(on?'as-st':'as-msg').textContent=msg;
+}
+function onClaimsChanged(){if(!REPKEY||IS_MOM)return;clearTimeout(syncT);syncT=setTimeout(syncNow,3000);if(momActions)setTimeout(refreshMom,0);}
+function syncNow(){
+  if(!REPKEY||IS_MOM||!window.SEM)return;if(syncing){syncAgain=true;return;}syncing=true;
+  var body=localClaims();
+  window.SEM.readJSON('SemReports','claims.json',REPKEY).then(function(r){return window.SEM.writeJSON('SemReports','claims.json',REPKEY,body,r.sha,'claims');})
+  .then(function(){set('sm-synced',new Date().toISOString());asUI('Отправлено маме в '+new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'. Отправлять в Telegram не нужно.');},
+        function(e){asUI(e&&e.status===401||e&&e.status===403||e&&e.status===404?'Ключ не работает — попроси маму дать новый.':'Нет связи — отправлю, когда появится интернет.');})
+  .then(function(){syncing=false;if(syncAgain){syncAgain=false;syncNow();}});
+}
+document.getElementById('as-save').addEventListener('click',function(){
+  var k=document.getElementById('as-key').value.trim();if(!k)return;asUI('Проверяю…');
+  fetch('https://api.github.com/repos/MOteam-design/SemReports',{headers:{'Authorization':'Bearer '+k}}).then(function(r){return r.json();}).then(function(j){
+    if(j&&j.permissions&&j.permissions.push){REPKEY=k;try{localStorage.setItem('sm-rep-key',k);}catch(e){}document.getElementById('as-key').value='';asUI('Готово! Отправляю…');syncNow();}
+    else asUI('Ключ не подходит. Нужен ключ к SemReports.');
+  }).catch(function(){asUI('Нет связи, попробуй ещё раз.');});
+});
+asUI();if(REPKEY&&!IS_MOM)syncNow();
 function brainLines(){var L=[];
   Object.keys(books).forEach(function(k){var b=books[k];if(b.f&&!momItem('books',k))L.push('B|'+b.f+'|'+k+'|'+b.p+'|'+clean(b.t));});
   if(proj){var m=momItem('projects',proj.id);if(!m||(proj.ready&&(m.state!=='ready'||m.status==='no')))L.push('P|'+(proj.ready||proj.picked)+'|'+proj.id+'|'+(proj.ready?'ready':'pick')+'|'+clean(proj.topic));}
