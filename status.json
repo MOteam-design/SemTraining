@@ -47,7 +47,8 @@
   ]
  },
  "puzzles": {
-  "2026-11-11": "space-23"
+  "2026-11-11": "space-23",
+  "2026-11-12": "logic-1"
  },
  "answers": {},
  "tests": {},
@@ -64,7 +65,7 @@
    "h-trash": "new"
   }
  },
- "updated": "2026-11-12T08:02",
+ "updated": "2026-11-12T08:36",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -73,6 +74,7 @@
   "amwc7zeg5ex2",
   "amwc9bz0zb8d",
   "amwcfb2k0bxu",
-  "amwcfb36aqsi"
+  "amwcfb36aqsi",
+  "amwd3xstsfxv"
  ]
 }
