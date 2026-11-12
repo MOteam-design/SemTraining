@@ -21,7 +21,7 @@
   }
  },
  "status": {
-  "2026-11-11": "new"
+  "2026-11-11": "ok"
  },
  "paid": {},
  "fines": [],
@@ -62,10 +62,10 @@
    "meal": "ok",
    "str-b": "ok",
    "dinner": "ok",
-   "h-trash": "new"
+   "h-trash": "no"
   }
  },
- "updated": "2026-11-12T08:36",
+ "updated": "2026-11-12T11:12",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -75,6 +75,7 @@
   "amwc9bz0zb8d",
   "amwcfb2k0bxu",
   "amwcfb36aqsi",
-  "amwd3xstsfxv"
+  "amwd3xstsfxv",
+  "amwd9lgdgfsa"
  ]
 }
