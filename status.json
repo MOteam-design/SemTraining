@@ -5,7 +5,9 @@
    "q-dessert": 5,
    "out": 5,
    "meal": 5,
-   "str-b": 40
+   "str-b": 40,
+   "dinner": 5,
+   "h-trash": 5
   }
  },
  "confirmed": {
@@ -14,11 +16,12 @@
    "q-dessert": 5,
    "out": 5,
    "meal": 5,
-   "str-b": 40
+   "str-b": 40,
+   "dinner": 5
   }
  },
  "status": {
-  "2026-11-11": "ok"
+  "2026-11-11": "new"
  },
  "paid": {},
  "fines": [],
@@ -56,16 +59,20 @@
    "q-dessert": "ok",
    "out": "ok",
    "meal": "ok",
-   "str-b": "ok"
+   "str-b": "ok",
+   "dinner": "ok",
+   "h-trash": "new"
   }
  },
- "updated": "2026-11-11T18:51",
+ "updated": "2026-11-12T08:02",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
   "amwc749zfu8e",
   "amwc74k7t0cy",
   "amwc7zeg5ex2",
-  "amwc9bz0zb8d"
+  "amwc9bz0zb8d",
+  "amwcfb2k0bxu",
+  "amwcfb36aqsi"
  ]
 }
