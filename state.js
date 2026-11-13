@@ -123,18 +123,20 @@
     function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
     g('Утро', [wk && { k: 'wake', t: 'Встал сам по будильнику', xp: 20 }, { k: 'vit', t: 'Витамины D и омега-3', xp: 5 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
     var sport = [];
-    if (dow === 1) sport.push({ k: 'str-a', t: 'Сила А: верх тела', xp: 40 }, { k: 'bike', t: 'Велотренажёр 15 мин', xp: 20 });
-    if (dow === 2) sport.push({ k: 'bike', t: 'Велотренажёр 30 мин', xp: 30 });
+    if (dow >= 1 && dow <= 6) {
+      var isLong = dow === 1 || dow === 2 || dow === 4;
+      sport.push({ k: 'bike', t: isLong ? 'Велотренажёр 30 мин' : 'Велотренажёр 15 мин', xp: isLong ? 30 : 20 });
+    }
+    if (dow === 1) sport.push({ k: 'str-a', t: 'Сила А: верх тела', xp: 40 });
     if (dow === 3) sport.push({ k: 'str-b', t: 'Сила Б: пресс и ягодицы', xp: 40 });
-    if (dow === 4) sport.push({ k: 'bike', t: 'Велотренажёр, интервалы', xp: 35 });
     if (dow === 5) sport.push({ k: 'str-c', t: 'Сила В: круговая', xp: 40 });
-    if (dow === 6) sport.push({ k: 'bike', t: 'Велотренажёр 40 мин', xp: 40 });
     if (dow === 0) sport.push({ k: 'long', t: 'Прогулка 60 мин', xp: 30 });
-    sport.push({ k: 'stretch', t: 'Растяжка', xp: 10 });
+    if (dow === 0 || dow >= 1 && dow <= 5) sport.push({ k: 'stretch', t: 'Растяжка', xp: 10 });
     if (wk) sport.push({ k: 'out', t: 'Из школы пешком, улица', xp: 5 });
     sport.push({ k: 'eve', t: 'Прогулка 30 мин после ужина', xp: 15 });
     g('Спорт и движение', sport);
-    g('Голова и гитара', [{ k: 'guitar', t: 'Гитара 20 мин', xp: 30 }, { k: 'read', t: 'Чтение 20 мин', xp: 20 }, { k: 'puzzle', t: 'Задача дня', xp: 10 }]);
+    g('Гитара (Обязательно)', [{ k: 'guitar', t: 'Гитара 20 мин', xp: 30 }]);
+    g('Голова и книги', [{ k: 'read', t: 'Чтение 20 мин', xp: 20 }, { k: 'puzzle', t: 'Задача дня', xp: 10 }]);
     g('Еда', [{ k: 'bfast', t: 'Завтрак', xp: 5 }, { k: 'meal', t: 'Обед', xp: 5 }, { k: 'dinner', t: 'Ужин', xp: 5 }, { k: 'nosweet', t: 'После ужина без сладкого', xp: 10 }].concat(QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; })));
     g('Вечер', [{ k: 'sleep', t: 'Отбой вовремя', xp: 5 }]);
     return G;

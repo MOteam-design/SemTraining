@@ -16,16 +16,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;600;700;800&display=swap">
 <style>
-:root{--bg:#EDF0F5;--surface:#FFFFFF;--ink:#111A2B;--muted:#586379;--line:#D7DDE6;--accent:#1F6FEB;--go:#178A4C;--go-soft:#DDF5E7;--warn:#C2410C;--warn-soft:#FDE3DA;--new:#8A5300;--new-soft:#FFF1D6;--soft:#F4F6FA;--head:'Russo One',Impact,'Arial Black',sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#0D121C;--surface:#161D2B;--ink:#E5E9F1;--muted:#98A2B6;--line:#28324A;--accent:#5B9BFF;--go:#37D27A;--go-soft:#12301F;--warn:#FF8A4C;--warn-soft:#3A1C12;--new:#FFCF73;--new-soft:#3A2E12;--soft:#1B2334;color-scheme:dark}}
+:root{
+  --blue:#2D4FA8; --blue-soft:#E1E8F8;
+  --display:'Russo One',Impact,'Arial Black',sans-serif;--bg:#EDF0F5;--surface:#FFFFFF;--ink:#111A2B;--muted:#586379;--line:#D7DDE6;--accent:#1F6FEB;--go:#178A4C;--go-soft:#DDF5E7;--warn:#C2410C;--warn-soft:#FDE3DA;--new:#8A5300;--new-soft:#FFF1D6;--soft:#F4F6FA;--head:'Russo One',Impact,'Arial Black',sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{
+  --blue:#2D4FA8; --blue-soft:#E1E8F8;
+  --display:'Russo One',Impact,'Arial Black',sans-serif;--bg:#0D121C;--surface:#161D2B;--ink:#E5E9F1;--muted:#98A2B6;--line:#28324A;--accent:#5B9BFF;--go:#37D27A;--go-soft:#12301F;--warn:#FF8A4C;--warn-soft:#3A1C12;--new:#FFCF73;--new-soft:#3A2E12;--soft:#1B2334;color-scheme:dark}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
 .wrap{max-width:640px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px}
 header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-h1{font:400 24px var(--head);margin:0;letter-spacing:.3px}
-h2{font:400 17px var(--head);margin:0;letter-spacing:.3px;text-wrap:balance}
+h1{font:400 23px var(--display);letter-spacing:.01em;text-transform:uppercase;margin:0;letter-spacing:.3px}
+h2{font:400 18px var(--display);letter-spacing:.01em;text-transform:uppercase;margin:0;letter-spacing:.3px;text-wrap:balance}
 h3{font-size:12px;margin:12px 0 4px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
 .eyebrow{display:block;font-size:11.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
 .sec{font:800 12px var(--body);letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:10px 2px -4px}
@@ -57,7 +61,8 @@ h3{font-size:12px;margin:12px 0 4px;color:var(--muted);text-transform:uppercase;
 .it .m{font-size:16px;text-align:center}
 .it.todo{color:var(--muted)}
 .it .t{min-width:0}
-.it .t .sub{display:inline-block;margin-top:2px;font-size:12.5px;font-weight:700;color:var(--new);background:var(--new-soft);border-radius:8px;padding:1px 7px}
+.it .t .sub{display:inline-block;margin-top:2px;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:1px 7px}
+.it .t .sub-val{display:inline-block;margin-top:2px;font-size:12.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:1px 7px}
 .it .t small{color:var(--muted);font-weight:700;margin-left:4px;white-space:nowrap}
 .it .a{display:flex;gap:6px;align-items:center}
 .ib{appearance:none;width:36px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:16px;cursor:pointer;color:var(--ink)}
@@ -154,7 +159,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <section class="card">
     <h2>Недели и выплаты</h2>
     <div class="tbl"><table><thead><tr><th>Неделя</th><th>Подтв.</th><th>Бонус</th><th>Штрафы</th><th>Итого</th><th>Выплата</th></tr></thead><tbody id="weeks"></tbody></table></div>
-    <p class="small muted" id="lvl"></p>
+    <p class="small muted" id="lvl" style="display:none"></p>
+    <div class="row sp small" style="background:var(--soft);border-radius:12px;padding:8px 12px;font-weight:700"><span>Текущий уровень Семёна:</span><span id="lvl-lbl" style="color:var(--accent)">—</span></div>
   </section>
 
   <div class="sec">Дополнительные задания · сверх лимита</div>
@@ -298,8 +304,23 @@ function render(){
 }
 // 2. day: full plan with done / not done, per-item decisions
 function renderDay(V){
-  var chips='';for(var i=0;i<=6;i++){var d=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-i));
-    chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'">'+(V.status[d]==='new'?'<span class="dot"></span>':'')+DS[dt(d).getDay()]+'<small>'+(d===TODAY?'сегодня':dt(d).getDate())+'</small></button>';}
+  // Очередь чипов дней: начинаем с понедельника до сегодня/воскресенья, сдвигаем по дням недели
+  var dow=now.getDay(), startOffset=0;
+  if(dow===6) startOffset=2;      // Суббота: сдвиг на вторник (индекс 2)
+  else if(dow===0) startOffset=3; // Воскресенье: сдвиг на среду (индекс 3)
+  else startOffset=1;             // Будни: начинаем с понедельника (индекс 1)
+
+  var monDate=new Date(mon), daysList=[];
+  for(var i=0;i<7;i++){
+    var curD=new Date(monDate); curD.setDate(monDate.getDate()+i);
+    var curDow=curD.getDay();
+    if(curDow===0) curDow=7; // Вс = 7 для сравнения
+    if(curDow >= startOffset && curD <= now) daysList.push(iso(curD));
+  }
+  var chips='';
+  daysList.forEach(function(d){
+    chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'">'+(V.status[d]==='new'?'<span class="dot"></span>':'')+DS[dt(d).getDay()]+'<small>'+(d===TODAY?'сегодня':dt(d).getDate())+'</small></button>';
+  });
   $('day-chips').innerHTML=chips;
   var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow),planKeys={},total=0,doneN=0;
   $('day-title').textContent=DAY===TODAY?'Сегодня, '+DN[dow].toLowerCase():DN[dow]+', '+dlong(DAY);
@@ -365,6 +386,7 @@ function renderWeeks(V){
   $('weeks').innerHTML=rows;
   for(var d in V.confirmed)all+=sum(V.confirmed[d]);
   var li=0;LEVELS.forEach(function(l,j){if(all>=l[0])li=j;});
+  $('lvl-lbl').textContent=LEVELS[li][1];
   $('lvl').textContent='Всего подтверждено: '+all+' XP · уровень «'+LEVELS[li][1]+'»'+(LEVELS[li+1]?' · до «'+LEVELS[li+1][1]+'» '+(LEVELS[li+1][0]-all)+' XP':'');
 }
 // 6. reading: assigned now + history
