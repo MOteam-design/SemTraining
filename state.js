@@ -20,7 +20,8 @@
     claims = claims || {};
     var CL = claims.done || {};
     var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, assigned: {}, projects: {}, enot: {}, topics: null,
-              puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, subs: claims.subs || {}, updated: claims.updated || null };
+              puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, subs: claims.subs || {},
+              mood: claims.mood || {}, moodNotes: claims.moodNotes || {}, updated: claims.updated || null };
     var dec = {}, extra = {};
     Object.keys(claims.books || {}).forEach(function (k) {
       var b = claims.books[k];
@@ -118,6 +119,7 @@
   var LEGACY = { 'q-prot': 'Белковый завтрак', 'q-late': 'Не ел после ужина' };
   var CHORES = { 'h-room': 'Убрался в комнате', 'h-dish': 'Помыл посуду', 'h-cook': 'Приготовил еду', 'h-wash': 'Постирал своё', 'h-closet': 'Сложил вещи в шкафу',
     'h-shelf': 'Пыль на полке', 'h-door': 'Пыль на двери', 'h-pillow': 'Взбил подушки', 'h-plinth': 'Протёр плинтуса', 'h-trash': 'Вынес мусор' };
+  var MOODS = [[5, '😎', 'отлично'], [4, '🙂', 'хорошо'], [3, '😐', 'нормально'], [2, '😏', 'тяжело'], [1, '😭', 'плохо']];
   function dayPlan(dow) {
     var wk = dow >= 1 && dow <= 5, G = [];
     function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
@@ -143,5 +145,5 @@
   }
   // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
   function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
-  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
+  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
 })();

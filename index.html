@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261111e"></script><script src="state.js?v=20261111e"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261113a"></script><script src="state.js?v=20261113a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Форма Семёна</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -60,7 +60,12 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,t
 .progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden}
 .progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 
-.quests{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:8px}
+.quests{background:var(--surface);
+.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.moods button{appearance:none;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:6px 0;font:600 11px var(--body);color:var(--muted);display:grid;justify-items:center;gap:2px;cursor:pointer}
+.moods button span{font-size:24px;line-height:1}
+.moods button[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft);color:var(--ink)}
+.calm{background:var(--surface);border:1px solid var(--line);border-radius:16px;border-left:4px solid var(--blue);padding:12px;display:grid;gap:8px}border:1px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:8px}
 .quests header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .quests header span{font-size:12px;color:var(--muted)}
 .q{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
@@ -207,6 +212,37 @@ td.best{color:var(--go);font-weight:800}
     <div class="quests" id="quests"></div>
     <main class="tl" id="tl"></main>
     <div class="quests" id="chores"></div>
+    <div class="quests" id="mood-box">
+      <header><h2>Как прошёл день?</h2><span>любой ответ правильный</span></header>
+      <div class="moods">
+        <button type="button" data-m="5"><span>😎</span>отлично</button>
+        <button type="button" data-m="4"><span>🙂</span>хорошо</button>
+        <button type="button" data-m="3"><span>😐</span>нормально</button>
+        <button type="button" data-m="2"><span>😏</span>тяжело</button>
+        <button type="button" data-m="1"><span>😭</span>плохо</button>
+      </div>
+      <label class="small hadd" style="display:none;margin-top:6px" id="mood-note-label">
+        <input id="mood-note" type="text" maxlength="200" placeholder="Что случилось или пара мыслей о дне...">
+      </label>
+    </div>
+
+    <details class="calm" id="calm" style="margin-top:16px">
+      <summary style="list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:0">
+        <span class="sm"><b>Расстроился? Открой меня</b><span class="tag" style="background:var(--blue-soft);color:var(--blue);margin-left:8px">2 минуты</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:18px;height:18px"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="body" style="padding:10px 0 0;display:grid;gap:10px">
+        <p class="lead" style="font-size:14px;color:var(--muted)">Расстраиваться — нормально. Это значит, что тебе не всё равно. Вот что помогает быстро вернуться в форму:</p>
+        <ol style="margin:0;padding-left:20px;display:grid;gap:5px;font-size:13.5px">
+          <li><b>Дыхание «квадрат»:</b> вдох на 4 счёта, пауза на 4, выдох на 4, пауза на 4. Сделай 4 круга.</li>
+          <li><b>5–4–3:</b> найди глазами 5 предметов, услышь 4 звука, потрогай 3 разные вещи. Мозг переключится.</li>
+          <li><b>Скажи себе как другу:</b> «Сейчас не получилось. Это не про то, какой я плохой, а про то, чему я ещё учусь».</li>
+          <li><b>Подвигайся:</b> 20 прыжков или бой с тенью. Злость и обида выходят через мышцы.</li>
+          <li><b>Расскажи</b> маме или другу, что случилось. Можно написать в поле выше — мама увидит.</li>
+        </ol>
+      </div>
+    </details>
+
     <div class="panel" id="send" hidden>
       <span class="eyebrow">Отчёт маме</span>
       <div id="as-on" hidden><h2>✓ Мама видит отметки сразу</h2><p class="small muted" id="as-st"></p></div>
@@ -778,12 +814,14 @@ function plan(dow){
   if(dow===3)w={m:T,key:'str-b',title:'Сила Б · пресс, ягодицы, бёдра',sub:'колено не нагружается',dur:'35 мин',xp:40,ex:SB,note:DOSE};
   if(dow===5)w={m:T,key:'str-c',title:'Сила В · круговая на всё тело',sub:'40 секунд работы / 20 отдыха',dur:'30 мин',xp:40,ex:SC,note:CIRC};
   if(w){w.pre=true;it.push(w);}
-  if(dow===1)c={m:T+40,key:'bike',title:'Велотренажёр · заминка',sub:'спокойно',dur:'15 мин',xp:20,ex:['bike'],note:BIKENOTE,lead:'Спокойный темп, можно разговаривать.'};
-  if(dow===2)c={m:T,key:'bike',title:'Велотренажёр · ровно',sub:'жиросжигающий темп',dur:'30 мин',xp:30,ex:['bike'],note:BIKENOTE,lead:'5 минут разгон, 20 минут ровно — дыхание чаще, но можно говорить фразами, 5 минут спокойно. Можно под сериал.'};
-  if(dow===4)c={m:T,key:'bike',title:'Велотренажёр · интервалы',sub:'8 ускорений',dur:'25 мин',xp:35,ex:['bike','shadow'],note:BIKENOTE,lead:'5 минут разминка. Потом 8 раз: 30 секунд быстро (частота 100+, сопротивление не прибавлять) и 90 секунд спокойно. 4 минуты заминка. В конце — 3 раунда боя с тенью.'};
-  if(dow===6)c={m:720,key:'bike',title:'Велотренажёр · длинная',sub:'или большая прогулка',dur:'40 мин',xp:40,ex:['bike'],note:BIKENOTE,lead:'Ровный темп 40 минут. Хорошая погода — замени прогулкой 60–90 минут.'};
+  // Велотренажёр: Пн, Вт, Ср, Чт, Пт, Сб — каждый день; Пн, Вт, Чт — по 30 мин ровно; Ср, Пт, Сб — по 15 мин заминка.
+  // Гитара вынесена в обязательный ежедневный блок (guitar) — 30 XP.
+  if(dow>=1&&dow<=6){
+    var isLong=dow===1||dow===2||dow===4;
+    c={m:T,key:'bike',title:'Велотренажёр',sub:isLong?'30 минут ровно':'15 минут спокойно',dur:isLong?'30 мин':'15 мин',xp:isLong?30:20,ex:['bike'],note:BIKENOTE,lead:isLong?'5 минут разгон, 20 минут ровно (дыхание чаще, но можно говорить), 5 минут спокойно. Можно под сериал.':'Спокойный заминочный темп после тренировки или школы.'};
+  }
   if(c){c.pre=!w;it.push(c);}
-  if(w||c){var base=Math.max(w?w.m+40:0,c?c.m+(dow===1?20:dow===6?45:35):0);it.push({m:base,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
+  if(w||(c&&!wk)){var base=Math.max(w?w.m+40:0,c?c.m+(dow>=1&&dow<=5?35:45):0);it.push({m:base,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
   if(dow===0){it.push({m:720,key:'long',kind:'walk',title:'Прогулка',dur:'60 мин',xp:30,lead:'День отдыха от тренировок, но не от движения.'});
     it.push({m:1140,key:'stretch',title:'Растяжка',sub:'лечит колени',dur:'7 мин',xp:10,ex:STR_});}
   it.push({m:dow===4?1160:1140,key:'dinner',kind:'rest',title:'Ужин',sub:'белок + овощи',dur:'тарелка',xp:5,lead:'Мясо, курица, рыба, яйца или творог и овощи/салат. Ужин — последняя еда дня.'});
@@ -812,8 +850,10 @@ var WORK={'str-a':1,'str-b':1,'str-c':1,'bike':1};
 // ---------- state ----------
 function get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}}
 function set(k,v){try{localStorage.setItem(k,v);}catch(e){}if(CLAIM_KEYS[k]&&typeof onClaimsChanged==='function')onClaimsChanged();}
-var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1,'sm-enot':1,'sm-subs':1};
+var CLAIM_KEYS={'sm-done':1,'sm-tests':1,'sm-books':1,'sm-projs':1,'sm-pzans':1,'sm-hnames':1,'sm-enot':1,'sm-subs':1,'sm-mood':1,'sm-moodnotes':1};
 var done={};try{done=JSON.parse(get('sm-done','{}'))||{};}catch(e){done={};}
+var mood={};try{mood=JSON.parse(get('sm-mood','{}'))||{};}catch(e){mood={};}
+var moodNotes={};try{moodNotes=JSON.parse(get('sm-moodnotes','{}'))||{};}catch(e){moodNotes={};}
 var hnames={};try{hnames=JSON.parse(get('sm-hnames','{}'))||{};}catch(e){hnames={};}
 var store=null;
 function saveDay(date){
@@ -890,6 +930,7 @@ function renderToday(){
   });
   var tl=document.getElementById('tl');tl.innerHTML=html;
   document.getElementById('daycount').textContent=d.getDate()+' '+MON[d.getMonth()]+' · сделано '+n+' из '+total;
+  renderLocalMood();
   document.getElementById('bar').style.width=(n/total*100)+'%';
   paintStatic(tl);
 }
@@ -907,6 +948,27 @@ document.getElementById('tl').addEventListener('change',function(e){
 // mom's per-item decision (GitHub build): ✅ counted / ❌ not counted
 function momMark(day,k){var s=typeof momStatus!=='undefined'&&momStatus&&momStatus.items&&(momStatus.items[day]||{})[k];
   return s==='ok'?' <span class="tag" style="background:var(--go-soft,#DDF5E7);color:var(--go,#178A4C)">✅ мама засчитала</span>':s==='no'?' <span class="tag" style="background:#FDE3DA;color:#9A3412">❌ мама не засчитала</span>':'';}
+// render local mood buttons
+function renderLocalMood(){
+  var key=iso(dateOf(sel)),v=mood[key],btnBox=document.getElementById('mood-box');
+  if(!btnBox)return;
+  [].forEach.call(btnBox.querySelectorAll('.moods button'),function(b){
+    b.setAttribute('aria-pressed',String(+b.dataset.m===v));
+  });
+  document.getElementById('mood-note-label').style.display=v?'block':'none';
+  document.getElementById('mood-note').value=moodNotes[key]||'';
+}
+document.getElementById('mood-box').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var key=iso(dateOf(sel)),v=+b.dataset.m;
+  if(mood[key]===v){delete mood[key];delete moodNotes[key];}else{mood[key]=v;}
+  set('sm-mood',JSON.stringify(mood));set('sm-moodnotes',JSON.stringify(moodNotes));renderLocalMood();
+});
+document.getElementById('mood-note').addEventListener('input',function(e){
+  var key=iso(dateOf(sel));moodNotes[key]=e.target.value.replace(/[|\\n\\r:]/g,' ').slice(0,200);
+  set('sm-moodnotes',JSON.stringify(moodNotes));
+});
+
 function onCheck(e){
   var t=e.target;if(!t.dataset||!t.dataset.id)return;
   var key=iso(dateOf(sel));done[key]=done[key]||{};
@@ -1313,7 +1375,7 @@ function localClaims(){
   var t={};Object.keys(tests).sort().slice(-5).forEach(function(k){t[k]=tests[k];});
   var pa={};Object.keys(pzAns).sort().slice(-14).forEach(function(k){pa[k]=pzAns[k];});
   var sbs={};Object.keys(subs).forEach(function(k){if(k>=from)sbs[k]=subs[k];});
-  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot,subs:sbs};
+  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot,subs:sbs,mood:mood,moodNotes:moodNotes};
 }
 // auto-send: key for the private SemReports repo, entered once on this phone by mom
 var REPKEY='';try{REPKEY=localStorage.getItem('sm-rep-key')||'';}catch(e){}
@@ -1350,6 +1412,7 @@ var SHORT={'feet':'стопы','out':'улица','meal':'обед','str-a':'с�
   'q-drink':'без сладких напитков','q-dessert':'сладкое после еды','q-prot':'белковый завтрак','q-fiber':'3 фрукта/овоща','q-late':'не ел после ужина'};
 function reportText(){
   var L=['#семён отчёт'],D=[];
+  var from=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7));
   for(var i=6;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i),k=iso(d),ids=done[k]||{},ks=Object.keys(ids),xp=0;
     ks.forEach(function(x){xp+=+ids[x]||0;});
     L.push(d.getDate()+'.'+('0'+(d.getMonth()+1)).slice(-2)+' '+DS[d.getDay()]+': '+(ks.length?ks.map(function(x){if(SHORT[x])return SHORT[x];if(x.indexOf('hx')===0)return '🏠 '+(hnames[x]||'своё дело');var c=CHORES.filter(function(y){return y[0]===x;})[0];return c?'🏠 '+c[1].split(':')[0].toLowerCase():x;}).join(', ')+' ('+xp+' XP)':'—'));
@@ -1362,7 +1425,10 @@ function reportText(){
   var BL=brainLines();
   Object.keys(enot).forEach(function(n){var m=momItem('enot',n);if(!m||m.status==='new'){L.push('🦝 Прошёл урок '+n+' курса Енот Чек');BL.push('E|'+enot[n]+'|'+n);}});
   Object.keys(pzAns).sort().slice(-7).forEach(function(d){if(d>=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))){L.push('🧩 Ответ на задачку '+fmtDate(d)+': '+pzAns[d]);BL.push('Z|'+d+'|'+pzAns[d]);}});
-  BL.forEach(function(l){var p=l.split('|');if(p[0]==='Z'||p[0]==='E')return;L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
+  Object.keys(mood).forEach(function(d){if(d>=from&&mood[d]){var emo=['','😭','😏','😐','🙂','😎'][mood[d]];
+    L.push('🎭 Настроение '+fmtDate(d)+': '+emo+(moodNotes[d]?' — '+moodNotes[d]:''));
+    BL.push('M|'+d+'|'+mood[d]+'|'+(moodNotes[d]||'').replace(/\|/g,' '));}});
+  BL.forEach(function(l){var p=l.split('|');if(p[0]==='Z'||p[0]==='E'||p[0]==='M')return;L.push(p[0]==='B'?'📖 Дочитал: '+p[4]+' ('+p[3]+' стр.)':(p[3]==='ready'?'🎤 Выступил с докладом: ':'🎤 Выбрал тему доклада: ')+p[4]);});
   return L.join('\n')+'\n\n'+D.concat(BL).join('\n');
 }
 if(!(window.claude&&window.claude.use)){

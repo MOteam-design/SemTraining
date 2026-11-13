@@ -128,6 +128,7 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <section class="card">
     <div class="row sp"><h2 id="day-title">Сегодня</h2><span class="small muted" id="day-count"></span></div>
     <div class="days" id="day-chips" aria-label="Дни недели"></div>
+    <div class="note small" id="day-mood"></div>
     <div class="bar"><i id="day-bar" style="width:0"></i></div>
     <div class="row sp"><span class="small" id="day-money"></span><button class="btn ok sm" type="button" id="day-all" hidden></button></div>
     <div id="day-list" style="display:grid;gap:4px"></div>
@@ -225,8 +226,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js?v=20261111e"></script>
-<script src="state.js?v=20261111e"></script>
+<script src="puzzles.js?v=20261113a"></script>
+<script src="state.js?v=20261113a"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -324,6 +325,11 @@ function renderDay(V){
   $('day-chips').innerHTML=chips;
   var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow),planKeys={},total=0,doneN=0;
   $('day-title').textContent=DAY===TODAY?'Сегодня, '+DN[dow].toLowerCase():DN[dow]+', '+dlong(DAY);
+  // настроение дня: как Семён сам оценил день
+  var mv=(V.mood||{})[DAY],mnote=(V.moodNotes||{})[DAY],mo=document.getElementById('day-mood');
+  if(mv){var M=(SEM.MOODS.filter(function(x){return x[0]===+mv;})[0]||[0,'','']);mo.hidden=false;
+    mo.innerHTML='<b>'+M[1]+' '+esc(M[2])+'</b>'+(mnote?'<span class="small" style="display:block;margin-top:2px">💬 '+esc(mnote)+'</span>':'');}
+  else{mo.hidden=false;mo.innerHTML='<span class="muted small">Как прошёл день — Семён ещё не отметил.</span>';}
   // chores and own tasks he marked go into their own group
   var ch=Object.keys(cl).filter(function(k){return k.indexOf('h-')===0||k.indexOf('hx')===0;});
   G=G.concat(ch.length?[{name:'Дела по дому',items:ch.map(function(k){return {k:k,t:SEM.CHORES[k]||((V.hnames||{})[k]||'Своё дело'),xp:+cl[k]||0,chore:1};})}]:[]);
