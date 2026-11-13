@@ -36,15 +36,10 @@
    "guitar": 30,
    "vit": 5,
    "q-drink": 5,
-   "q-dessert": 5
-  },
-  "2026-11-11": {
-   "q-drink": 5,
    "q-dessert": 5,
-   "out": 5,
-   "meal": 5,
-   "str-b": 40,
-   "dinner": 5
+   "enot-1": 100,
+   "enot-2": 100,
+   "enot-3": 100
   },
   "2026-11-12": {
    "out": 5,
@@ -55,14 +50,27 @@
    "sleep": 5,
    "q-drink": 5,
    "q-dessert": 5
+  },
+  "2026-11-11": {
+   "q-drink": 5,
+   "q-dessert": 5,
+   "out": 5,
+   "meal": 5,
+   "str-b": 40,
+   "dinner": 5
   }
  },
  "status": {
   "2026-11-13": "ok",
-  "2026-11-11": "ok",
-  "2026-11-12": "ok"
+  "2026-11-12": "ok",
+  "2026-11-11": "ok"
  },
- "paid": {},
+ "paid": {
+  "2026-11-09": {
+   "sum": 490,
+   "at": "2026-11-13"
+  }
+ },
  "fines": [],
  "books": {},
  "assigned": {
@@ -76,7 +84,23 @@
   }
  },
  "projects": {},
- "enot": {},
+ "enot": {
+  "1": {
+   "d": "2026-11-13",
+   "status": "ok",
+   "reward": 100
+  },
+  "2": {
+   "d": "2026-11-13",
+   "status": "ok",
+   "reward": 100
+  },
+  "3": {
+   "d": "2026-11-13",
+   "status": "ok",
+   "reward": 100
+  }
+ },
  "topics": {
   "id": "amwc67m35xzt",
   "list": [
@@ -103,15 +127,6 @@
    "q-drink": "ok",
    "q-dessert": "ok"
   },
-  "2026-11-11": {
-   "q-drink": "ok",
-   "q-dessert": "ok",
-   "out": "ok",
-   "meal": "ok",
-   "str-b": "ok",
-   "dinner": "ok",
-   "h-trash": "no"
-  },
   "2026-11-12": {
    "out": "ok",
    "meal": "ok",
@@ -122,9 +137,18 @@
    "sleep": "ok",
    "q-drink": "ok",
    "q-dessert": "ok"
+  },
+  "2026-11-11": {
+   "q-drink": "ok",
+   "q-dessert": "ok",
+   "out": "ok",
+   "meal": "ok",
+   "str-b": "ok",
+   "dinner": "ok",
+   "h-trash": "no"
   }
  },
- "updated": "2026-11-13T16:21",
+ "updated": "2026-11-13T16:51",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -152,6 +176,10 @@
   "amwezzzo7u8h",
   "amwf00024hor",
   "amwf006xm028",
-  "amwf00vmlcb1"
+  "amwf00vmlcb1",
+  "amwf17gbqizs",
+  "amwf17h0su4h",
+  "amwf17i8o0cw",
+  "amwf17mub69t"
  ]
 }
