@@ -8,6 +8,15 @@
    "str-b": 40,
    "dinner": 5,
    "h-trash": 5
+  },
+  "2026-11-12": {
+   "out": 5,
+   "meal": 5,
+   "bike": 35,
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "sleep": 5
   }
  },
  "confirmed": {
@@ -21,7 +30,8 @@
   }
  },
  "status": {
-  "2026-11-11": "ok"
+  "2026-11-11": "ok",
+  "2026-11-12": "new"
  },
  "paid": {},
  "fines": [],
@@ -63,9 +73,18 @@
    "str-b": "ok",
    "dinner": "ok",
    "h-trash": "no"
+  },
+  "2026-11-12": {
+   "out": "new",
+   "meal": "new",
+   "bike": "new",
+   "dinner": "new",
+   "guitar": "new",
+   "nosweet": "new",
+   "sleep": "new"
   }
  },
- "updated": "2026-11-12T11:12",
+ "updated": "2026-11-13T11:44",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
