@@ -16,10 +16,28 @@
    "dinner": 5,
    "guitar": 30,
    "nosweet": 10,
-   "sleep": 5
+   "sleep": 5,
+   "q-drink": 5,
+   "q-dessert": 5
+  },
+  "2026-11-13": {
+   "out": 5,
+   "meal": 5,
+   "guitar": 30,
+   "vit": 5,
+   "q-drink": 5,
+   "q-dessert": 5
   }
  },
  "confirmed": {
+  "2026-11-13": {
+   "out": 5,
+   "meal": 5,
+   "guitar": 30,
+   "vit": 5,
+   "q-drink": 5,
+   "q-dessert": 5
+  },
   "2026-11-11": {
    "q-drink": 5,
    "q-dessert": 5,
@@ -27,11 +45,22 @@
    "meal": 5,
    "str-b": 40,
    "dinner": 5
+  },
+  "2026-11-12": {
+   "out": 5,
+   "meal": 5,
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "sleep": 5,
+   "q-drink": 5,
+   "q-dessert": 5
   }
  },
  "status": {
+  "2026-11-13": "ok",
   "2026-11-11": "ok",
-  "2026-11-12": "new"
+  "2026-11-12": "ok"
  },
  "paid": {},
  "fines": [],
@@ -58,13 +87,22 @@
  },
  "puzzles": {
   "2026-11-11": "space-23",
-  "2026-11-12": "logic-1"
+  "2026-11-12": "logic-1",
+  "2026-11-13": "attn-2"
  },
  "answers": {},
  "tests": {},
  "hnames": {},
  "subs": {},
  "items": {
+  "2026-11-13": {
+   "out": "ok",
+   "meal": "ok",
+   "guitar": "ok",
+   "vit": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
+  },
   "2026-11-11": {
    "q-drink": "ok",
    "q-dessert": "ok",
@@ -75,16 +113,18 @@
    "h-trash": "no"
   },
   "2026-11-12": {
-   "out": "new",
-   "meal": "new",
-   "bike": "new",
-   "dinner": "new",
-   "guitar": "new",
-   "nosweet": "new",
-   "sleep": "new"
+   "out": "ok",
+   "meal": "ok",
+   "bike": "no",
+   "dinner": "ok",
+   "guitar": "ok",
+   "nosweet": "ok",
+   "sleep": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
   }
  },
- "updated": "2026-11-13T11:44",
+ "updated": "2026-11-13T16:21",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -95,6 +135,23 @@
   "amwcfb2k0bxu",
   "amwcfb36aqsi",
   "amwd3xstsfxv",
-  "amwd9lgdgfsa"
+  "amwd9lgdgfsa",
+  "amwezxps8r4f",
+  "amwezxs1efcb",
+  "amwezxt9wy1b",
+  "amwezxw58d1h",
+  "amwezy1dvx4v",
+  "amwezy2loe3m",
+  "amwezyj3a8vo",
+  "amwezyinchgf",
+  "amwezyo51giq",
+  "amwezzjagdxd",
+  "amwezzmzssv1",
+  "amwezznd6swm",
+  "amwezzrf5skh",
+  "amwezzzo7u8h",
+  "amwf00024hor",
+  "amwf006xm028",
+  "amwf00vmlcb1"
  ]
 }
