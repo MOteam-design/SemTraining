@@ -36,15 +36,13 @@
   }
  },
  "confirmed": {
-  "2026-11-12": {
+  "2026-11-11": {
+   "q-drink": 5,
+   "q-dessert": 5,
    "out": 5,
    "meal": 5,
-   "dinner": 5,
-   "guitar": 30,
-   "nosweet": 10,
-   "sleep": 5,
-   "q-drink": 5,
-   "q-dessert": 5
+   "str-b": 40,
+   "dinner": 5
   },
   "2026-11-13": {
    "out": 5,
@@ -57,20 +55,28 @@
    "enot-2": 100,
    "enot-3": 100
   },
-  "2026-11-11": {
-   "q-drink": 5,
-   "q-dessert": 5,
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
+  },
+  "2026-11-12": {
    "out": 5,
    "meal": 5,
-   "str-b": 40,
-   "dinner": 5
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "sleep": 5,
+   "q-drink": 5,
+   "q-dessert": 5
   }
  },
  "status": {
-  "2026-11-12": "ok",
-  "2026-11-14": "new",
+  "2026-11-11": "ok",
   "2026-11-13": "ok",
-  "2026-11-11": "ok"
+  "2026-11-14": "ok",
+  "2026-11-12": "ok"
  },
  "paid": {
   "2026-11-09": {
@@ -119,7 +125,8 @@
  "puzzles": {
   "2026-11-11": "space-23",
   "2026-11-12": "logic-1",
-  "2026-11-13": "attn-2"
+  "2026-11-13": "attn-2",
+  "2026-11-14": "phys-8"
  },
  "answers": {},
  "tests": {},
@@ -128,6 +135,29 @@
  "mood": {},
  "moodNotes": {},
  "items": {
+  "2026-11-11": {
+   "q-drink": "ok",
+   "q-dessert": "ok",
+   "out": "ok",
+   "meal": "ok",
+   "str-b": "ok",
+   "dinner": "ok",
+   "h-trash": "no"
+  },
+  "2026-11-13": {
+   "out": "ok",
+   "meal": "ok",
+   "guitar": "ok",
+   "vit": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
+  },
+  "2026-11-14": {
+   "qx-soup": "ok",
+   "qx-protein-every-meal": "ok",
+   "bfast": "ok",
+   "meal": "ok"
+  },
   "2026-11-12": {
    "out": "ok",
    "meal": "ok",
@@ -138,32 +168,9 @@
    "sleep": "ok",
    "q-drink": "ok",
    "q-dessert": "ok"
-  },
-  "2026-11-14": {
-   "qx-soup": "new",
-   "qx-protein-every-meal": "new",
-   "bfast": "new",
-   "meal": "new"
-  },
-  "2026-11-13": {
-   "out": "ok",
-   "meal": "ok",
-   "guitar": "ok",
-   "vit": "ok",
-   "q-drink": "ok",
-   "q-dessert": "ok"
-  },
-  "2026-11-11": {
-   "q-drink": "ok",
-   "q-dessert": "ok",
-   "out": "ok",
-   "meal": "ok",
-   "str-b": "ok",
-   "dinner": "ok",
-   "h-trash": "no"
   }
  },
- "updated": "2026-11-14T17:52",
+ "updated": "2026-11-14T21:28",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -195,6 +202,11 @@
   "amwf17gbqizs",
   "amwf17h0su4h",
   "amwf17i8o0cw",
-  "amwf17mub69t"
+  "amwf17mub69t",
+  "amwgq614e13i",
+  "amwgq61ovrk6",
+  "amwgq63b8bbe",
+  "amwgq6mc0n1e",
+  "amwgqjc8vo1c"
  ]
 }
