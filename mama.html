@@ -166,6 +166,29 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
 
   <div class="sec">Дополнительные задания · сверх лимита</div>
 
+  <!-- Поощрения: мама сама придумывает достижение и сумму. Сверх лимита недели. -->
+  <section class="card">
+    <h2>🎁 Поощрения</h2>
+    <p class="small muted">За что угодно, что вы заметили сами: помог без просьбы, спокойно справился с трудным днём, сделал больше обычного. Сумма любая — идёт <b>сверх лимита недели</b> и не срезается потолком.</p>
+    <div id="promo-list" style="display:grid;gap:8px"></div>
+    <details class="fold" id="promo-fold"><summary>➕ Начислить поощрение</summary><div>
+      <form class="f" onsubmit="return false">
+        <label class="wide">За что<input type="text" id="p-w" maxlength="80" placeholder="например: сам разобрался с уроками без напоминаний" autocomplete="off"></label>
+        <label>Сумма, ₽<input type="number" id="p-rw" min="0" step="10" inputmode="numeric" placeholder="например, 200"></label>
+        <label>Дата<input type="date" id="p-d"></label>
+        <button class="btn wide" type="button" id="p-add">Начислить сейчас</button>
+      </form>
+    </div></details>
+    <details class="fold" id="goal-fold"><summary>🎯 Поставить цель на будущее</summary><div>
+      <p class="small">Семён увидит цель у себя и нажмёт «Сделал». Вы подтвердите — и сумма начислится.</p>
+      <form class="f" onsubmit="return false">
+        <label class="wide">Цель<input type="text" id="g-w" maxlength="80" placeholder="например: неделю без сладкого" autocomplete="off"></label>
+        <label>Награда, ₽<input type="number" id="g-rw" min="0" step="10" inputmode="numeric" placeholder="например, 300"></label>
+        <button class="btn wide" type="button" id="g-add">Поставить цель</button>
+      </form>
+    </div></details>
+  </section>
+
   <!-- 6. Чтение -->
   <section class="card">
     <h2>📚 Чтение</h2>
@@ -300,8 +323,15 @@ function render(){
   $('k-pend').textContent=w.pend+xp.length;
   $('k-fine').textContent=w.fine?'−'+rub(w.fine):'0 ₽';
   var p=V.paid[w.mon];
-  $('wk-pay').innerHTML=p?'<span class="chip ok">выплачено '+rub(p.sum)+'</span>':'<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Выплатила</button>';
-  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderRead,renderEnot,renderProj,renderTopics,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
+  if(!p){
+    $('wk-pay').innerHTML='<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Выплатила</button>';
+  }else{
+    // Неделя ещё идёт: после выплаты могли накопиться новые баллы. Показываем, сколько доплатить.
+    var diff=Math.max(0,w.total-(+p.sum||0));
+    $('wk-pay').innerHTML='<span class="chip ok">выплачено '+rub(p.sum)+'</span>'+
+      (diff>0?' <button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Доплатить '+rub(diff)+'</button>':'');
+  }
+  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderRead,renderEnot,renderProj,renderTopics,renderPromo,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
 }
 // 2. day: full plan with done / not done, per-item decisions
 function renderDay(V){
@@ -387,8 +417,11 @@ function renderFines(V){
 function renderWeeks(V){
   var rows='',all=0;
   for(var i=0;i<10;i++){var m=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-7*i),x=week(V,m);if(!x.xp&&!x.fine&&!x.pend&&i)continue;
-    var pp=V.paid[x.mon];
-    rows+='<tr><td>'+dm(x.mon)+'</td><td>'+x.xp+'</td><td>'+(x.bonus?'+'+x.bonus:'—')+'</td><td>'+(x.fine?'−'+x.fine:'—')+'</td><td><b>'+rub(x.total)+'</b></td><td>'+(pp?'✓ '+rub(pp.sum):(i?'<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">отметить</button>':'—'))+'</td></tr>';}
+    var pp=V.paid[x.mon],pay;
+    if(!pp) pay=i?'<button class="btn ghost sm" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">отметить</button>':'—';
+    else { var df=Math.max(0,x.total-(+pp.sum||0));
+      pay='✓ '+rub(pp.sum)+(df>0?' <button class="btn ghost sm" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">+'+rub(df)+'</button>':''); }
+    rows+='<tr><td>'+dm(x.mon)+'</td><td>'+x.xp+'</td><td>'+(x.bonus?'+'+x.bonus:'—')+'</td><td>'+(x.fine?'−'+x.fine:'—')+'</td><td><b>'+rub(x.total)+'</b></td><td>'+pay+'</td></tr>';}
   $('weeks').innerHTML=rows;
   for(var d in V.confirmed)all+=sum(V.confirmed[d]);
   var li=0;LEVELS.forEach(function(l,j){if(all>=l[0])li=j;});
@@ -431,9 +464,25 @@ function renderProj(V){
     return '<div class="row sp small"><span>🎤 <b>'+esc(p.topic)+'</b> · '+dm(p.d)+'</span>'+lab+'</div>';}).join('');
   $('proj').innerHTML=h||'<p class="small muted">Докладов пока не было. Предложите темы ниже.</p>';
 }
+// 8.5. ПООЩРЕНИЯ: начислено сразу и цели на будущее
+function renderPromo(V){
+  var B=V.bonuses||{},G=V.goals||{},GD=V.goalDone||{};
+  var h='';
+  // цели, которые Семён отметил сделанными — ждут решения
+  Object.keys(G).forEach(function(k){var g=G[k];if(g.status!=='open'||!GD[k])return;
+    h+='<div class="box"><div class="row sp"><b>🎯 '+esc(g.w)+'</b><b>+'+g.rw+' ₽</b></div><span class="small muted">Семён отметил: сделано. Подтвердите — и сумма начислится сверх лимита.</span><div class="row"><button class="btn ok sm" type="button" data-a="gok" data-id2="'+k+'">✅ Засчитать</button><button class="btn no sm" type="button" data-a="gno" data-id2="'+k+'">Не сейчас</button></div></div>';});
+  // цели, которые ещё висят
+  Object.keys(G).forEach(function(k){var g=G[k];if(g.status!=='open'||GD[k])return;
+    h+='<div class="box"><div class="row sp"><b>🎯 '+esc(g.w)+'</b><b>+'+g.rw+' ₽</b></div><span class="small muted">Ждём, пока Семён сделает. Снять цель — кнопка ниже.</span><div class="row"><button class="btn ghost sm" type="button" data-a="ungoal" data-id2="'+k+'">Снять цель</button></div></div>';});
+  // уже начисленные поощрения
+  var list=Object.keys(B).map(function(k){return B[k];}).sort(function(a,b){return (b.at||'')<(a.at||'')?-1:1;});
+  list.slice(0,10).forEach(function(b){
+    h+='<div class="box"><div class="row sp"><b>🎁 '+esc(b.w)+'</b><b>+'+b.rw+' ₽</b></div><span class="small muted">'+dlong(b.d||b.at)+' · начислено сверх лимита</span><div class="row"><button class="btn ghost sm" type="button" data-a="unbonus" data-id2="'+b.id+'">Убрать</button></div></div>';});
+  if(!h)h='<p class="small muted">Пока пусто. Начислите за что-то, что заметили, или поставьте цель.</p>';
+  $('promo-list').innerHTML=h;
+}
 // 9. puzzles (folded)
-var PZ=window.PUZZLES||null,pzGroup='all',pzShow=15,pzFiltered=[];
-function renderPz(V){
+var PZ=window.PUZZLES||null,pzGroup='all',pzShow=15,pzFiltered=[];function renderPz(V){
   if(!PZ){$('pz-card').hidden=true;return;}
   var P=V.puzzles||{},A=V.answers||{},used={};for(var d in P)used[P[d]]=(used[P[d]]||[]).concat(d);
   $('pz-total').textContent='· '+PZ.LIST.length;
@@ -513,13 +562,30 @@ document.addEventListener('click',function(e){
   if(t==='paid'){a.mon=b.dataset.mon;a.sum=+b.dataset.sum;}
   if(t==='unfine'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}a.fid=b.dataset.fid;}
   if(/^(bok|bno|pok|pno|eok|eno)$/.test(t))a.ref=b.dataset.ref;
+  if(/^(gok|gno|ungoal|unbonus)$/.test(t))a.id2=b.dataset.id2;
+  if(t==='ungoal'||t==='unbonus'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно?';return;}}
   if(t==='unbook'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно снять?';return;}a.bid=b.dataset.bid;}
   if(t==='pz'||t==='unpz'){a.d=b.dataset.d;if(t==='pz'){if(!a.d){toast('Выберите день');return;}a.pid=b.dataset.pid;}}
   act(a);
 });
+// ---------- поощрения ----------
+$('p-d').value=TODAY;
+$('p-add').addEventListener('click',function(){
+  var w=$('p-w').value.trim(),rw=Math.round(+$('p-rw').value||0),d=$('p-d').value||TODAY;
+  if(!w){toast('Напишите, за что поощрение');$('p-w').focus();return;}
+  if(rw<=0){toast('Укажите сумму');$('p-rw').focus();return;}
+  act({t:'bonus',id2:'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),w:w,rw:rw,d:d});
+  $('p-w').value='';$('p-rw').value='';$('promo-fold').open=false;
+});
+$('g-add').addEventListener('click',function(){
+  var w=$('g-w').value.trim(),rw=Math.round(+$('g-rw').value||0);
+  if(!w){toast('Напишите цель');$('g-w').focus();return;}
+  if(rw<=0){toast('Укажите награду');$('g-rw').focus();return;}
+  act({t:'goal',id2:'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),w:w,rw:rw,d:TODAY});
+  $('g-w').value='';$('g-rw').value='';$('goal-fold').open=false;
+});
 // fines form
-$('f-date').value=TODAY;
-$('f-type').addEventListener('change',function(e){$('f-amount').value=e.target.selectedOptions[0].dataset.a;});
+$('f-date').value=TODAY;$('f-type').addEventListener('change',function(e){$('f-amount').value=e.target.selectedOptions[0].dataset.a;});
 $('f-form').addEventListener('submit',function(e){
   e.preventDefault();var d=$('f-date').value,a=+$('f-amount').value,t=$('f-type').value,n=$('f-note').value.trim();
   if(!d||!a)return;act({t:'fine',fid:'f'+Date.now().toString(36),d:d,a:a,r:(t+(n?': '+n:'')).replace(/[|\n]/g,' ')});$('f-note').value='';e.target.closest('details').open=false;

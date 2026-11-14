@@ -92,6 +92,10 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,t
 .hadd{display:flex;gap:8px;flex-wrap:wrap}
 .hadd input{flex:1 1 180px;min-width:0;font:inherit;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink,inherit)}
 .q .xp{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--go);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* поощрения: карточка достижения */
+.box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.box .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box .row.sp{justify-content:space-between}
 /* Квесты по еде: компактный список. Подсказка «почему так» открывается
    по клику на название, а не висит отдельной строкой — блок стал втрое короче. */
 #quests{gap:2px}
@@ -327,6 +331,14 @@ td.best{color:var(--go);font-weight:800}
         <tr><td>Плохая оценка</td><td>−50…−100 ₽</td></tr>
       </tbody></table></div>
       <p class="small muted">Штраф снимается только с заработанных баллов недели, ниже нуля неделя не уходит. Карманные не трогаются никогда. О каждом штрафе тебе придёт сообщение от бота, и он появится здесь, на «Прогрессе». Исправил двойку — скажи маме, штраф могут вернуть.</p>
+    </div>
+    <div class="panel" id="promo-panel">
+      <span class="eyebrow">Сверх лимита недели</span>
+      <h2>Поощрения</h2>
+      <p class="small muted">То, что мама заметила и решила отметить отдельно: помощь, характер, что-то сверх плана. Эти деньги идут <b>сверх обычного лимита</b> и потолком не срезаются.</p>
+      <div id="promo-now" style="display:grid;gap:8px"></div>
+      <h3 style="margin:10px 0 0;font-size:14px" id="promo-goals-t">Цели от мамы</h3>
+      <div id="promo-goals" style="display:grid;gap:8px"></div>
     </div>
     <div class="panel" id="bank">
       <span class="eyebrow">Копилка с удвоением</span>
@@ -1216,8 +1228,31 @@ function renderStats(){
   document.getElementById('dots').innerHTML=dots;
   if(typeof renderBank==='function'&&document.getElementById('b-total'))try{renderBank();}catch(e){}
   if(typeof renderEarn==='function')try{renderEarn();}catch(e){}
+  if(typeof renderPromo==='function')try{renderPromo();}catch(e){}
   document.getElementById('ladder').innerHTML=LEVELS.map(function(l,i){return '<div class="'+(i===li?'cur':'')+'"><b>'+esc(l[1])+'</b><span>от '+l[0]+' XP</span></div>';}).join('');
 }
+// ---------- поощрения от мамы: начислено сразу + цели на будущее ----------
+function renderPromo(){
+  var box=document.getElementById('promo-now');if(!box)return;
+  var V=(momActions&&window.SEM)?window.SEM.derive(localClaims(),momActions):null;
+  var B=(V&&V.bonuses)||{},G=(V&&V.goals)||{};
+  var h='';
+  Object.keys(B).map(function(k){return B[k];}).sort(function(a,b){return (b.at||'')<(a.at||'')?-1:1;}).slice(0,8).forEach(function(b){
+    h+='<div class="box"><div class="row sp"><b>🎁 '+esc(b.w)+'</b><b style="color:var(--go)">+'+rub(b.rw)+'</b></div><span class="small muted">'+fmtDate(b.d||b.at)+' · от мамы, сверх лимита</span></div>';});
+  box.innerHTML=h||'<p class="small muted">Пока пусто. Когда мама отметит что-то отдельно, появится здесь.</p>';
+  var gb=document.getElementById('promo-goals'),gl=Object.keys(G);
+  document.getElementById('promo-goals-t').hidden=!gl.length;
+  gb.innerHTML=gl.map(function(k){var g=G[k],done=!!goalDone[k];
+    return '<div class="box"><div class="row sp"><b>🎯 '+esc(g.w)+'</b><b style="color:var(--go)">+'+rub(g.rw)+'</b></div>'+
+      (done?'<span class="small muted">Отмечено: сделано. Ждём, пока мама подтвердит.</span>':
+        '<span class="small muted">Это цель от мамы. Сделал — нажми кнопку, мама подтвердит.</span><div class="row"><button class="btn ok sm" type="button" data-goal="'+k+'">✅ Сделал</button></div>')+
+      '</div>';}).join('');
+}
+document.getElementById('promo-goals').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-goal]');if(!b)return;
+  goalDone[b.dataset.goal]=todayIso;set('sm-goaldone',JSON.stringify(goalDone));
+  renderPromo();onClaimsChanged();
+});
 
 // tests (records)
 var tests={};try{tests=JSON.parse(get('sm-tests','{}'))||{};}catch(e){tests={};}
@@ -1560,6 +1595,8 @@ document.getElementById('en-list').addEventListener('click',function(e){
 renderEnot();
 // all projects ever picked (mom needs the history to pay for accepted ones)
 var projs={};try{projs=JSON.parse(get('sm-projs','{}'))||{};}catch(e){projs={};}
+// цели от мамы: {id: дата}, когда Семён нажал «Сделал» — мама подтверждает
+var goalDone={};try{goalDone=JSON.parse(get('sm-goaldone','{}'))||{};}catch(e){goalDone={};}
 function saveProjHist(){if(proj)projs[proj.id]={topic:proj.topic,picked:proj.picked,ready:proj.ready||null,tries:+proj.tries||0};set('sm-projs',JSON.stringify(projs));}
 if(proj&&!projs[proj.id])saveProjHist();
 // what I marked — this goes to SemReports/claims.json
@@ -1569,7 +1606,7 @@ function localClaims(){
   var t={};Object.keys(tests).sort().slice(-5).forEach(function(k){t[k]=tests[k];});
   var pa={};Object.keys(pzAns).sort().slice(-14).forEach(function(k){pa[k]=pzAns[k];});
   var sbs={};Object.keys(subs).forEach(function(k){if(k>=from)sbs[k]=subs[k];});
-  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot,subs:sbs,mood:mood,moodNotes:moodNotes};
+  return {updated:new Date().toISOString(),done:d,tests:t,books:books,projs:projs,pzAns:pa,hnames:hn,enot:enot,subs:sbs,mood:mood,moodNotes:moodNotes,goals:goalDone};
 }
 // auto-send: key for the private SemReports repo, entered once on this phone by mom
 var REPKEY='';try{REPKEY=localStorage.getItem('sm-rep-key')||'';}catch(e){}

@@ -13,14 +13,14 @@
     [7, 'Ловушки-2 и неверные выводы'], [8, 'Как мозг нас обманывает'], [9, 'Проверка новостей'], [10, 'Итоговый тест']] };
   function bookPrice(p) { return Math.round((+p || 0) * 500 / 300 / 10) * 10; }
   function norm(o) { var r = {}; Object.keys(o || {}).sort().forEach(function (k) { r[k] = +o[k] || 0; }); return JSON.stringify(r); }
-  function isExtra(k) { return k.indexOf('book-') === 0 || k.indexOf('proj-') === 0 || k.indexOf('enot-') === 0; }
+  function isExtra(k) { return k.indexOf('book-') === 0 || k.indexOf('proj-') === 0 || k.indexOf('enot-') === 0 || k.indexOf('bonus-') === 0 || k.indexOf('goal-') === 0; }
   function copy(o) { var r = {}; for (var k in o) r[k] = o[k]; return r; }
 
   function derive(claims, actions) {
     claims = claims || {};
     var CL = claims.done || {};
     var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, assigned: {}, projects: {}, enot: {}, topics: null,
-              puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, subs: claims.subs || {},
+              bonuses: {}, goals: {}, puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, subs: claims.subs || {},
               mood: claims.mood || {}, moodNotes: claims.moodNotes || {}, updated: claims.updated || null };
     var dec = {}, extra = {};
     Object.keys(claims.books || {}).forEach(function (k) {
@@ -32,6 +32,8 @@
       if (p) S.projects[k] = { d: p.ready || p.picked, state: p.ready ? 'ready' : 'pick', topic: p.topic, status: 'new', reward: C.PROJ };
     });
     Object.keys(claims.enot || {}).forEach(function (n) { if (claims.enot[n]) S.enot[n] = { d: claims.enot[n], status: 'new', reward: C.ENOT }; });
+    // Семён нажал «Сделал» у цели от мамы: ждёт её подтверждения
+    S.goalDone = claims.goals || {};
     (actions || []).forEach(function (a) {
       var t = a.t;
       if ((t === 'eok' || t === 'eno') && S.enot[a.ref]) { S.enot[a.ref].status = t === 'eok' ? 'ok' : 'no'; return; }
@@ -52,6 +54,14 @@
       else if (t === 'topics') { S.topics = { id: a.id, list: a.list || [] }; }
       else if (t === 'pz') { if (a.d && a.pid) S.puzzles[a.d] = a.pid; }
       else if (t === 'unpz') { delete S.puzzles[a.d]; }
+      // ПООЩРЕНИЕ: родитель сам придумывает достижение и сумму. Идёт сверх лимита недели.
+      //   bonus — начислил сразу за то, что уже случилось;
+      //   goal  — поставил цель на будущее: ребёнок видит её, выполнил → «Сделал», родитель подтверждает.
+      else if (t === 'bonus') { if (a.id2) S.bonuses[a.id2] = { id: a.id2, d: a.d || '', w: a.w || '', rw: +a.rw || 0, at: (a.at || '').slice(0, 10), status: 'ok' }; }
+      else if (t === 'unbonus') { delete S.bonuses[a.id2]; }
+      else if (t === 'goal') { if (a.id2) S.goals[a.id2] = { id: a.id2, w: a.w || '', rw: +a.rw || 0, d: a.d || '', at: (a.at || '').slice(0, 10), status: 'open', done: null }; }
+      else if (t === 'ungoal') { delete S.goals[a.id2]; }
+      else if (t === 'gok' || t === 'gno') { var g = S.goals[a.id2]; if (g) { g.status = t === 'gok' ? 'ok' : 'no'; g.done = a.d || g.done; if (t === 'gok') g.d = a.d || g.done || g.at; } }
     });
     Object.keys(S.books).forEach(function (k) { var as = S.assigned[k], b = S.books[k];
       if (as) { b.assigned = true; b.due = as.due; b.reward = b.d <= as.due ? as.rw : Math.round(as.rw / 2); b.late = b.d > as.due; } });
@@ -75,22 +85,28 @@
     Object.keys(S.books).forEach(function (k) { var b = S.books[k]; if (b.status === 'ok') (S.confirmed[b.d] = S.confirmed[b.d] || {})['book-' + k] = b.reward; });
     Object.keys(S.projects).forEach(function (k) { var p = S.projects[k]; if (p.status === 'ok') (S.confirmed[p.d] = S.confirmed[p.d] || {})['proj-' + k] = p.reward; });
     Object.keys(S.enot).forEach(function (n) { var e = S.enot[n]; if (e.status === 'ok') (S.confirmed[e.d] = S.confirmed[e.d] || {})['enot-' + n] = e.reward; });
+    // поощрения идут сверх лимита: привязываем к дате, чтобы попали в нужную неделю
+    Object.keys(S.bonuses).forEach(function (k) { var b = S.bonuses[k]; if (b.status === 'ok' && b.d) (S.confirmed[b.d] = S.confirmed[b.d] || {})['bonus-' + k] = b.rw; });
+    Object.keys(S.goals).forEach(function (k) { var g = S.goals[k]; if (g.status === 'ok' && g.d) (S.confirmed[g.d] = S.confirmed[g.d] || {})['goal-' + k] = g.rw; });
     S.applied = (actions || []).map(function (a) { return a.id; });
     return S;
   }
 
   function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function week(S, mon) {
-    var days = [], daily = 0, ex = 0, work = 0, fine = 0, pend = 0, claimed = 0;
+    var days = [], daily = 0, ex = 0, work = 0, fine = 0, pend = 0, claimed = 0, promo = 0;
     for (var i = 0; i < 7; i++) {
       var d = iso(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i)); days.push(d);
       var c = S.confirmed[d] || {};
-      for (var k in c) { if (isExtra(k)) ex += +c[k] || 0; else daily += +c[k] || 0; if (WORK[k]) work++; }
+      for (var k in c) {
+        if (k.indexOf('bonus-') === 0 || k.indexOf('goal-') === 0) promo += +c[k] || 0;   // поощрения — отдельной строкой
+        if (isExtra(k)) ex += +c[k] || 0; else daily += +c[k] || 0; if (WORK[k]) work++;
+      }
       if (S.status[d] === 'new') { pend++; var cl = S.claimed[d] || {}; for (var j in cl) claimed += +cl[j] || 0; }
     }
     (S.fines || []).forEach(function (f) { if (f.d >= days[0] && f.d <= days[6]) fine += +f.a || 0; });
     var b = work >= 6 ? C.BONUS : 0;
-    return { mon: days[0], days: days, xp: daily + ex, work: work, bonus: b, fine: fine, pend: pend, claimed: claimed,
+    return { mon: days[0], days: days, xp: daily + ex, work: work, bonus: b, fine: fine, pend: pend, claimed: claimed, promo: promo,
              capped: daily + b > C.MAX, total: Math.max(0, Math.min(C.MAX, daily + b) + ex - fine) };
   }
 
@@ -225,5 +241,4 @@
   }
   // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
   function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
-  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON, questsFor: questsFor, QUEST_BANK: QUEST_BANK };
-})();
+  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON, questsFor: questsFor, QUEST_BANK: QUEST_BANK };})();
