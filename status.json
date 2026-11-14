@@ -27,9 +27,25 @@
    "vit": 5,
    "q-drink": 5,
    "q-dessert": 5
+  },
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
   }
  },
  "confirmed": {
+  "2026-11-12": {
+   "out": 5,
+   "meal": 5,
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "sleep": 5,
+   "q-drink": 5,
+   "q-dessert": 5
+  },
   "2026-11-13": {
    "out": 5,
    "meal": 5,
@@ -41,16 +57,6 @@
    "enot-2": 100,
    "enot-3": 100
   },
-  "2026-11-12": {
-   "out": 5,
-   "meal": 5,
-   "dinner": 5,
-   "guitar": 30,
-   "nosweet": 10,
-   "sleep": 5,
-   "q-drink": 5,
-   "q-dessert": 5
-  },
   "2026-11-11": {
    "q-drink": 5,
    "q-dessert": 5,
@@ -61,8 +67,9 @@
   }
  },
  "status": {
-  "2026-11-13": "ok",
   "2026-11-12": "ok",
+  "2026-11-14": "new",
+  "2026-11-13": "ok",
   "2026-11-11": "ok"
  },
  "paid": {
@@ -121,14 +128,6 @@
  "mood": {},
  "moodNotes": {},
  "items": {
-  "2026-11-13": {
-   "out": "ok",
-   "meal": "ok",
-   "guitar": "ok",
-   "vit": "ok",
-   "q-drink": "ok",
-   "q-dessert": "ok"
-  },
   "2026-11-12": {
    "out": "ok",
    "meal": "ok",
@@ -137,6 +136,20 @@
    "guitar": "ok",
    "nosweet": "ok",
    "sleep": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
+  },
+  "2026-11-14": {
+   "qx-soup": "new",
+   "qx-protein-every-meal": "new",
+   "bfast": "new",
+   "meal": "new"
+  },
+  "2026-11-13": {
+   "out": "ok",
+   "meal": "ok",
+   "guitar": "ok",
+   "vit": "ok",
    "q-drink": "ok",
    "q-dessert": "ok"
   },
@@ -150,7 +163,7 @@
    "h-trash": "no"
   }
  },
- "updated": "2026-11-13T21:30",
+ "updated": "2026-11-14T17:52",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
