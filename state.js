@@ -114,14 +114,94 @@
     return gh(repo, path, key, 'PUT', body).then(function (r) { if (!r.ok) { var e = new Error('GitHub ' + r.status); e.status = r.status; throw e; } return r.json(); });
   }
   // план дня (для списка «что он должен сделать» у мамы) — те же ключи и баллы, что в plan() на странице Семёна
+  // Квесты по еде: банк на 21 день без повторов, тот же, что в semyon.html (QUEST_BANK).
+  // У Семёна каждый день свой набор из трёх; мама должна видеть те же названия.
+  // id квестов попадают в данные по датам — старые не перенумеровывать.
   var QUESTS = [['q-drink', 'Без сладких напитков'], ['q-dessert', 'Сладкое только после еды'], ['q-fiber', '3 порции фруктов/овощей']];
+  var QUEST_BANK = [
+    ['qx-water-morning', 'Стакан воды сразу после подъёма'],
+    ['qx-veg-half', 'Половина тарелки — овощи или салат'],
+    ['qx-protein-breakfast', 'Белковый завтрак: яйца, творог или мясо'],
+    ['qx-no-snack', 'Между едой — никаких перекусов'],
+    ['qx-fruit-instead', 'Вместо печенья — фрукт или горсть орехов'],
+    ['qx-water-bottle', 'Бутылка воды в рюкзаке и выпита за день'],
+    ['qx-soup', 'Суп или борщ на обед'],
+    ['qx-protein-every-meal', 'Белок в каждом приёме пищи'],
+    ['qx-veg-dinner', 'Ужин с овощами, а не только гарнир'],
+    ['qx-sweet-after-meal', 'Сладкое только сразу после еды'],
+    ['qx-no-soda-day', 'Целый день без сладких напитков'],
+    ['qx-two-fruits', 'Два разных фрукта за день'],
+    ['qx-cook-self', 'Приготовил сам что-то простое'],
+    ['qx-nuts-handful', 'Горсть орехов вместо чипсов'],
+    ['qx-water-half', 'Половина нормы воды до обеда'],
+    ['qx-veg-colorful', 'Овощи трёх разных цветов за день'],
+    ['qx-dairy-day', 'Творог, кефир или сыр за день'],
+    ['qx-slow-eat', 'Ел медленно, не за телефоном'],
+    ['qx-no-late', 'Последняя еда за 3 часа до сна'],
+    ['qx-herbal-tea', 'Вечером травяной чай вместо сладкого'],
+    ['qx-shop-read', 'Посмотрел состав на упаковке'],
+    ['qx-egg-breakfast', 'На завтрак яйца или омлет'],
+    ['qx-porridge-nuts', 'Каша с орехами вместо сладких хлопьев'],
+    ['qx-whole-grain', 'Гарнир из цельной крупы: гречка, булгур, киноа'],
+    ['qx-second-veg', 'Добавка овощей вместо добавки гарнира'],
+    ['qx-water-before-meal', 'Стакан воды за 20 минут до еды'],
+    ['qx-chew-well', 'Жевал спокойно, без спешки'],
+    ['qx-no-fried', 'Без жареного за день: варёное, тушёное, запечённое'],
+    ['qx-eat-together', 'Поел вместе с семьёй, за столом'],
+    ['qx-no-screen', 'Ел без телефона и без мультиков'],
+    ['qx-protein-lunch', 'На обед мясо, курица или индейка'],
+    ['qx-meat-day', 'Курица, индейка или мясо за день'],
+    ['qx-kefir-evening', 'Кефир или ряженка вечером'],
+    ['qx-legumes', 'Фасоль, горох или чечевица за день'],
+    ['qx-berries', 'Горсть ягод: свежих или из морозилки'],
+    ['qx-plan-meal', 'Заранее решил, что будет на обед'],
+    ['qx-shop-together', 'Сходил в магазин и выбрал полезное сам'],
+    ['qx-new-vegetable', 'Попробовал овощ, который раньше не ел'],
+    ['qx-home-food', 'Ел домашнее, а не готовое из магазина'],
+    ['qx-fruit-dessert', 'Десерт — фрукт или ягоды'],
+    ['qx-green-veg', 'Зелень или зелёный овощ за день'],
+    ['qx-no-fastfood', 'День без фастфуда'],
+    ['qx-no-juice', 'Сок заменил целым фруктом'],
+    ['qx-water-sport', 'Пил воду до, во время и после тренировки'],
+    ['qx-sugar-name', 'Нашёл сахар в составе трёх продуктов'],
+    ['qx-no-sweet-drink', 'Ноль сладких напитков: ни газировки, ни лимонада'],
+    ['qx-tea-no-sugar', 'Чай без сахара'],
+    ['qx-water-night', 'Стакан воды перед сном не позже чем за час'],
+    ['qx-soup-veg', 'Овощной суп или борщ без зажарки'],
+    ['qx-big-breakfast', 'Плотный завтрак, а не «просто чай»'],
+    ['qx-small-plate', 'Съел с меньшей тарелки'],
+    ['qx-no-additive', 'Не добавлял еду, пока не доел первую порцию'],
+    ['qx-protein-snack', 'Если перекус — то белковый: творог, сыр, яйцо'],
+    ['qx-veg-first', 'Сначала овощи, потом всё остальное'],
+    ['qx-two-eggs', 'Два яйца или творог на второй завтрак'],
+    ['qx-nut-mix', 'Своя смесь орехов с собой'],
+    ['qx-repeat-best', 'Повторил квест, который понравился больше всего'],
+    ['qx-tell-mom', 'Рассказал маме, что ел сегодня'],
+    ['qx-plan-tomorrow', 'Придумал заранее, что съешь завтра'],
+    ['qx-veggie-dinner', 'На ужин овощи и белок, без гарнира'],
+    ['qx-week-check', 'Посмотрел, сколько квестов сделал за неделю'],
+    ['qx-no-sweet-day', 'Целый день без сладкого вообще'],
+    ['qx-good-choice', 'Выбрал полезное, когда рядом было сладкое']
+  ];
+  var QUEST_EPOCH = Date.UTC(2026, 0, 1);
+  function questsFor(isoStr) {
+    var p = String(isoStr).split('-'), d = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+    var N = QUEST_BANK.length, start = ((Math.floor((d - QUEST_EPOCH) / 86400000) * 3) % N + N) % N, out = [];
+    for (var i = 0; i < 3; i++) { var q = QUEST_BANK[(start + i) % N]; out.push({ k: q[0], t: q[1], xp: 5 }); }
+    return out;
+  }
   // старые ключи из первых дней — чтобы история читалась
   var LEGACY = { 'q-prot': 'Белковый завтрак', 'q-late': 'Не ел после ужина' };
+  // все квесты банка тоже попадают в LEGACY: иначе у мамы в «Ещё отмечено»
+  // покажется сырой id вроде qx-meat-day вместо названия
+  QUEST_BANK.forEach(function (q) { LEGACY[q[0]] = q[1]; });
   var CHORES = { 'h-room': 'Убрался в комнате', 'h-dish': 'Помыл посуду', 'h-cook': 'Приготовил еду', 'h-wash': 'Постирал своё', 'h-closet': 'Сложил вещи в шкафу',
     'h-shelf': 'Пыль на полке', 'h-door': 'Пыль на двери', 'h-pillow': 'Взбил подушки', 'h-plinth': 'Протёр плинтуса', 'h-trash': 'Вынес мусор' };
   var MOODS = [[5, '😎', 'отлично'], [4, '🙂', 'хорошо'], [3, '😐', 'нормально'], [2, '😏', 'тяжело'], [1, '😭', 'плохо']];
-  function dayPlan(dow) {
+  function dayPlan(dow, isoStr) {
     var wk = dow >= 1 && dow <= 5, G = [];
+    // квесты по еде зависят от даты: у Семёна каждый день свой набор
+    var quests = isoStr ? questsFor(isoStr) : QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; });
     function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
     g('Утро', [wk && { k: 'wake', t: 'Встал сам по будильнику', xp: 20 }, { k: 'vit', t: 'Витамины D и омега-3', xp: 5 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
     var sport = [];
@@ -139,11 +219,11 @@
     g('Спорт и движение', sport);
     g('Гитара (Обязательно)', [{ k: 'guitar', t: 'Гитара 20 мин', xp: 30 }]);
     g('Голова и книги', [{ k: 'read', t: 'Чтение 20 мин', xp: 20 }, { k: 'puzzle', t: 'Задача дня', xp: 10 }]);
-    g('Еда', [{ k: 'bfast', t: 'Завтрак', xp: 5 }, { k: 'meal', t: 'Обед', xp: 5 }, { k: 'dinner', t: 'Ужин', xp: 5 }, { k: 'nosweet', t: 'После ужина без сладкого', xp: 10 }].concat(QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; })));
+    g('Еда', [{ k: 'bfast', t: 'Завтрак', xp: 5 }, { k: 'meal', t: 'Обед', xp: 5 }, { k: 'dinner', t: 'Ужин', xp: 5 }, { k: 'nosweet', t: 'После ужина без сладкого', xp: 10 }].concat(quests));
     g('Вечер', [{ k: 'sleep', t: 'Отбой вовремя', xp: 5 }]);
     return G;
   }
   // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
   function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
-  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON };
+  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON, questsFor: questsFor, QUEST_BANK: QUEST_BANK };
 })();

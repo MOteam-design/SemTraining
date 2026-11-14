@@ -226,8 +226,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js?v=20261113a"></script>
-<script src="state.js?v=20261113a"></script>
+<script src="puzzles.js?v=20261113b"></script>
+<script src="state.js?v=20261113b"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -323,7 +323,7 @@ function renderDay(V){
     chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'">'+(V.status[d]==='new'?'<span class="dot"></span>':'')+DS[dt(d).getDay()]+'<small>'+(d===TODAY?'сегодня':dt(d).getDate())+'</small></button>';
   });
   $('day-chips').innerHTML=chips;
-  var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow),planKeys={},total=0,doneN=0;
+  var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow,DAY),planKeys={},total=0,doneN=0;
   $('day-title').textContent=DAY===TODAY?'Сегодня, '+DN[dow].toLowerCase():DN[dow]+', '+dlong(DAY);
   // настроение дня: как Семён сам оценил день
   var mv=(V.mood||{})[DAY],mnote=(V.moodNotes||{})[DAY],mo=document.getElementById('day-mood');
