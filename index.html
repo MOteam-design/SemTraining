@@ -8,6 +8,7 @@
   --bg:#EDF0F5; --surface:#FFFFFF; --ink:#111A2B; --muted:#586379; --line:#D7DDE8;
   --accent:#C9480C; --accent-soft:#FBE4D7; --go:#1D7347; --go-soft:#DCEFE3;
   --blue:#2D4FA8; --blue-soft:#E1E8F8; --warn:#9A5400; --warn-soft:#F8ECD6; --bad:#B42318; --bad-soft:#FBE3E0;
+  --mood:#A23A9A;
   --fig:#111A2B; --fig-far:#A3ADBF; --prop:#D5DCE7; --prop-ink:#8F9AAE; --move:#C9480C;
   --display:"Russo One","Manrope",system-ui,sans-serif;
   --body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -16,11 +17,13 @@
   --bg:#0D121C; --surface:#161D2B; --ink:#E5E9F1; --muted:#98A2B6; --line:#283245;
   --accent:#FF8B4D; --accent-soft:#3A2216; --go:#5FCB8E; --go-soft:#16301F;
   --blue:#8EA9F0; --blue-soft:#1C2742; --warn:#EBAA55; --warn-soft:#352812; --bad:#F2877C; --bad-soft:#3A1A17;
+  --mood:#E58AD9;
   --fig:#E5E9F1; --fig-far:#4B5568; --prop:#283245; --prop-ink:#56627A; --move:#FF8B4D; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0D121C; --surface:#161D2B; --ink:#E5E9F1; --muted:#98A2B6; --line:#283245;
   --accent:#FF8B4D; --accent-soft:#3A2216; --go:#5FCB8E; --go-soft:#16301F;
   --blue:#8EA9F0; --blue-soft:#1C2742; --warn:#EBAA55; --warn-soft:#352812; --bad:#F2877C; --bad-soft:#3A1A17;
+  --mood:#E58AD9;
   --fig:#E5E9F1; --fig-far:#4B5568; --prop:#283245; --prop-ink:#56627A; --move:#FF8B4D; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-text-size-adjust:100%}
@@ -60,12 +63,19 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,t
 .progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden}
 .progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 
-.quests{background:var(--surface);
+.quests{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:8px}
 .moods{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .moods button{appearance:none;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:6px 0;font:600 11px var(--body);color:var(--muted);display:grid;justify-items:center;gap:2px;cursor:pointer}
 .moods button span{font-size:24px;line-height:1}
-.moods button[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft);color:var(--ink)}
-.calm{background:var(--surface);border:1px solid var(--line);border-radius:16px;border-left:4px solid var(--blue);padding:12px;display:grid;gap:8px}border:1px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:8px}
+.moods button[aria-pressed="true"]{border-color:var(--mood);background:color-mix(in srgb,var(--mood) 16%,transparent);color:var(--ink)}
+.calm{background:var(--surface);border:1px solid var(--line);border-radius:16px;border-left:4px solid var(--mood)}
+.calm summary{list-style:none;display:flex;gap:10px;align-items:center;padding:12px;cursor:pointer}
+.calm summary::-webkit-details-marker{display:none}
+.calm .body{padding:0 12px 14px;display:grid;gap:10px}
+.calm ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
+.calm .kind{font-size:13.5px;background:color-mix(in srgb,var(--mood) 12%,transparent);border-radius:10px;padding:8px 10px}
+.mstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;text-align:center;font-size:11px;color:var(--muted)}
+.mstrip span{display:block;font-size:20px;line-height:1.2}
 .quests header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .quests header span{font-size:12px;color:var(--muted)}
 .q{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}
@@ -217,8 +227,10 @@ td.best{color:var(--go);font-weight:800}
     <div class="quests" id="quests"></div>
     <main class="tl" id="tl"></main>
     <div class="quests" id="chores"></div>
-    <div class="quests" id="mood-box">
-      <header><h2>Как прошёл день?</h2><span>любой ответ правильный</span></header>
+    <div class="panel" id="mood-box">
+      <span class="eyebrow">Как прошёл день</span>
+      <h2>Как ты сегодня?</h2>
+      <p class="small muted">Выбери честно — любой ответ правильный. Мама увидит в отчёте. Хочешь — допиши пару слов, это тоже увидит только мама.</p>
       <div class="moods">
         <button type="button" data-m="5"><span>😎</span>отлично</button>
         <button type="button" data-m="4"><span>🙂</span>хорошо</button>
@@ -226,17 +238,17 @@ td.best{color:var(--go);font-weight:800}
         <button type="button" data-m="2"><span>😏</span>тяжело</button>
         <button type="button" data-m="1"><span>😭</span>плохо</button>
       </div>
-      <label class="small hadd" style="display:none;margin-top:6px" id="mood-note-label">
-        <input id="mood-note" type="text" maxlength="200" placeholder="Что случилось или пара мыслей о дне...">
+      <label class="small muted" style="display:grid;gap:4px;margin-top:6px">Пара слов о дне (можно пустое)
+        <input id="mood-note" type="text" maxlength="200" placeholder="что было сегодня">
       </label>
+      <div class="mstrip" id="mstrip"></div>
     </div>
 
     <details class="calm" id="calm" style="margin-top:16px">
-      <summary style="list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:0">
-        <span class="sm"><b>Расстроился? Открой меня</b><span class="tag" style="background:var(--blue-soft);color:var(--blue);margin-left:8px">2 минуты</span></span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:18px;height:18px"><path d="M6 9l6 6 6-6"/></svg>
+      <summary><span class="sm"><b>Расстроился? Открой меня</b><span class="tag" style="--k:var(--mood)">2 минуты</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </summary>
-      <div class="body" style="padding:10px 0 0;display:grid;gap:10px">
+      <div class="body" style="display:grid;gap:10px">
         <p class="lead" style="font-size:14px;color:var(--muted)">Расстраиваться — нормально. Это значит, что тебе не всё равно. Вот что помогает быстро вернуться в форму:</p>
         <ol style="margin:0;padding-left:20px;display:grid;gap:5px;font-size:13.5px">
           <li><b>Дыхание «квадрат»:</b> вдох на 4 счёта, пауза на 4, выдох на 4, пауза на 4. Сделай 4 круга.</li>
@@ -1016,6 +1028,8 @@ var ORDER=[1,2,3,4,5,6,0];
 var now=new Date(),todayDow=now.getDay(),todayIso=iso(now);
 var monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((todayDow+6)%7));
 function dateOf(dow){var d=new Date(monday);d.setDate(monday.getDate()+((dow+6)%7));return d;}
+// смайлы настроения: тот же порядок, что в SEM.MOODS у мамы
+var MOODS=[[5,'😎','отлично'],[4,'🙂','хорошо'],[3,'😐','нормально'],[2,'😏','тяжело'],[1,'😭','плохо']];
 var sel=todayDow;
 
 // ---------- today ----------
@@ -1102,8 +1116,17 @@ function renderLocalMood(){
   [].forEach.call(btnBox.querySelectorAll('.moods button'),function(b){
     b.setAttribute('aria-pressed',String(+b.dataset.m===v));
   });
-  document.getElementById('mood-note-label').style.display=v?'block':'none';
   document.getElementById('mood-note').value=moodNotes[key]||'';
+  // полоса недели: как у Саши — видно, что отмечено за Пн–Вс
+  var ms=document.getElementById('mstrip');
+  if(ms){
+    var mon=dateOf(0),DN=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+    ms.innerHTML=[0,1,2,3,4,5,6].map(function(i){
+      var d=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i),k=iso(d),m=mood[k];
+      var e=m?(MOODS.filter(function(x){return x[0]===+m;})[0]||[0,'·'])[1]:'·';
+      return '<div><span>'+e+'</span>'+DN[i]+'</div>';
+    }).join('');
+  }
 }
 document.getElementById('mood-box').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
