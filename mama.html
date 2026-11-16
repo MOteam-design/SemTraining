@@ -49,7 +49,12 @@ h3{font-size:12px;margin:12px 0 4px;color:var(--muted);text-transform:uppercase;
 .btn.sm{padding:6px 10px;font-size:13px;border-radius:10px}
 .chip{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
 .chip.new{background:var(--new-soft);color:var(--new)}.chip.ok{background:var(--go-soft);color:var(--go)}.chip.no{background:var(--warn-soft);color:var(--warn)}.chip.none{background:var(--soft);color:var(--muted)}
-.days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scroll-behavior:smooth}
+.days button:disabled{opacity:.38;cursor:default}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats3 div{background:var(--soft);border-radius:12px;padding:10px;display:grid;gap:2px;min-width:0}
+.stats3 b{font-size:18px;font-variant-numeric:tabular-nums}
+.stats3 span{font-size:12px;color:var(--muted)}
 .days button{appearance:none;flex:0 0 auto;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:6px 10px;font:700 13px var(--body);cursor:pointer;display:grid;justify-items:center;min-width:52px;position:relative}
 .days button small{font-weight:600;color:var(--muted);font-size:11px}
 .days button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
@@ -164,6 +169,19 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
     <div class="row sp small" style="background:var(--soft);border-radius:12px;padding:8px 12px;font-weight:700"><span>Текущий уровень Семёна:</span><span id="lvl-lbl" style="color:var(--accent)">—</span></div>
   </section>
 
+  <!-- 5b. Итого за месяц -->
+  <section class="card">
+    <div class="row sp"><h2>Итого за месяц</h2>
+      <span class="row" style="gap:4px;align-items:center">
+        <button class="btn ghost sm" type="button" id="m-prev" aria-label="Предыдущий месяц">‹</button>
+        <b id="m-name" style="min-width:110px;text-align:center">—</b>
+        <button class="btn ghost sm" type="button" id="m-next" aria-label="Следующий месяц">›</button>
+      </span>
+    </div>
+    <div class="stats3" id="m-stats"></div>
+    <p class="small muted" id="m-note"></p>
+  </section>
+
   <div class="sec">Дополнительные задания · сверх лимита</div>
 
   <!-- Поощрения: мама сама придумывает достижение и сумму. Сверх лимита недели. -->
@@ -271,6 +289,40 @@ function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+
 function dt(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
 function dm(s){var d=dt(s);return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2);}
 function dlong(s){return dt(s).toLocaleDateString('ru-RU',{day:'numeric',month:'long'});}
+// ---------- итоги за месяц ----------
+// Считаем по сохранённой истории (mom.json → V.paid, V.confirmed, V.fines),
+// поэтому можно листать назад и смотреть любой месяц, а не только текущий.
+function monthStats(V,y,m){
+  var paid=0,weeks=0,earned=0,fines=0,fineN=0;
+  Object.keys(V.paid||{}).forEach(function(k){
+    var d=dt(k);
+    if(d.getFullYear()===y&&d.getMonth()===m){paid+=+((V.paid[k]||{}).sum)||0;weeks++;}
+  });
+  Object.keys(V.confirmed||{}).forEach(function(d){
+    if(+d.slice(0,4)===y&&+d.slice(5,7)-1===m){
+      var c=V.confirmed[d];for(var k in c)earned+=+c[k]||0;
+    }
+  });
+  (V.fines||[]).forEach(function(f){
+    if(f.d&&+f.d.slice(0,4)===y&&+f.d.slice(5,7)-1===m){fines+=+f.a||0;fineN++;}
+  });
+  return {paid:paid,weeks:weeks,earned:earned,fines:fines,fineN:fineN};
+}
+function renderMonths(V){
+  var y=monSel.getFullYear(),m=monSel.getMonth(),s=monthStats(V,y,m);
+  $('m-name').textContent=monSel.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+  $('m-stats').innerHTML=
+    '<div><b>'+rub(s.paid)+'</b><span>выплачено</span></div>'+
+    '<div><b>'+s.earned+'</b><span>подтверждено баллов</span></div>'+
+    '<div><b>'+rub(s.fines)+'</b><span>штрафы'+(s.fineN?' ('+s.fineN+')':'')+'</span></div>';
+  var isCur=(y===now.getFullYear()&&m===now.getMonth());
+  $('m-next').disabled=isCur;
+  var note='';
+  if(s.weeks)note='Выплат за месяц: '+s.weeks+'.';
+  else note='В этом месяце выплат ещё не было.';
+  if(s.earned&&s.paid&&s.paid<s.earned)note+=' Подтверждено больше, чем выплачено — есть непокрытая разница.';
+  $('m-note').textContent=note;
+}
 function rub(n){return Math.round(n).toLocaleString('ru-RU')+' ₽';}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function sum(ids){var s=0;for(var k in ids)s+=+ids[k]||0;return s;}
@@ -278,6 +330,8 @@ function $(id){return document.getElementById(id);}
 function toast(t){var el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true;},3500);}
 var now=new Date(),TODAY=iso(now),mon=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));
 var DAY=TODAY;
+// выбранный месяц для блока «Итого за месяц» (по умолчанию текущий)
+var monSel=new Date(now.getFullYear(),now.getMonth(),1);
 
 // ---------- data: claims.json (Семён) + mom.json (мои решения) -> SEM.derive ----------
 var LIVE=null,STATUS=null;
@@ -331,28 +385,29 @@ function render(){
     $('wk-pay').innerHTML='<span class="chip ok">выплачено '+rub(p.sum)+'</span>'+
       (diff>0?' <button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Доплатить '+rub(diff)+'</button>':'');
   }
-  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderRead,renderEnot,renderProj,renderTopics,renderPromo,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
+  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderMonths,renderRead,renderEnot,renderProj,renderTopics,renderPromo,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
 }
 // 2. day: full plan with done / not done, per-item decisions
 function renderDay(V){
-  // Очередь чипов дней: начинаем с понедельника до сегодня/воскресенья, сдвигаем по дням недели
-  var dow=now.getDay(), startOffset=0;
-  if(dow===6) startOffset=2;      // Суббота: сдвиг на вторник (индекс 2)
-  else if(dow===0) startOffset=3; // Воскресенье: сдвиг на среду (индекс 3)
-  else startOffset=1;             // Будни: начинаем с понедельника (индекс 1)
-
-  var monDate=new Date(mon), daysList=[];
+  // Все семь дней Пн–Вс всегда. Будущие — неактивны.
+  // На компьютере влезают в строку, на телефоне полоса прокручивается вбок
+  // и сама сдвигается к сегодняшнему дню.
+  var monDate=new Date(mon), chips='', todayBtn=null;
   for(var i=0;i<7;i++){
     var curD=new Date(monDate); curD.setDate(monDate.getDate()+i);
-    var curDow=curD.getDay();
-    if(curDow===0) curDow=7; // Вс = 7 для сравнения
-    if(curDow >= startOffset && curD <= now) daysList.push(iso(curD));
+    var d=iso(curD), future=d>TODAY;
+    chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'"'+(future?' disabled':'')+'>'+
+      (V.status[d]==='new'?'<span class="dot"></span>':'')+
+      DS[curD.getDay()]+'<small>'+(d===TODAY?'сегодня':curD.getDate())+'</small></button>';
+    if(d===TODAY) todayBtn=d;
   }
-  var chips='';
-  daysList.forEach(function(d){
-    chips+='<button type="button" data-day="'+d+'" aria-pressed="'+(d===DAY)+'">'+(V.status[d]==='new'?'<span class="dot"></span>':'')+DS[dt(d).getDay()]+'<small>'+(d===TODAY?'сегодня':dt(d).getDate())+'</small></button>';
-  });
   $('day-chips').innerHTML=chips;
+  // прокрутка к сегодняшнему дню (на узком экране), один раз
+  if(todayBtn&&!$('day-chips').dataset.scrolled){
+    var tb=$('day-chips').querySelector('[data-day="'+todayBtn+'"]');
+    if(tb&&tb.scrollIntoView){try{tb.scrollIntoView({block:'nearest',inline:'center'});}catch(e){}}
+    $('day-chips').dataset.scrolled='1';
+  }
   var dow=dt(DAY).getDay(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},G=SEM.dayPlan(dow,DAY),planKeys={},total=0,doneN=0;
   $('day-title').textContent=DAY===TODAY?'Сегодня, '+DN[dow].toLowerCase():DN[dow]+', '+dlong(DAY);
   // настроение дня: как Семён сам оценил день
@@ -552,6 +607,9 @@ $('offer-go').addEventListener('click',function(){var l=picked();if(l.length<2){
   act({t:'topics',list:l});[].forEach.call(document.querySelectorAll('#topics input:checked'),function(i){i.checked=false;});$('own').value='';cnt();});
 // day chips + bulk confirm
 $('day-chips').addEventListener('click',function(e){var b=e.target.closest('button[data-day]');if(!b)return;DAY=b.dataset.day;render();});
+// итоги за месяц: листаем назад и вперёд
+$('m-prev').addEventListener('click',function(){monSel=new Date(monSel.getFullYear(),monSel.getMonth()-1,1);render();});
+$('m-next').addEventListener('click',function(){monSel=new Date(monSel.getFullYear(),monSel.getMonth()+1,1);render();});
 $('day-all').addEventListener('click',function(){var V=view(),cl=V.claimed[DAY]||{},it=(V.items||{})[DAY]||{},ids={};
   Object.keys(cl).forEach(function(k){if((it[k]||'new')==='new')ids[k]=cl[k];});if(Object.keys(ids).length)act({t:'ok',d:DAY,ids:ids});});
 // all other buttons
