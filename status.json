@@ -55,12 +55,6 @@
    "enot-2": 100,
    "enot-3": 100
   },
-  "2026-11-14": {
-   "qx-soup": 5,
-   "qx-protein-every-meal": 5,
-   "bfast": 5,
-   "meal": 5
-  },
   "2026-11-12": {
    "out": 5,
    "meal": 5,
@@ -70,18 +64,24 @@
    "sleep": 5,
    "q-drink": 5,
    "q-dessert": 5
+  },
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
   }
  },
  "status": {
   "2026-11-11": "ok",
   "2026-11-13": "ok",
-  "2026-11-14": "ok",
-  "2026-11-12": "ok"
+  "2026-11-12": "ok",
+  "2026-11-14": "ok"
  },
  "paid": {
   "2026-11-09": {
-   "sum": 490,
-   "at": "2026-11-13"
+   "sum": 510,
+   "at": "2026-11-15"
   }
  },
  "fines": [],
@@ -152,12 +152,6 @@
    "q-drink": "ok",
    "q-dessert": "ok"
   },
-  "2026-11-14": {
-   "qx-soup": "ok",
-   "qx-protein-every-meal": "ok",
-   "bfast": "ok",
-   "meal": "ok"
-  },
   "2026-11-12": {
    "out": "ok",
    "meal": "ok",
@@ -168,9 +162,15 @@
    "sleep": "ok",
    "q-drink": "ok",
    "q-dessert": "ok"
+  },
+  "2026-11-14": {
+   "qx-soup": "ok",
+   "qx-protein-every-meal": "ok",
+   "bfast": "ok",
+   "meal": "ok"
   }
  },
- "updated": "2026-11-14T21:28",
+ "updated": "2026-11-16T13:32",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -207,6 +207,7 @@
   "amwgq61ovrk6",
   "amwgq63b8bbe",
   "amwgq6mc0n1e",
-  "amwgqjc8vo1c"
+  "amwgqjc8vo1c",
+  "amwi0xkoxf4a"
  ]
 }
