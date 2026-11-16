@@ -695,14 +695,14 @@ var VAPID_PUB='BJMRYi1S6OTcrJ5LB07oONgnvkNLi1vqzSWGjIEi9QMSq8YIb76gomWwnzBwurHiz
   if(!card||!window.PUSH) return;
   card.hidden=false;
   window.PUSH.status().then(function(on){
-    if(on){btn.textContent='Уведомления включены ✓';btn.disabled=true;st.textContent='';}
+    if(on){card.hidden=true;}   // уже включено — блок не нужен
     else{btn.textContent='Включить уведомления';btn.disabled=false;}
   });
   btn.addEventListener('click',function(){
     if(!KEY){toast('Сначала вставьте ключ выше');$('setup').scrollIntoView();return;}
     btn.disabled=true;btn.textContent='Настраиваю…';
     window.PUSH.enable({vapid:VAPID_PUB,repo:'SemTraining',key:KEY,role:'mama',prefix:'sm'}).then(function(){
-      btn.textContent='Уведомления включены ✓';st.textContent='Готово';
+      card.hidden=true;
       toast('Уведомления включены ✓');
     }).catch(function(e){
       btn.disabled=false;btn.textContent='Включить уведомления';

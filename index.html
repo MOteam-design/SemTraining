@@ -1644,13 +1644,13 @@ var VAPID_PUB='BJMRYi1S6OTcrJ5LB07oONgnvkNLi1vqzSWGjIEi9QMSq8YIb76gomWwnzBwurHiz
   if(!card||!btn||!window.PUSH||IS_MOM) return;
   card.hidden=false;
   window.PUSH.status().then(function(on){
-    if(on){btn.textContent='Уведомления включены ✓';btn.disabled=true;}
+    if(on){card.hidden=true;}   // уже включено — блок не нужен
   });
   btn.addEventListener('click',function(){
     if(!REPKEY){btn.textContent='Сначала попроси маму включить автоотправку';return;}
     btn.disabled=true;btn.textContent='Настраиваю…';
     window.PUSH.enable({vapid:VAPID_PUB,repo:'SemReports',key:REPKEY,role:'semyon',prefix:'sm'}).then(function(){
-      btn.textContent='Уведомления включены ✓';
+      card.hidden=true;
     }).catch(function(e){
       btn.disabled=false;btn.textContent='Включить уведомления';
       var m=e&&e.message;
