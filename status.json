@@ -33,6 +33,11 @@
    "qx-protein-every-meal": 5,
    "bfast": 5,
    "meal": 5
+  },
+  "2026-11-16": {
+   "wake": 20,
+   "bfast": 5,
+   "guitar": 30
   }
  },
  "confirmed": {
@@ -44,22 +49,6 @@
    "str-b": 40,
    "dinner": 5
   },
-  "2026-11-14": {
-   "qx-soup": 5,
-   "qx-protein-every-meal": 5,
-   "bfast": 5,
-   "meal": 5
-  },
-  "2026-11-12": {
-   "out": 5,
-   "meal": 5,
-   "dinner": 5,
-   "guitar": 30,
-   "nosweet": 10,
-   "sleep": 5,
-   "q-drink": 5,
-   "q-dessert": 5
-  },
   "2026-11-13": {
    "out": 5,
    "meal": 5,
@@ -70,13 +59,33 @@
    "enot-1": 100,
    "enot-2": 100,
    "enot-3": 100
+  },
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
+  },
+  "2026-11-16": {
+   "bfast": 5
+  },
+  "2026-11-12": {
+   "out": 5,
+   "meal": 5,
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "sleep": 5,
+   "q-drink": 5,
+   "q-dessert": 5
   }
  },
  "status": {
   "2026-11-11": "ok",
+  "2026-11-13": "ok",
   "2026-11-14": "ok",
-  "2026-11-12": "ok",
-  "2026-11-13": "ok"
+  "2026-11-16": "new",
+  "2026-11-12": "ok"
  },
  "paid": {
   "2026-11-09": {
@@ -84,7 +93,14 @@
    "at": "2026-11-15"
   }
  },
- "fines": [],
+ "fines": [
+  {
+   "id": "fmwjjn7rj",
+   "d": "2026-11-16",
+   "a": 10,
+   "r": "Не сделал уроки"
+  }
+ ],
  "books": {},
  "assigned": {
   "mmwc7zeg5": {
@@ -145,11 +161,24 @@
    "dinner": "ok",
    "h-trash": "no"
   },
+  "2026-11-13": {
+   "out": "ok",
+   "meal": "ok",
+   "guitar": "ok",
+   "vit": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
+  },
   "2026-11-14": {
    "qx-soup": "ok",
    "qx-protein-every-meal": "ok",
    "bfast": "ok",
    "meal": "ok"
+  },
+  "2026-11-16": {
+   "wake": "no",
+   "bfast": "ok",
+   "guitar": "new"
   },
   "2026-11-12": {
    "out": "ok",
@@ -161,17 +190,9 @@
    "sleep": "ok",
    "q-drink": "ok",
    "q-dessert": "ok"
-  },
-  "2026-11-13": {
-   "out": "ok",
-   "meal": "ok",
-   "guitar": "ok",
-   "vit": "ok",
-   "q-drink": "ok",
-   "q-dessert": "ok"
   }
  },
- "updated": "2026-11-16T20:28",
+ "updated": "2026-11-16T20:38",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -210,6 +231,9 @@
   "amwgq6mc0n1e",
   "amwgqjc8vo1c",
   "amwi0xkoxf4a",
-  "amwjjaxsdy74"
+  "amwjjaxsdy74",
+  "amwjjmcize5n",
+  "amwjjmg6uetv",
+  "amwjjn7rjn9a"
  ]
 }
