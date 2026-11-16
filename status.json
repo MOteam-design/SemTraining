@@ -44,16 +44,11 @@
    "str-b": 40,
    "dinner": 5
   },
-  "2026-11-13": {
-   "out": 5,
-   "meal": 5,
-   "guitar": 30,
-   "vit": 5,
-   "q-drink": 5,
-   "q-dessert": 5,
-   "enot-1": 100,
-   "enot-2": 100,
-   "enot-3": 100
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
   },
   "2026-11-12": {
    "out": 5,
@@ -65,18 +60,23 @@
    "q-drink": 5,
    "q-dessert": 5
   },
-  "2026-11-14": {
-   "qx-soup": 5,
-   "qx-protein-every-meal": 5,
-   "bfast": 5,
-   "meal": 5
+  "2026-11-13": {
+   "out": 5,
+   "meal": 5,
+   "guitar": 30,
+   "vit": 5,
+   "q-drink": 5,
+   "q-dessert": 5,
+   "enot-1": 100,
+   "enot-2": 100,
+   "enot-3": 100
   }
  },
  "status": {
   "2026-11-11": "ok",
-  "2026-11-13": "ok",
+  "2026-11-14": "ok",
   "2026-11-12": "ok",
-  "2026-11-14": "ok"
+  "2026-11-13": "ok"
  },
  "paid": {
   "2026-11-09": {
@@ -126,7 +126,8 @@
   "2026-11-11": "space-23",
   "2026-11-12": "logic-1",
   "2026-11-13": "attn-2",
-  "2026-11-14": "phys-8"
+  "2026-11-14": "phys-8",
+  "2026-11-16": "wit-44"
  },
  "answers": {},
  "tests": {},
@@ -144,13 +145,11 @@
    "dinner": "ok",
    "h-trash": "no"
   },
-  "2026-11-13": {
-   "out": "ok",
-   "meal": "ok",
-   "guitar": "ok",
-   "vit": "ok",
-   "q-drink": "ok",
-   "q-dessert": "ok"
+  "2026-11-14": {
+   "qx-soup": "ok",
+   "qx-protein-every-meal": "ok",
+   "bfast": "ok",
+   "meal": "ok"
   },
   "2026-11-12": {
    "out": "ok",
@@ -163,14 +162,16 @@
    "q-drink": "ok",
    "q-dessert": "ok"
   },
-  "2026-11-14": {
-   "qx-soup": "ok",
-   "qx-protein-every-meal": "ok",
-   "bfast": "ok",
-   "meal": "ok"
+  "2026-11-13": {
+   "out": "ok",
+   "meal": "ok",
+   "guitar": "ok",
+   "vit": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
   }
  },
- "updated": "2026-11-16T13:32",
+ "updated": "2026-11-16T20:28",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -208,6 +209,7 @@
   "amwgq63b8bbe",
   "amwgq6mc0n1e",
   "amwgqjc8vo1c",
-  "amwi0xkoxf4a"
+  "amwi0xkoxf4a",
+  "amwjjaxsdy74"
  ]
 }
