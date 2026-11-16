@@ -114,6 +114,12 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
     <p class="small muted" id="key-st">Без ключа приложение показывает данные с задержкой, а кнопки открывают Telegram с готовой командой.</p>
   </section>
 
+  <section class="card" id="push-card" hidden>
+    <div class="row sp"><b>🔔 Уведомления на телефон</b><span class="small muted" id="push-st"></span></div>
+    <p class="small muted">Будут приходить сверху, как от банка — даже когда приложение закрыто. Важно на iPhone: сайт должен быть добавлен на главный экран.</p>
+    <div class="row"><button class="btn" type="button" id="push-on">Включить уведомления</button></div>
+  </section>
+
   <!-- 1. Деньги недели -->
   <section class="card">
     <div class="row sp"><span class="small muted" id="wk-range">Эта неделя</span><span id="wk-pay"></span></div>
@@ -269,6 +275,7 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
 <div id="toast" hidden></div>
 <script src="puzzles.js?v=20261113b"></script>
 <script src="state.js?v=20261113b"></script>
+<script src="push.js?v=20261116a"></script>
 <script>
 (function(){
 var REPO='MOteam-design/SemTraining';
@@ -680,6 +687,30 @@ function loadStatus(){
 document.addEventListener('visibilitychange',function(){if(!document.hidden)load();});
 setInterval(function(){if(!document.hidden)load();},60000);
 render();load();
+
+// ---------- веб-пуши ----------
+var VAPID_PUB='BJMRYi1S6OTcrJ5LB07oONgnvkNLi1vqzSWGjIEi9QMSq8YIb76gomWwnzBwurHizUV9rqQMtYz2QqCwREL1uGQ';
+(function(){
+  var card=$('push-card'),btn=$('push-on'),st=$('push-st');
+  if(!card||!window.PUSH) return;
+  card.hidden=false;
+  window.PUSH.status().then(function(on){
+    if(on){btn.textContent='Уведомления включены ✓';btn.disabled=true;st.textContent='';}
+    else{btn.textContent='Включить уведомления';btn.disabled=false;}
+  });
+  btn.addEventListener('click',function(){
+    if(!KEY){toast('Сначала вставьте ключ выше');$('setup').scrollIntoView();return;}
+    btn.disabled=true;btn.textContent='Настраиваю…';
+    window.PUSH.enable({vapid:VAPID_PUB,repo:'SemTraining',key:KEY,role:'mama',prefix:'sm'}).then(function(){
+      btn.textContent='Уведомления включены ✓';st.textContent='Готово';
+      toast('Уведомления включены ✓');
+    }).catch(function(e){
+      btn.disabled=false;btn.textContent='Включить уведомления';
+      var m=e&&e.message;
+      toast(m==='denied'?'Разрешите уведомления в настройках телефона':m==='no-push'?'Этот браузер не поддерживает уведомления':'Не получилось включить — попробуйте ещё раз');
+    });
+  });
+})();
 })();
 </script>
 </body>

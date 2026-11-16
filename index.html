@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261113b"></script><script src="state.js?v=20261113b"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261113b"></script><script src="state.js?v=20261113b"></script><script src="push.js?v=20261116a"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -247,6 +247,11 @@ td.best{color:var(--go);font-weight:800}
     <div class="quests" id="quests"></div>
     <main class="tl" id="tl"></main>
     <div class="quests" id="chores"></div>
+    <div class="panel" id="push-card" hidden style="margin-top:16px">
+      <span class="eyebrow">Уведомления</span>
+      <p class="small muted">Напоминания про уроки и гитару будут приходить сверху на телефон, даже если приложение закрыто.</p>
+      <div class="row"><button class="btn" type="button" id="push-on">Включить уведомления</button></div>
+    </div>
     <div class="panel" id="mood-box">
       <span class="eyebrow">Как прошёл день</span>
       <h2>Как ты сегодня?</h2>
@@ -1632,6 +1637,27 @@ document.getElementById('as-save').addEventListener('click',function(){
   }).catch(function(){asUI('Нет связи, попробуй ещё раз.');});
 });
 asUI();if(REPKEY&&!IS_MOM)syncNow();
+// ---------- веб-пуши ----------
+var VAPID_PUB='BJMRYi1S6OTcrJ5LB07oONgnvkNLi1vqzSWGjIEi9QMSq8YIb76gomWwnzBwurHizUV9rqQMtYz2QqCwREL1uGQ';
+(function(){
+  var card=document.getElementById('push-card'),btn=document.getElementById('push-on');
+  if(!card||!btn||!window.PUSH||IS_MOM) return;
+  card.hidden=false;
+  window.PUSH.status().then(function(on){
+    if(on){btn.textContent='Уведомления включены ✓';btn.disabled=true;}
+  });
+  btn.addEventListener('click',function(){
+    if(!REPKEY){btn.textContent='Сначала попроси маму включить автоотправку';return;}
+    btn.disabled=true;btn.textContent='Настраиваю…';
+    window.PUSH.enable({vapid:VAPID_PUB,repo:'SemReports',key:REPKEY,role:'semyon',prefix:'sm'}).then(function(){
+      btn.textContent='Уведомления включены ✓';
+    }).catch(function(e){
+      btn.disabled=false;btn.textContent='Включить уведомления';
+      var m=e&&e.message;
+      btn.textContent=m==='denied'?'Разрешите уведомления в настройках телефона':m==='no-push'?'Браузер не поддерживает уведомления':'Не получилось — попробуй ещё раз';
+    });
+  });
+})();
 function brainLines(){var L=[];
   Object.keys(books).forEach(function(k){var b=books[k];if(b.f&&!momItem('books',k))L.push('B|'+b.f+'|'+k+'|'+b.p+'|'+clean(b.t));});
   if(proj){var m=momItem('projects',proj.id);if(!m||(proj.ready&&(m.state!=='ready'||m.status==='no')))L.push('P|'+(proj.ready||proj.picked)+'|'+proj.id+'|'+(proj.ready?'ready':'pick')+'|'+clean(proj.topic));}
