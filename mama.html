@@ -498,7 +498,13 @@ function renderRead(V){
     now_+='<div class="box"><div class="row sp"><b>«'+esc(a.t)+'»</b><span>+'+rub(a.rw)+'</span></div><span class="small muted">'+(a.a?esc(a.a)+' · ':'')+(a.pg?a.pg+' стр. · ':'')+'срок до '+dlong(a.due)+'</span>'+
       (a.pg?'<div class="bar"><i style="width:'+Math.min(100,Math.round(pg/a.pg*100))+'%"></i></div><span class="small">Страница '+pg+' из '+a.pg+'</span>':'')+
       '<span class="small"'+(left<0?' style="color:var(--warn)"':'')+'>'+(left<0?'Срок прошёл — дочитает за половину':left===0?'Сегодня последний день':'Осталось дней: '+left)+'</span>'+
-      '<div><button class="btn ghost sm" type="button" data-a="unbook" data-bid="'+id+'">Снять книгу</button></div></div>';});
+      '<div class="row"><button class="btn ghost sm" type="button" data-a="unbook" data-bid="'+id+'">Снять книгу</button>'+
+        '<button class="btn ghost sm" type="button" data-ext="'+id+'">Продлить</button></div>'+
+      '<div class="ext" id="ext-'+id+'" hidden style="display:grid;gap:6px;margin-top:6px">'+
+        '<label class="small muted">Новый срок<input type="date" id="ext-d-'+id+'" value="'+a.due+'"></label>'+
+        '<label class="small muted">Награда, ₽<input type="number" id="ext-r-'+id+'" value="'+a.rw+'" min="0" step="10" inputmode="numeric"></label>'+
+        '<button class="btn sm" type="button" data-ext-save="'+id+'">Сохранить</button>'+
+      '</div></div>';});
   Object.keys(CB).forEach(function(id){var b=CB[id];if(b.mom||b.f||A[id])return;now_+='<div class="box"><b>Своя книга: «'+esc(b.t)+'»</b><span class="small muted">'+b.p+' стр. · начал '+dlong(b.s)+'</span></div>';});
   $('read-now').innerHTML=now_||'<p class="small muted">Сейчас ничего не читает. Задайте книгу ниже.</p>';
   var B=V.books||{},ks=Object.keys(B).sort(function(a,b){return B[a].d<B[b].d?1:-1;});
@@ -632,6 +638,20 @@ document.addEventListener('click',function(e){
   if(t==='unbook'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='точно снять?';return;}a.bid=b.dataset.bid;}
   if(t==='pz'||t==='unpz'){a.d=b.dataset.d;if(t==='pz'){if(!a.d){toast('Выберите день');return;}a.pid=b.dataset.pid;}}
   act(a);
+});
+// продлить книгу: открыть форму / сохранить новый срок и награду
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('[data-ext]');
+  if(t){var box=document.getElementById('ext-'+t.dataset.ext); if(box)box.hidden=!box.hidden; return;}
+  var s=e.target.closest&&e.target.closest('[data-ext-save]');
+  if(s){
+    var id=s.dataset.extSave,V0=view(),a0=(V0.assigned||{})[id];
+    var due=(document.getElementById('ext-d-'+id)||{}).value;
+    var rw=Math.round(+((document.getElementById('ext-r-'+id)||{}).value)||0);
+    if(!a0||!due){toast('Укажите новый срок');return;}
+    act({t:'book',bid:id,title:a0.t,author:a0.a,pg:a0.pg,from:a0.from,due:due,rw:rw});
+    toast('Книга продлена до '+due);
+  }
 });
 // ---------- поощрения ----------
 $('p-d').value=TODAY;
