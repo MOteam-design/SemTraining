@@ -499,12 +499,12 @@ function renderRead(V){
       (a.pg?'<div class="bar"><i style="width:'+Math.min(100,Math.round(pg/a.pg*100))+'%"></i></div><span class="small">Страница '+pg+' из '+a.pg+'</span>':'')+
       '<span class="small"'+(left<0?' style="color:var(--warn)"':'')+'>'+(left<0?'Срок прошёл — дочитает за половину':left===0?'Сегодня последний день':'Осталось дней: '+left)+'</span>'+
       '<div class="row"><button class="btn ghost sm" type="button" data-a="unbook" data-bid="'+id+'">Снять книгу</button>'+
-        '<button class="btn ghost sm" type="button" data-ext="'+id+'">Продлить</button></div>'+
-      '<div class="ext" id="ext-'+id+'" hidden style="display:grid;gap:6px;margin-top:6px">'+
+        (left<0?'<button class="btn ghost sm" type="button" data-ext="'+id+'">Продлить</button>':'')+'</div>'+
+      (left<0?'<div class="ext" id="ext-'+id+'" hidden style="display:grid;gap:6px;margin-top:6px">'+
         '<label class="small muted">Новый срок<input type="date" id="ext-d-'+id+'" value="'+a.due+'"></label>'+
         '<label class="small muted">Награда, ₽<input type="number" id="ext-r-'+id+'" value="'+a.rw+'" min="0" step="10" inputmode="numeric"></label>'+
         '<button class="btn sm" type="button" data-ext-save="'+id+'">Сохранить</button>'+
-      '</div></div>';});
+      '</div>':'')+'</div>';});
   Object.keys(CB).forEach(function(id){var b=CB[id];if(b.mom||b.f||A[id])return;now_+='<div class="box"><b>Своя книга: «'+esc(b.t)+'»</b><span class="small muted">'+b.p+' стр. · начал '+dlong(b.s)+'</span></div>';});
   $('read-now').innerHTML=now_||'<p class="small muted">Сейчас ничего не читает. Задайте книгу ниже.</p>';
   var B=V.books||{},ks=Object.keys(B).sort(function(a,b){return B[a].d<B[b].d?1:-1;});
