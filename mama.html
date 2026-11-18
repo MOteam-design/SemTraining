@@ -497,7 +497,7 @@ function renderRead(V){
     var cb=CB[id]||{},pg=+cb.pg||0,left=Math.round((dt(a.due)-dt(TODAY))/864e5);
     now_+='<div class="box"><div class="row sp"><b>«'+esc(a.t)+'»</b><span>+'+rub(a.rw)+'</span></div><span class="small muted">'+(a.a?esc(a.a)+' · ':'')+(a.pg?a.pg+' стр. · ':'')+'срок до '+dlong(a.due)+'</span>'+
       (a.pg?'<div class="bar"><i style="width:'+Math.min(100,Math.round(pg/a.pg*100))+'%"></i></div><span class="small">Страница '+pg+' из '+a.pg+'</span>':'')+
-      '<span class="small'+(left<0?'" style="color:var(--warn)':'"')+'>'+(left<0?'Срок прошёл — дочитает за половину':left===0?'Сегодня последний день':'Осталось дней: '+left)+'</span>'+
+      '<span class="small"'+(left<0?' style="color:var(--warn)"':'')+'>'+(left<0?'Срок прошёл — дочитает за половину':left===0?'Сегодня последний день':'Осталось дней: '+left)+'</span>'+
       '<div><button class="btn ghost sm" type="button" data-a="unbook" data-bid="'+id+'">Снять книгу</button></div></div>';});
   Object.keys(CB).forEach(function(id){var b=CB[id];if(b.mom||b.f||A[id])return;now_+='<div class="box"><b>Своя книга: «'+esc(b.t)+'»</b><span class="small muted">'+b.p+' стр. · начал '+dlong(b.s)+'</span></div>';});
   $('read-now').innerHTML=now_||'<p class="small muted">Сейчас ничего не читает. Задайте книгу ниже.</p>';
