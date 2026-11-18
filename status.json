@@ -53,16 +53,6 @@
    "enot-2": 100,
    "enot-3": 100
   },
-  "2026-11-14": {
-   "qx-soup": 5,
-   "qx-protein-every-meal": 5,
-   "bfast": 5,
-   "meal": 5
-  },
-  "2026-11-16": {
-   "bfast": 5,
-   "guitar": 30
-  },
   "2026-11-12": {
    "out": 5,
    "meal": 5,
@@ -80,14 +70,24 @@
    "meal": 5,
    "str-b": 40,
    "dinner": 5
+  },
+  "2026-11-16": {
+   "bfast": 5,
+   "guitar": 30
+  },
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
   }
  },
  "status": {
   "2026-11-13": "ok",
-  "2026-11-14": "ok",
-  "2026-11-16": "ok",
   "2026-11-12": "ok",
-  "2026-11-11": "ok"
+  "2026-11-11": "ok",
+  "2026-11-16": "ok",
+  "2026-11-14": "ok"
  },
  "paid": {
   "2026-11-09": {
@@ -112,6 +112,14 @@
    "from": "2026-11-11",
    "due": "2026-11-13",
    "rw": 50
+  },
+  "mmwm95aif": {
+   "t": "Профессия",
+   "a": "Айзек Азимов",
+   "pg": 25,
+   "from": "2026-11-18",
+   "due": "2026-11-21",
+   "rw": 100
   }
  },
  "projects": {},
@@ -163,18 +171,6 @@
    "q-drink": "ok",
    "q-dessert": "ok"
   },
-  "2026-11-14": {
-   "qx-soup": "ok",
-   "qx-protein-every-meal": "ok",
-   "bfast": "ok",
-   "meal": "ok"
-  },
-  "2026-11-16": {
-   "wake": "no",
-   "bfast": "ok",
-   "guitar": "ok",
-   "feet": "no"
-  },
   "2026-11-12": {
    "out": "ok",
    "meal": "ok",
@@ -194,9 +190,21 @@
    "str-b": "ok",
    "dinner": "ok",
    "h-trash": "no"
+  },
+  "2026-11-16": {
+   "wake": "no",
+   "bfast": "ok",
+   "guitar": "ok",
+   "feet": "no"
+  },
+  "2026-11-14": {
+   "qx-soup": "ok",
+   "qx-protein-every-meal": "ok",
+   "bfast": "ok",
+   "meal": "ok"
   }
  },
- "updated": "2026-11-17T20:25",
+ "updated": "2026-11-18T18:06",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -241,6 +249,7 @@
   "amwjjn7rjn9a",
   "amwjjrig3ii4",
   "amwjkguo7gov",
-  "amwkyh6ndmzl"
+  "amwkyh6ndmzl",
+  "amwm95aihlg3"
  ]
 }
