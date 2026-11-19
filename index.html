@@ -99,15 +99,11 @@ button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,t
 /* Квесты по еде: компактный список. Подсказка «почему так» открывается
    по клику на название, а не висит отдельной строкой — блок стал втрое короче. */
 #quests{gap:2px}
-.qwrap{border-radius:10px}
-.qwrap[open]{background:var(--bg)}
-.qwrap > summary{list-style:none;display:block;padding:4px 6px;cursor:pointer}
-.qwrap > summary::-webkit-details-marker{display:none}
-.qwrap .q{margin:0}
-.qwrap .qwhy{margin:2px 6px 6px 30px;font-size:12.5px;color:var(--muted);line-height:1.4}
-.qwrap .qnote{display:inline-block;width:14px;height:14px;line-height:14px;text-align:center;border-radius:50%;
-  font-size:10px;font-weight:800;color:var(--muted);background:var(--line);margin-left:6px;vertical-align:1px}
-.qc .qwhy{margin:4px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45}
+.qrow{display:flex;gap:6px;align-items:center}
+.qrow .q{flex:1;min-width:0}
+.qbtn{flex:0 0 auto;appearance:none;border:0;background:var(--line);color:var(--muted);
+  width:20px;height:20px;border-radius:50%;font:800 11px var(--body);cursor:pointer;padding:0}
+.qwhy{margin:0 0 4px 30px;font-size:12.5px;color:var(--muted);line-height:1.4}
 
 .tl{display:grid;gap:8px}
 .item{display:grid;grid-template-columns:44px 1fr;gap:8px;align-items:start}
@@ -1093,9 +1089,10 @@ function renderToday(){
   // квесты по еде: свой набор на каждую дату (банк на 3 недели без повторов)
   var todayQ=questsFor(key),total=items.length+todayQ.length;
   var q='<header><h2>Квесты по еде</h2><span>каждый день новые · по 5 XP</span></header>';
-  todayQ.forEach(function(x){var on=!!day[x[0]];if(on)n++;
-    q+='<details class="qwrap"><summary><label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="5"'+(on?' checked':'')+'><span>'+esc(x[1])+momMark(key,x[0])+'<span class="qnote">?</span></span><span class="xp">+5</span></label></summary>'+
-       '<p class="qwhy">'+esc(x[2])+'</p></details>';});
+  todayQ.forEach(function(x,i){var on=!!day[x[0]];if(on)n++;
+    q+='<div class="qrow"><label class="q"><input class="check" type="checkbox" data-id="'+x[0]+'" data-xp="5"'+(on?' checked':'')+'><span>'+esc(x[1])+momMark(key,x[0])+'</span><span class="xp">+5</span></label>'+
+       '<button class="qbtn" type="button" data-why="'+i+'" aria-label="почему так">?</button></div>'+
+       '<p class="qwhy" id="why-'+i+'" hidden>'+esc(x[2])+'</p>';});
   document.getElementById('quests').innerHTML=q;
   var used=0;Object.keys(day).forEach(function(k){if(isChore(k))used+=+day[k]||0;});
   var dc=DAYCHORE[sel],list=CHORES.slice().sort(function(a,b){return (b[0]===dc)-(a[0]===dc);});
@@ -1186,10 +1183,10 @@ function onCheck(e){
 }
 document.getElementById('tl').addEventListener('change',onCheck);
 document.getElementById('quests').addEventListener('change',onCheck);
-// клик по галочке не должен раскрывать подсказку «почему так»
+// кнопка «?» открывает подсказку «почему так»
 document.getElementById('quests').addEventListener('click',function(e){
-  if(e.target.classList&&e.target.classList.contains('check')){e.preventDefault();e.stopPropagation();e.target.checked=!e.target.checked;
-    var ev=document.createEvent('HTMLEvents');ev.initEvent('change',true,false);e.target.dispatchEvent(ev);}
+  var b=e.target.closest&&e.target.closest('[data-why]'); if(!b)return;
+  var p=document.getElementById('why-'+b.dataset.why); if(p) p.hidden=!p.hidden;
 });
 document.getElementById('chores').addEventListener('change',onCheck);
 document.getElementById('chores').addEventListener('click',function(e){
