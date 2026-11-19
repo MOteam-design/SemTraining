@@ -273,8 +273,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js?v=20261113b"></script>
-<script src="state.js?v=20261113b"></script>
+<script src="puzzles.js?v=20261119a"></script>
+<script src="state.js?v=20261119a"></script>
 <script src="push.js?v=20261116a"></script>
 <script>
 (function(){
@@ -365,7 +365,16 @@ function appendAction(a,retry){
   return SEM.readJSON('SemTraining','mom.json',KEY).then(function(r){
     var acts=((r.data&&r.data.actions)||[]).concat([a]);   // журнал не обрезаем: в нём вся история денег
     return SEM.writeJSON('SemTraining','mom.json',KEY,{actions:acts},r.sha,'mom: '+a.t);
-  }).catch(function(e){if(e&&e.status===409&&!retry)return appendAction(a,true);throw e;});
+  })
+  .then(function(){
+    // Проверяем, что решение действительно записалось: при плохой связи PUT мог не дойти.
+    return SEM.readJSON('SemTraining','mom.json',KEY).then(function(v){
+      var list=(v.data&&v.data.actions)||[];
+      if(!list.some(function(x){return x.id===a.id;})) throw Object.assign(new Error('не сохранилось'),{status:409});
+      return true;
+    });
+  })
+  .catch(function(e){if(e&&e.status===409&&!retry)return appendAction(a,true);throw e;});
 }
 
 // ---------- render ----------
