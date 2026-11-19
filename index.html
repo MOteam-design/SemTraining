@@ -216,7 +216,7 @@ td.best{color:var(--go);font-weight:800}
   <header class="top">
     <div class="brand">
       <div><h1>Семён в форме</h1><p>Возвращение в игру: корпус, колени, стопы</p></div>
-      <div class="xpchip"><b id="xp-top">0 XP</b><small id="lv-top">Новичок</small></div>
+      <div class="xpchip"><b id="pay-top">0 ₽</b><small id="lv-top">к выплате · Новичок</small></div>
     </div>
     <nav class="tabs" aria-label="Разделы">
       <a href="#today" data-tab="today">Сегодня</a>
@@ -311,6 +311,13 @@ td.best{color:var(--go);font-weight:800}
       <div class="stat"><b id="st-streak">0</b><span>дней подряд</span></div>
       <div class="stat"><b id="st-work">0</b><span>тренировок</span></div>
       <div class="stat"><b id="st-quest">0</b><span>квестов по еде</span></div>
+    </div>
+    <div class="panel" id="how">
+      <span class="eyebrow">Чтобы не путаться</span>
+      <h2>Баллы и деньги — это разное</h2>
+      <p class="small"><b>Баллы</b> ты получаешь за каждое отмеченное дело. 1 балл = 1 ₽. Они копятся и поднимают твой уровень — это твой счёт в игре.</p>
+      <p class="small"><b>К выплате</b> — это деньги, которые мама уже проверила и подтвердила. Пока она не посмотрела день, сумма в шапке не растёт. Но баллы за этот день ты всё равно получил — они пойдут в уровень.</p>
+      <p class="small muted">Поэтому вверху страницы — сумма к выплате, а уровень написан рядом с ней.</p>
     </div>
     <div class="panel" id="earn">
       <span class="eyebrow">1 балл = 1 ₽</span>
@@ -1215,8 +1222,11 @@ function streak(){
 function level(xp){var i=0;for(var j=0;j<LEVELS.length;j++)if(xp>=LEVELS[j][0])i=j;return i;}
 function renderStats(){
   var t=totals(),li=level(t.xp),cur=LEVELS[li],nx=LEVELS[li+1];
-  document.getElementById('xp-top').textContent=t.xp+' XP';
-  document.getElementById('lv-top').textContent=cur[1];
+  // В шапке — деньги, которые мама УЖЕ подтвердила (а не все баллы):
+  // так Семён не путает баллы для уровней с суммой к выплате.
+  var cw=confirmedWeek(monday);
+  document.getElementById('pay-top').textContent=rub(cw.total);
+  document.getElementById('lv-top').textContent='к выплате · '+cur[1];
   document.getElementById('lv-name').textContent=cur[1];
   document.getElementById('lv-sub').textContent='Уровень '+(li+1)+' из '+LEVELS.length+' · '+t.xp+' XP';
   document.getElementById('lv-bar').style.width=(nx?(t.xp-cur[0])/(nx[0]-cur[0])*100:100)+'%';
@@ -1354,6 +1364,20 @@ function weekSum(mon){var xp=0,work=0,a=iso(mon),e=new Date(mon.getFullYear(),mo
   // everyday points + bonus never exceed WEEK_MAX; books and projects come on top
   var b=work>=6?WEEK_BONUS:0;return {xp:xp+ex,work:work,bonus:b,fine:fn,fl:fl,total:Math.max(0,Math.min(WEEK_MAX,xp+b)+ex-fn)};}
 function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0||k.indexOf('enot-')===0;}
+// Деньги, которые мама уже подтвердила за неделю (то, что реально к выплате).
+function confirmedWeek(mon){
+  var C=(momStatus&&momStatus.confirmed)||{},xp=0,ex=0,work=0;
+  for(var i=0;i<7;i++){
+    var k=iso(new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i)),c=C[k]||{};
+    Object.keys(c).forEach(function(x){
+      if(x.indexOf('bonus-')===0||x.indexOf('goal-')===0){ex+=+c[x]||0;return;}
+      if(isExtra(x))ex+=+c[x]||0;else xp+=+c[x]||0;
+      if(WORK[x])work++;
+    });
+  }
+  var b=work>=6?WEEK_BONUS:0;
+  return {xp:xp,ex:ex,bonus:b,total:Math.max(0,Math.min(WEEK_MAX,xp+b)+ex)};
+}
 function renderEarn(){
   var w=weekSum(monday);
   var ms='';
@@ -1390,7 +1414,7 @@ function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEar
 var momActions=null;
 function applyMom(j){
   if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
-  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();renderToday();}
+  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();renderToday();renderStats();}
 function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
 function loadMom(){
   if(IS_MOM||!window.fetch)return;
