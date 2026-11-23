@@ -76,6 +76,38 @@
   }
  },
  "confirmed": {
+  "2026-11-11": {
+   "q-drink": 5,
+   "q-dessert": 5,
+   "out": 5,
+   "meal": 5,
+   "str-b": 40,
+   "dinner": 5
+  },
+  "2026-11-17": {
+   "bfast": 5,
+   "vit": 5,
+   "lessons": 0,
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "meal": 5
+  },
+  "2026-11-18": {
+   "bfast": 5,
+   "vit": 5,
+   "lessons": 0,
+   "meal": 5,
+   "dinner": 5,
+   "read": 20,
+   "nosweet": 10
+  },
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
+   "bfast": 5,
+   "meal": 5
+  },
   "2026-11-19": {
    "out": 5,
    "meal": 5,
@@ -93,13 +125,15 @@
    "meal": 5,
    "dinner": 5
   },
-  "2026-11-11": {
-   "q-drink": 5,
-   "q-dessert": 5,
+  "2026-11-12": {
    "out": 5,
    "meal": 5,
-   "str-b": 40,
-   "dinner": 5
+   "dinner": 5,
+   "guitar": 30,
+   "nosweet": 10,
+   "sleep": 5,
+   "q-drink": 5,
+   "q-dessert": 5
   },
   "2026-11-13": {
    "out": 5,
@@ -111,56 +145,26 @@
    "enot-1": 100,
    "enot-2": 100,
    "enot-3": 100
-  },
-  "2026-11-14": {
-   "qx-soup": 5,
-   "qx-protein-every-meal": 5,
-   "bfast": 5,
-   "meal": 5
-  },
-  "2026-11-18": {
-   "bfast": 5,
-   "vit": 5,
-   "lessons": 0,
-   "meal": 5,
-   "dinner": 5,
-   "read": 20,
-   "nosweet": 10
-  },
-  "2026-11-12": {
-   "out": 5,
-   "meal": 5,
-   "dinner": 5,
-   "guitar": 30,
-   "nosweet": 10,
-   "sleep": 5,
-   "q-drink": 5,
-   "q-dessert": 5
-  },
-  "2026-11-17": {
-   "bfast": 5,
-   "vit": 5,
-   "lessons": 0,
-   "dinner": 5,
-   "guitar": 30,
-   "nosweet": 10,
-   "meal": 5
   }
  },
  "status": {
+  "2026-11-11": "ok",
+  "2026-11-17": "ok",
+  "2026-11-18": "ok",
+  "2026-11-14": "ok",
   "2026-11-19": "ok",
   "2026-11-16": "ok",
-  "2026-11-11": "ok",
-  "2026-11-13": "ok",
-  "2026-11-14": "ok",
-  "2026-11-18": "ok",
   "2026-11-12": "ok",
-  "2026-11-17": "ok"
+  "2026-11-13": "ok"
  },
  "paid": {
   "2026-11-09": {
    "sum": 510,
    "at": "2026-11-15"
+  },
+  "2026-11-16": {
+   "sum": 235,
+   "at": "2026-11-23"
   }
  },
  "fines": [
@@ -172,24 +176,7 @@
   }
  ],
  "books": {},
- "assigned": {
-  "mmwc7zeg5": {
-   "t": "Дары Волхвов",
-   "a": "О.Генри",
-   "pg": 5,
-   "from": "2026-11-11",
-   "due": "2026-11-20",
-   "rw": 50
-  },
-  "mmwm95aif": {
-   "t": "Профессия",
-   "a": "Айзек Азимов",
-   "pg": 25,
-   "from": "2026-11-18",
-   "due": "2026-11-21",
-   "rw": 100
-  }
- },
+ "assigned": {},
  "projects": {},
  "enot": {
   "1": {
@@ -205,6 +192,11 @@
   "3": {
    "d": "2026-11-13",
    "status": "ok",
+   "reward": 100
+  },
+  "4": {
+   "d": "2026-11-23",
+   "status": "new",
    "reward": 100
   }
  },
@@ -232,6 +224,42 @@
  "mood": {},
  "moodNotes": {},
  "items": {
+  "2026-11-11": {
+   "q-drink": "ok",
+   "q-dessert": "ok",
+   "out": "ok",
+   "meal": "ok",
+   "str-b": "ok",
+   "dinner": "ok",
+   "h-trash": "no"
+  },
+  "2026-11-17": {
+   "bfast": "ok",
+   "vit": "ok",
+   "wake": "no",
+   "lessons": "ok",
+   "dinner": "ok",
+   "guitar": "ok",
+   "nosweet": "ok",
+   "meal": "ok"
+  },
+  "2026-11-18": {
+   "wake": "no",
+   "bfast": "ok",
+   "vit": "ok",
+   "lessons": "ok",
+   "meal": "ok",
+   "dinner": "ok",
+   "read": "ok",
+   "guitar": "no",
+   "nosweet": "ok"
+  },
+  "2026-11-14": {
+   "qx-soup": "ok",
+   "qx-protein-every-meal": "ok",
+   "bfast": "ok",
+   "meal": "ok"
+  },
   "2026-11-19": {
    "out": "ok",
    "meal": "ok",
@@ -251,40 +279,6 @@
    "meal": "ok",
    "dinner": "ok"
   },
-  "2026-11-11": {
-   "q-drink": "ok",
-   "q-dessert": "ok",
-   "out": "ok",
-   "meal": "ok",
-   "str-b": "ok",
-   "dinner": "ok",
-   "h-trash": "no"
-  },
-  "2026-11-13": {
-   "out": "ok",
-   "meal": "ok",
-   "guitar": "ok",
-   "vit": "ok",
-   "q-drink": "ok",
-   "q-dessert": "ok"
-  },
-  "2026-11-14": {
-   "qx-soup": "ok",
-   "qx-protein-every-meal": "ok",
-   "bfast": "ok",
-   "meal": "ok"
-  },
-  "2026-11-18": {
-   "wake": "no",
-   "bfast": "ok",
-   "vit": "ok",
-   "lessons": "ok",
-   "meal": "ok",
-   "dinner": "ok",
-   "read": "ok",
-   "guitar": "no",
-   "nosweet": "ok"
-  },
   "2026-11-12": {
    "out": "ok",
    "meal": "ok",
@@ -296,18 +290,16 @@
    "q-drink": "ok",
    "q-dessert": "ok"
   },
-  "2026-11-17": {
-   "bfast": "ok",
-   "vit": "ok",
-   "wake": "no",
-   "lessons": "ok",
-   "dinner": "ok",
+  "2026-11-13": {
+   "out": "ok",
+   "meal": "ok",
    "guitar": "ok",
-   "nosweet": "ok",
-   "meal": "ok"
+   "vit": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
   }
  },
- "updated": "2026-11-19T21:51",
+ "updated": "2026-11-23T12:22",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -384,6 +376,9 @@
   "amwnwbhpeqpw",
   "amwnwbi8noob",
   "amwnwbnqba11",
-  "amwnwbymcw1z"
+  "amwnwbymcw1z",
+  "amwsv6uj2l9j",
+  "amwsv6vzq3zf",
+  "amwsv7julkvm"
  ]
 }
