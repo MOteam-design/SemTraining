@@ -321,7 +321,7 @@ td.best{color:var(--go);font-weight:800}
     </div>
     <div class="panel" id="earn">
       <span class="eyebrow">1 балл = 1 ₽</span>
-      <h2>Подтверждено на этой неделе</h2>
+      <h2>К выплате за эту неделю</h2>
       <p class="small muted">Потолок недели — 1500 ₽ за всё ежедневное: спорт, гитару, чтение, еду, дела. Книги и доклады — сверху.</p>
       <div class="bank-sum"><b id="e-week">0 ₽</b><span id="e-of">цель недели — 1000 ₽</span></div>
       <div class="progress"><i id="e-bar"></i></div>
@@ -1385,7 +1385,7 @@ function renderEarn(){
     }
     var pd=(momStatus.paid||{})[iso(monday)],paidSum=+((pd&&pd.sum)||0),left=Math.max(0,cw.total-paidSum);
     var db=(window.SEM&&SEM.debt)?SEM.debt(momStatus,monday):{total:0,list:[]};
-    ms='<p class="small"><b>✅ Мама подтвердила за эту неделю: '+rub(cw.total)+'</b>'+
+    ms='<p class="small"><b>✅ Мама подтвердила: '+rub(cw.total)+' к выплате за эту неделю</b>'+
       (pend.length?' · ждут проверки дней: '+pend.length:'')+
       (no.length?' · не засчитано: '+no.map(fmtDate).join(', '):'')+
       (pd?' · 💸 выплачено '+rub(paidSum)+' · осталось '+rub(left):'')+
@@ -1427,7 +1427,7 @@ document.getElementById('e-table').addEventListener('click',function(e){
 });
 
 var renderFines=null,momStatus=null;
-var momAt=null,momStale=false,momRetry=null;
+var momAt=null,momStale=false,momRetry=null,momLastTry=0;
 function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEarn();if(renderFines)renderFines();}
 // mom's decisions: read mom.json straight from GitHub and derive the state with my own marks (works without mom's computer)
 var momActions=null;
@@ -1442,17 +1442,22 @@ function applyMom(j){
 function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
 function loadMom(){
   if(IS_MOM||!window.fetch)return;
-  clearTimeout(momRetry);
-  if(window.SEM)window.SEM.readJSON('SemTraining','mom.json',null).then(function(r){
-    momActions=(r.data&&r.data.actions)||[];momAt=new Date();momStale=false;momCacheSave(momActions);refreshMom();
-  },function(){
-    var c=readMomCache();
-    if(!momActions&&c){momActions=c.acts;momAt=new Date(c.at);}
-    if(momActions){momStale=true;refreshMom();}
-    else{momStale=true;loadStatusFile();}
-    momRetry=setTimeout(loadMom,20000);
-  });
-  else loadStatusFile();
+  clearTimeout(momRetry);momLastTry=Date.now();
+  // читаем публичный mom.json напрямую с raw.githubusercontent.com:
+  // у GitHub API лимит 60 запросов в час без ключа, из-за него страница
+  // раньше сваливалась на старый status.json. У raw такого лимита нет.
+  fetch('https://raw.githubusercontent.com/MOteam-design/SemTraining/main/mom.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(j){
+      momActions=(j&&j.actions)||[];momAt=new Date();momStale=false;momCacheSave(momActions);refreshMom();
+    })
+    .catch(function(){
+      var c=readMomCache();
+      if(!momActions&&c){momActions=c.acts;momAt=new Date(c.at);}
+      if(momActions){momStale=true;refreshMom();}
+      else{momStale=true;loadStatusFile();}
+      momRetry=setTimeout(loadMom,20000);
+    });
 }
 function loadStatusFile(){
   if(momActions)return; // живое уже загружено — старый снимок его не подменяет
@@ -1461,8 +1466,8 @@ function loadStatusFile(){
   }).catch(function(){});
 }
 loadMom();
-setInterval(function(){if(!document.hidden)loadMom();},60000);
-document.addEventListener('visibilitychange',function(){if(!document.hidden){loadMom();syncNow();}});
+setInterval(function(){if(!document.hidden)loadMom();},120000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){if(Date.now()-momLastTry>60000)loadMom();syncNow();}});
 var fineForm=document.getElementById('f-form');
 if(fineForm){
   var fstore=null;
