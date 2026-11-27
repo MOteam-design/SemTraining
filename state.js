@@ -18,10 +18,21 @@
 
   function derive(claims, actions) {
     claims = claims || {};
-    var CL = claims.done || {};
+    // Уроки (0 XP) считаем только при наличии времени явной отметки.
+    // Старые и случайные записи lessons без lessonsAt не показываем и не подтверждаем.
+    var LAT = claims.lessonsAt || {};
+    var CL = {};
+    Object.keys(claims.done || {}).forEach(function (d) {
+      var src = claims.done[d] || {}, out = {};
+      Object.keys(src).forEach(function (k) {
+        if (k === 'lessons' && !LAT[d]) return;
+        out[k] = src[k];
+      });
+      if (Object.keys(out).length) CL[d] = out;
+    });
     var S = { claimed: CL, confirmed: {}, status: {}, paid: {}, fines: [], books: {}, assigned: {}, projects: {}, enot: {}, topics: null,
               bonuses: {}, goals: {}, puzzles: {}, answers: claims.pzAns || {}, tests: claims.tests || {}, hnames: claims.hnames || {}, subs: claims.subs || {},
-              mood: claims.mood || {}, moodNotes: claims.moodNotes || {}, updated: claims.updated || null };
+              mood: claims.mood || {}, moodNotes: claims.moodNotes || {}, lessonsAt: LAT, updated: claims.updated || null };
     var dec = {}, extra = {};
     Object.keys(claims.books || {}).forEach(function (k) {
       var b = claims.books[k];
@@ -48,7 +59,12 @@
       if (t === 'ok' || t === 'no') {
         if (!a.d) return;
         var x = dec[a.d] || (dec[a.d] = { ok: {}, no: {} }), ids = a.ids || CL[a.d] || {};
-        Object.keys(ids).forEach(function (k) { if (t === 'ok') { x.ok[k] = +ids[k] || 0; delete x.no[k]; } else { x.no[k] = 1; delete x.ok[k]; } });
+        var aat = Date.parse(a.at || '') || 0;
+        Object.keys(ids).forEach(function (k) {
+          // решение по урокам действует, только если оно принято после явной отметки
+          if (k === 'lessons' && (!LAT[a.d] || aat < +LAT[a.d])) return;
+          if (t === 'ok') { x.ok[k] = +ids[k] || 0; delete x.no[k]; } else { x.no[k] = 1; delete x.ok[k]; }
+        });
       }
       else if (t === 'paid') { if (a.mon) S.paid[a.mon] = { sum: +a.sum || 0, at: (a.at || '').slice(0, 10) }; }
       else if (t === 'fine') { S.fines = S.fines.filter(function (f) { return f.id !== a.fid; }); S.fines.push({ id: a.fid, d: a.d, a: +a.a || 0, r: a.r || '' }); }
