@@ -342,7 +342,7 @@ var DAY=TODAY;
 var monSel=new Date(now.getFullYear(),now.getMonth(),1);
 
 // ---------- data: claims.json (Семён) + mom.json (мои решения) -> SEM.derive ----------
-var LIVE=null,STATUS=null;
+var LIVE=null,STATUS=null,loadT=null;
 // последние успешно прочитанные данные — чтобы при плохой связи не показывать
 // старый status.json и не «терять» уже сделанные подтверждения
 var LIVE_CACHE='sm-live-cache';
@@ -716,6 +716,7 @@ $('key-reset').addEventListener('click',function(e){e.preventDefault();if(KEY){i
 // load
 function stamp(s){return s?new Date(s).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';}
 function load(){
+  clearTimeout(loadT);
   if(KEY){
     Promise.all([SEM.readJSON('SemReports','claims.json',KEY),SEM.readJSON('SemTraining','mom.json',KEY)]).then(function(r){
       LIVE={claims:r[0].data||{},acts:(r[1].data&&r[1].data.actions)||[]};
@@ -728,7 +729,7 @@ function load(){
       if(!LIVE){var c=readLive();if(c)LIVE={claims:c.claims,acts:c.acts,at:c.at};}
       if(LIVE){
         $('upd').textContent='Нет связи — показаны данные на '+stamp(LIVE.at)+'. Пробую снова…';
-        render();setTimeout(function(){if(!document.hidden)load();},15000);
+        render();loadT=setTimeout(function(){if(!document.hidden)load();},15000);
       }else loadStatus();
     });
     return;}
