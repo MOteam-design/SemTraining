@@ -1390,6 +1390,7 @@ function renderEarn(){
       (no.length?' · не засчитано: '+no.map(fmtDate).join(', '):'')+
       (pd?' · 💸 выплачено '+rub(paidSum)+' · осталось '+rub(left):'')+
       (db.total?'<br><b>⚠️ За прошлые недели не выплачено: '+rub(db.total)+'</b> — напомни маме':'')+
+      (db.total?'<br><b>Всего к выплате с прошлыми неделями: '+rub(left+db.total)+'</b>':'')+
       (momStale?'<br><span class="muted">Данные мамы на '+fmtWhen(momAt)+', обновятся сами.</span>':'')+'</p>';
   }
   var fl=[];Object.keys(fines||{}).forEach(function(k){var f=fines[k];if(f&&f.d>=iso(monday)&&f.d<=iso(new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+6)))fl.push(f);});

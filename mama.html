@@ -402,11 +402,13 @@ function render(){
   var db=SEM.debt?SEM.debt(V,mon):{total:0,list:[]};
   var dbox=$('wk-debt');
   if(db.total){
+    var pNow=V.paid[w.mon],paidNow=+((pNow&&pNow.sum)||0),owed=Math.max(0,w.total-paidNow)+db.total;
     dbox.hidden=false;
     dbox.innerHTML='<b>⚠️ Не выплачено за прошлые недели: '+rub(db.total)+'</b>'+
       db.list.map(function(x){var e2=new Date(dt(x.mon).getFullYear(),dt(x.mon).getMonth(),dt(x.mon).getDate()+6);
         return '<div class="row sp" style="margin-top:6px"><span>'+dm(x.mon)+'–'+dm(iso(e2))+' · к выплате '+rub(x.total)+(x.paid?' · выплачено '+rub(x.paid):'')+'</span>'+
-          '<button class="btn ok sm" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">'+(x.paid?'Доплатить '+rub(x.left):'Выплатить '+rub(x.total))+'</button></div>';}).join('');
+          '<button class="btn ok sm" type="button" data-a="paid" data-mon="'+x.mon+'" data-sum="'+x.total+'">'+(x.paid?'Доплатить '+rub(x.left):'Выплатить '+rub(x.total))+'</button></div>';}).join('')+
+      '<div class="row sp" style="margin-top:8px;font-weight:700"><span>Всего к выплате с прошлыми неделями</span><span>'+rub(owed)+'</span></div>';
   }else{dbox.hidden=true;dbox.innerHTML='';}
   var p=V.paid[w.mon];
   if(!p){
