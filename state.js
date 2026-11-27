@@ -105,7 +105,13 @@
         if (k.indexOf('bonus-') === 0 || k.indexOf('goal-') === 0) promo += +c[k] || 0;   // поощрения — отдельной строкой
         if (isExtra(k)) ex += +c[k] || 0; else daily += +c[k] || 0; if (WORK[k]) work++;
       }
-      if (S.status[d] === 'new') { pend++; var cl = S.claimed[d] || {}; for (var j in cl) claimed += +cl[j] || 0; }
+      if (S.status[d] === 'new') {
+        pend++;
+        // «ждёт проверки» — только те пункты, которые ещё не решены,
+        // а не весь день: иначе в сумму попадут уже отклонённые пункты
+        var it = (S.items || {})[d] || {}, cl = S.claimed[d] || {};
+        for (var j in cl) if (it[j] === 'new') claimed += +cl[j] || 0;
+      }
     }
     (S.fines || []).forEach(function (f) { if (f.d >= days[0] && f.d <= days[6]) fine += +f.a || 0; });
     var b = work >= 6 ? C.BONUS : 0;
