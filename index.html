@@ -1654,7 +1654,7 @@ function renderEnot(){
   document.getElementById('en-list').innerHTML=ENOT_L.map(function(l){var n=String(l[0]),d=enot[n],m=momItem('enot',n),st;
     if(m&&m.status==='ok')st='<span class="xp">✅ +100</span>';
     else if(m&&m.status==='no')st='<span class="muted small">не засчитано</span> <button class="btn ghost" type="button" data-en="'+n+'">Пройти заново ✓</button>';
-    else if(d)st='<span class="muted small">ждёт маму</span>';
+    else if(d)st='<span class="muted small">ждёт маму</span> <button class="btn ghost" type="button" data-en="'+n+'">Отметить заново</button>';
     else st='<button class="btn ghost" type="button" data-en="'+n+'">Прошёл ✓</button>';
     return '<div class="row" style="justify-content:space-between;gap:8px"><span class="small"><b>'+n+'.</b> '+esc(l[1])+'</span>'+st+'</div>';}).join('');
 }
