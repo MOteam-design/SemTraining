@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261119a"></script><script src="state.js?v=20261119a"></script><script src="push.js?v=20261116a"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261127a"></script><script src="state.js?v=20261127a"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -317,18 +317,18 @@ td.best{color:var(--go);font-weight:800}
       <h2>Баллы и деньги — это разное</h2>
       <p class="small"><b>Баллы</b> ты получаешь за каждое отмеченное дело. 1 балл = 1 ₽. Они копятся и поднимают твой уровень — это твой счёт в игре.</p>
       <p class="small"><b>К выплате</b> — это деньги, которые мама уже проверила и подтвердила. Пока она не посмотрела день, сумма в шапке не растёт. Но баллы за этот день ты всё равно получил — они пойдут в уровень.</p>
-      <p class="small muted">Поэтому вверху страницы — сумма к выплате, а уровень написан рядом с ней.</p>
+      <p class="small muted">Поэтому вверху страницы — сумма к выплате, а уровень написан рядом с ней. Если неделя осталась невыплаченной, она не сгорает: в «Прогрессе» будет строка «за прошлые недели не выплачено».</p>
     </div>
     <div class="panel" id="earn">
       <span class="eyebrow">1 балл = 1 ₽</span>
-      <h2>Заработано на этой неделе</h2>
+      <h2>Подтверждено на этой неделе</h2>
       <p class="small muted">Потолок недели — 1500 ₽ за всё ежедневное: спорт, гитару, чтение, еду, дела. Книги и доклады — сверху.</p>
       <div class="bank-sum"><b id="e-week">0 ₽</b><span id="e-of">цель недели — 1000 ₽</span></div>
       <div class="progress"><i id="e-bar"></i></div>
       <p class="small muted" id="e-hint"></p>
       <p class="small"><b>Карманные 500 ₽ — твои всегда.</b> Они не зависят от баллов и штрафов: это на воду и вкусности. Баллы — это сверху.</p>
       <div id="e-fines"></div>
-      <div class="tblwrap"><table id="e-table"><thead><tr><th>Неделя</th><th>Баллы</th><th>Бонус</th><th>Штрафы</th><th>Итого</th><th class="e-paid">Выплата</th></tr></thead><tbody></tbody></table></div>
+      <div class="tblwrap"><table id="e-table"><thead><tr><th>Неделя</th><th>Засчитано</th><th>Бонус</th><th>Штрафы</th><th>К выплате</th><th class="e-paid">Выплата</th></tr></thead><tbody></tbody></table></div>
     </div>
     <div class="panel">
       <span class="eyebrow">Правила известны заранее</span>
@@ -1270,6 +1270,7 @@ document.getElementById('promo-goals').addEventListener('click',function(e){
 var tests={};try{tests=JSON.parse(get('sm-tests','{}'))||{};}catch(e){tests={};}
 var TF=['plank','side','push','bridge','steps'];
 function fmtDate(s){var p=s.split('-');return +p[2]+' '+MON[+p[1]-1].slice(0,3)+' '+p[0].slice(2);}
+function fmtWhen(d){if(!d)return '—';try{var x=new Date(d);return ('0'+x.getHours()).slice(-2)+':'+('0'+x.getMinutes()).slice(-2);}catch(e){return '—';}}
 function renderTests(){
   var keys=Object.keys(tests).sort().reverse(),best={};
   TF.forEach(function(f){best[f]=Math.max.apply(null,[0].concat(keys.map(function(k){return +tests[k][f]||0;})));});
@@ -1365,38 +1366,55 @@ function weekSum(mon){var xp=0,work=0,a=iso(mon),e=new Date(mon.getFullYear(),mo
   var b=work>=6?WEEK_BONUS:0;return {xp:xp+ex,work:work,bonus:b,fine:fn,fl:fl,total:Math.max(0,Math.min(WEEK_MAX,xp+b)+ex-fn)};}
 function isExtra(k){return k.indexOf('book-')===0||k.indexOf('proj-')===0||k.indexOf('enot-')===0;}
 // Деньги, которые мама уже подтвердила за неделю (то, что реально к выплате).
+// Считаем той же функцией, что и приложение мамы: SEM.week(momStatus, mon).
+// Так суммы на обеих страницах совпадают всегда — включая бонус и штрафы.
 function confirmedWeek(mon){
-  var C=(momStatus&&momStatus.confirmed)||{},xp=0,ex=0,work=0;
-  for(var i=0;i<7;i++){
-    var k=iso(new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i)),c=C[k]||{};
-    Object.keys(c).forEach(function(x){
-      if(x.indexOf('bonus-')===0||x.indexOf('goal-')===0){ex+=+c[x]||0;return;}
-      if(isExtra(x))ex+=+c[x]||0;else xp+=+c[x]||0;
-      if(WORK[x])work++;
-    });
-  }
-  var b=work>=6?WEEK_BONUS:0;
-  return {xp:xp,ex:ex,bonus:b,total:Math.max(0,Math.min(WEEK_MAX,xp+b)+ex)};
+  if(window.SEM&&momStatus) return window.SEM.week(momStatus,mon);
+  return {xp:0,ex:0,work:0,bonus:0,fine:0,pend:0,claimed:0,total:0};
 }
 function renderEarn(){
-  var w=weekSum(monday);
+  // Всё, что показываем как деньги, берём из подтверждённого мамой —
+  // той же функцией SEM.week, что и её приложение. Никаких «своих» сумм.
+  var cw=confirmedWeek(monday);
   var ms='';
-  if(momStatus&&momStatus.confirmed){var cx=0,cex=0,wt=0,pend=[],no=[];
-    for(var i=0;i<7;i++){var dd=iso(new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i)),c=momStatus.confirmed[dd]||{},st=(momStatus.status||{})[dd];
-      Object.keys(c).forEach(function(k){if(isExtra(k))cex+=+c[k]||0;else cx+=+c[k]||0;if(WORK[k])wt++;});if(st==='new')pend.push(dd);if(st==='no')no.push(dd);}
-    var ct=Math.max(0,Math.min(WEEK_MAX,cx+(wt>=6?WEEK_BONUS:0))+cex-w.fine),pd=(momStatus.paid||{})[iso(monday)];
-    ms='<p class="small"><b>✅ Мама подтвердила: '+rub(ct)+'</b>'+(pend.length?' · ждут проверки дней: '+pend.length:'')+(no.length?' · не засчитано: '+no.map(fmtDate).join(', '):'')+(pd?' · 💸 выплачено '+rub(pd.sum):'')+'</p>';}
-  document.getElementById('e-fines').innerHTML=ms+(w.fl.length?'<div class="stop"><b>Штрафы на этой неделе: −'+rub(w.fine)+'</b><ul>'+w.fl.sort(function(x,y){return x.d<y.d?-1:1;}).map(function(f){return '<li>'+fmtDate(f.d)+' — '+esc(f.r)+': −'+rub(+f.a)+'</li>';}).join('')+'</ul></div>':'');
-  document.getElementById('e-week').textContent=rub(w.total);
-  document.getElementById('e-of').textContent=w.total>=WEEK_GOAL?'цель недели 1000 ₽ — есть!':'до 1000 ₽ — ещё '+rub(WEEK_GOAL-w.total);
-  document.getElementById('e-bar').style.width=Math.min(100,w.total/WEEK_GOAL*100)+'%';
-  document.getElementById('e-hint').textContent='Каждый балл — рубль, максимум '+WEEK_MAX+' ₽ в неделю (книги и доклады — сверху). Тренировок за неделю: '+w.work+' из 7. Сделаешь 6 — бонус +'+WEEK_BONUS+' ₽. '+(IS_MOM?'':'Деньги засчитываются по отчёту: вечером нажимай «Отправить маме». ')+'Выплата по воскресеньям.';
-  var weeks=[];for(var i=0;i<8;i++){var m=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()-7*i),s=weekSum(m);if(s.xp||s.fine||i===0)weeks.push([m,s]);}
+  if(momStatus&&momStatus.confirmed){
+    var pend=[],no=[];
+    for(var i=0;i<7;i++){
+      var dd=iso(new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i)),st=(momStatus.status||{})[dd];
+      if(st==='new')pend.push(dd);if(st==='no')no.push(dd);
+    }
+    var pd=(momStatus.paid||{})[iso(monday)],paidSum=+((pd&&pd.sum)||0),left=Math.max(0,cw.total-paidSum);
+    var db=(window.SEM&&SEM.debt)?SEM.debt(momStatus,monday):{total:0,list:[]};
+    ms='<p class="small"><b>✅ Мама подтвердила за эту неделю: '+rub(cw.total)+'</b>'+
+      (pend.length?' · ждут проверки дней: '+pend.length:'')+
+      (no.length?' · не засчитано: '+no.map(fmtDate).join(', '):'')+
+      (pd?' · 💸 выплачено '+rub(paidSum)+' · осталось '+rub(left):'')+
+      (db.total?'<br><b>⚠️ За прошлые недели не выплачено: '+rub(db.total)+'</b> — напомни маме':'')+
+      (momStale?'<br><span class="muted">Данные мамы на '+fmtWhen(momAt)+', обновятся сами.</span>':'')+'</p>';
+  }
+  var fl=[];Object.keys(fines||{}).forEach(function(k){var f=fines[k];if(f&&f.d>=iso(monday)&&f.d<=iso(new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+6)))fl.push(f);});
+  document.getElementById('e-fines').innerHTML=ms+(fl.length?'<div class="stop"><b>Штрафы на этой неделе: −'+rub(cw.fine)+'</b><ul>'+fl.sort(function(x,y){return x.d<y.d?-1:1;}).map(function(f){return '<li>'+fmtDate(f.d)+' — '+esc(f.r)+': −'+rub(+f.a)+'</li>';}).join('')+'</ul></div>':'');
+  document.getElementById('e-week').textContent=rub(cw.total);
+  var pd0=(momStatus&&momStatus.paid||{})[iso(monday)],ps0=+((pd0&&pd0.sum)||0);
+  document.getElementById('e-of').textContent=pd0?'выплачено '+rub(ps0)+' · осталось '+rub(Math.max(0,cw.total-ps0)):(cw.total>=WEEK_GOAL?'цель недели 1000 ₽ — есть!':'подтверждено мамой · до 1000 ₽ ещё '+rub(Math.max(0,WEEK_GOAL-cw.total)));
+  document.getElementById('e-bar').style.width=Math.min(100,cw.total/WEEK_GOAL*100)+'%';
+  document.getElementById('e-hint').textContent='Здесь только то, что мама засчитала. Каждый балл — рубль, максимум '+WEEK_MAX+' ₽ в неделю (книги и доклады — сверху). Тренировок засчитано: '+cw.work+' из 7. Сделаешь 6 — бонус +'+WEEK_BONUS+' ₽. '+(IS_MOM?'':'Что ещё ждёт проверки — под суммой недели. ')+'Выплата по воскресеньям.';
+  var weeks=[];
+  for(var i=0;i<8;i++){
+    var m=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()-7*i);
+    var s=(window.SEM&&momStatus)?SEM.week(momStatus,m):weekSum(m);
+    if(s.xp||s.fine||s.pend||s.claimed||i===0)weeks.push([m,s]);
+  }
   [].forEach.call(document.querySelectorAll('.e-paid'),function(th){th.hidden=!IS_MOM;});
-  document.querySelector('#e-table tbody').innerHTML=weeks.map(function(x){var m=x[0],s=x[1],k=iso(m),e=new Date(m.getFullYear(),m.getMonth(),m.getDate()+6);
-    var p=pay[k];
-    return '<tr><td>'+m.getDate()+'.'+('0'+(m.getMonth()+1)).slice(-2)+'–'+e.getDate()+'.'+('0'+(e.getMonth()+1)).slice(-2)+'</td><td>'+s.xp+'</td><td>'+(s.bonus?'+'+s.bonus:'—')+'</td><td>'+(s.fine?'−'+s.fine:'—')+'</td><td><b>'+rub(s.total)+'</b></td>'+
-      (IS_MOM?'<td>'+(p?'<button class="btn ghost" type="button" data-unpay="'+k+'">✓ '+rub(p.sum)+'</button>':'<button class="btn" type="button" data-pay="'+k+'" data-sum="'+s.total+'">Выплатила</button>')+'</td>':'')+'</tr>';}).join('');
+  document.querySelector('#e-table tbody').innerHTML=weeks.map(function(x){
+    var m=x[0],s=x[1],k=iso(m),e=new Date(m.getFullYear(),m.getMonth(),m.getDate()+6);
+    var p=pay[k],mp=(momStatus&&momStatus.paid||{})[k],msum=+((mp&&mp.sum)||0),mleft=Math.max(0,s.total-msum),sub='';
+    if(mp)sub+='<span class="small ok">✓ выплачено '+rub(msum)+(mleft?' · осталось '+rub(mleft):'')+'</span>';
+    else if(s.total&&m<monday)sub+='<span class="small" style="color:var(--warn)">не выплачено</span>';
+    if(s.claimed)sub+='<span class="small muted">ждёт проверки '+rub(s.claimed)+'</span>';
+    return '<tr><td>'+m.getDate()+'.'+('0'+(m.getMonth()+1)).slice(-2)+'–'+e.getDate()+'.'+('0'+(e.getMonth()+1)).slice(-2)+'</td><td>'+s.xp+'</td><td>'+(s.bonus?'+'+s.bonus:'—')+'</td><td>'+(s.fine?'−'+s.fine:'—')+'</td><td><b>'+rub(s.total)+'</b>'+(sub?'<br>'+sub:'')+'</td>'+
+      (IS_MOM?'<td>'+(p?'<button class="btn ghost" type="button" data-unpay="'+k+'">✓ '+rub(p.sum)+'</button>':'<button class="btn" type="button" data-pay="'+k+'" data-sum="'+s.total+'">Выплатила</button>')+'</td>':'')+'</tr>';
+  }).join('');
 }
 document.getElementById('e-table').addEventListener('click',function(e){
   var t=e.target,k;
@@ -1409,20 +1427,41 @@ document.getElementById('e-table').addEventListener('click',function(e){
 });
 
 var renderFines=null,momStatus=null;
+var momAt=null,momStale=false,momRetry=null;
 function setFines(f){fines=f||{};set('sm-fines',JSON.stringify(fines));renderEarn();if(renderFines)renderFines();}
 // mom's decisions: read mom.json straight from GitHub and derive the state with my own marks (works without mom's computer)
 var momActions=null;
+// последние решения мамы храним на телефоне: при плохой связи показываем их,
+// а не старый status.json, и всё равно перепроверяем каждую минуту
+var MOM_CACHE='sm-mom-cache';
+function momCacheSave(a){try{localStorage.setItem(MOM_CACHE,JSON.stringify({at:Date.now(),acts:a}));}catch(e){}}
+function readMomCache(){try{var c=JSON.parse(localStorage.getItem(MOM_CACHE)||'null');return c&&c.acts?c:null;}catch(e){return null;}}
 function applyMom(j){
   if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
   momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();renderToday();renderStats();}
 function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
 function loadMom(){
   if(IS_MOM||!window.fetch)return;
-  if(window.SEM)window.SEM.readJSON('SemTraining','mom.json',null).then(function(r){momActions=(r.data&&r.data.actions)||[];refreshMom();},loadStatusFile);
+  clearTimeout(momRetry);
+  if(window.SEM)window.SEM.readJSON('SemTraining','mom.json',null).then(function(r){
+    momActions=(r.data&&r.data.actions)||[];momAt=new Date();momStale=false;momCacheSave(momActions);refreshMom();
+  },function(){
+    var c=readMomCache();
+    if(!momActions&&c){momActions=c.acts;momAt=new Date(c.at);}
+    if(momActions){momStale=true;refreshMom();}
+    else{momStale=true;loadStatusFile();}
+    momRetry=setTimeout(loadMom,20000);
+  });
   else loadStatusFile();
 }
-function loadStatusFile(){fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(applyMom).catch(function(){});}
+function loadStatusFile(){
+  if(momActions)return; // живое уже загружено — старый снимок его не подменяет
+  fetch('status.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(j&&!momActions){momAt=j.updated?new Date(j.updated):null;momStale=true;applyMom(j);}
+  }).catch(function(){});
+}
 loadMom();
+setInterval(function(){if(!document.hidden)loadMom();},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){loadMom();syncNow();}});
 var fineForm=document.getElementById('f-form');
 if(fineForm){

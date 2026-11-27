@@ -72,7 +72,10 @@
     Object.keys(days).forEach(function (d) {
       var cl = CL[d] || {}, x = dec[d] || { ok: {}, no: {} }, it = {}, conf = {}, has = Object.keys(cl).length;
       Object.keys(cl).forEach(function (k) {
-        it[k] = (k in x.ok && x.ok[k] === (+cl[k] || 0)) ? 'ok' : (k in x.no ? 'no' : 'new');
+        // Подтверждение «залипает» за пунктом: если мама засчитала пункт,
+        // он остаётся засчитанным, даже если Семён позже поменял его цену.
+        // Раньше сравнивалась точная сумма, и подтверждения «слетали».
+        it[k] = (k in x.ok) ? 'ok' : (k in x.no ? 'no' : 'new');
         if (it[k] === 'ok') conf[k] = x.ok[k];
       });
       if (!has) Object.keys(x.ok).forEach(function (k) { it[k] = 'ok'; conf[k] = x.ok[k]; });   // отметки стёрты, а подтверждённое остаётся
@@ -108,6 +111,30 @@
     var b = work >= 6 ? C.BONUS : 0;
     return { mon: days[0], days: days, xp: daily + ex, work: work, bonus: b, fine: fine, pend: pend, claimed: claimed, promo: promo,
              capped: daily + b > C.MAX, total: Math.max(0, Math.min(C.MAX, daily + b) + ex - fine) };
+  }
+
+  // Долг за прошлые недели: всё, что подтверждено до текущего понедельника
+  // и ещё не выплачено (или выплачено частично). Возвращает {total, list}.
+  function debt(S, beforeMon) {
+    S = S || {};
+    var first = null, seen = {};
+    Object.keys(S.confirmed || {}).forEach(function (d) { seen[d] = 1; });
+    Object.keys(S.paid || {}).forEach(function (d) { seen[d] = 1; });
+    Object.keys(seen).forEach(function (d) {
+      var p = String(d).split('-'); if (p.length !== 3) return;
+      var x = new Date(+p[0], +p[1] - 1, +p[2]);
+      var m = new Date(x.getFullYear(), x.getMonth(), x.getDate() - ((x.getDay() + 6) % 7));
+      if (!first || m < first) first = m;
+    });
+    if (!first) return { total: 0, list: [] };
+    var total = 0, list = [];
+    for (var m = new Date(first); m < beforeMon; m.setDate(m.getDate() + 7)) {
+      var w = week(S, m); if (!w.total) continue;
+      var p = +(((S.paid || {})[iso(m)] || {}).sum) || 0;
+      var left = Math.max(0, w.total - p);
+      if (left > 0) { total += left; list.push({ mon: iso(m), total: w.total, paid: p, left: left }); }
+    }
+    return { total: total, list: list };
   }
 
   // GitHub Contents API helpers (UTF-8 safe)
@@ -242,4 +269,4 @@
   }
   // подсказки для формы «Задать книгу»: ~20 стр. в день; награда по правилу 300 стр. = 500 ₽
   function suggestDays(pg) { return Math.max(3, Math.ceil((+pg || 0) / 20)); }
-  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON, questsFor: questsFor, QUEST_BANK: QUEST_BANK };})();
+  window.SEM = { C: C, ENOT: ENOT, CHORES: CHORES, LEGACY: LEGACY, MOODS: MOODS, dayPlan: dayPlan, derive: derive, suggestDays: suggestDays, week: week, debt: debt, bookPrice: bookPrice, isExtra: isExtra, readJSON: readJSON, writeJSON: writeJSON, questsFor: questsFor, QUEST_BANK: QUEST_BANK };})();
