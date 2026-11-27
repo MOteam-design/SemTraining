@@ -1460,6 +1460,9 @@ function loadStatusFile(){
     if(j&&!momActions){momAt=j.updated?new Date(j.updated):null;momStale=true;applyMom(j);}
   }).catch(function(){});
 }
+// сразу показываем последние решения мамы с телефона, затем проверяем свежие
+var _mc=readMomCache();
+if(_mc&&!momActions){momActions=_mc.acts;momAt=new Date(_mc.at);momStale=true;refreshMom();}
 loadMom();
 setInterval(function(){if(!document.hidden)loadMom();},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){loadMom();syncNow();}});

@@ -743,6 +743,8 @@ function loadStatus(){
 }
 document.addEventListener('visibilitychange',function(){if(!document.hidden)load();});
 setInterval(function(){if(!document.hidden)load();},60000);
+// сразу показываем последние сохранённые данные, не дожидаясь сети
+var _c0=readLive();if(_c0)LIVE={claims:_c0.claims,acts:_c0.acts,at:_c0.at};
 render();load();
 
 // ---------- веб-пуши ----------
