@@ -46,7 +46,6 @@
   "2026-11-19": {
    "out": 5,
    "meal": 5,
-   "lessons": 0,
    "guitar": 30,
    "wake": 20,
    "bfast": 5,
@@ -57,7 +56,6 @@
    "wake": 20,
    "bfast": 5,
    "vit": 5,
-   "lessons": 0,
    "meal": 5,
    "dinner": 5,
    "read": 20,
@@ -68,7 +66,6 @@
    "bfast": 5,
    "vit": 5,
    "wake": 20,
-   "lessons": 0,
    "dinner": 5,
    "guitar": 30,
    "nosweet": 10,
@@ -78,7 +75,6 @@
    "bfast": 5,
    "vit": 5,
    "out": 5,
-   "lessons": 0,
    "meal": 5,
    "dinner": 5,
    "eve": 15,
@@ -89,7 +85,6 @@
    "wake": 20,
    "bfast": 5,
    "meal": 5,
-   "lessons": 0,
    "dinner": 5,
    "nosweet": 10,
    "qx-no-juice": 5
@@ -100,7 +95,6 @@
    "qx-no-fastfood": 5,
    "wake": 20,
    "bfast": 5,
-   "lessons": 0,
    "meal": 5,
    "dinner": 5,
    "nosweet": 10
@@ -111,11 +105,7 @@
    "meal": 5,
    "dinner": 5,
    "nosweet": 10,
-   "qx-home-food": 5,
-   "lessons": 0
-  },
-  "2026-11-27": {
-   "lessons": 0
+   "qx-home-food": 5
   }
  },
  "confirmed": {
@@ -129,56 +119,21 @@
    "q-drink": 5,
    "q-dessert": 5
   },
-  "2026-11-19": {
-   "out": 5,
-   "meal": 5,
-   "lessons": 0,
-   "guitar": 30,
-   "wake": 20,
+  "2026-11-17": {
    "bfast": 5,
+   "vit": 5,
    "dinner": 5,
-   "nosweet": 10
-  },
-  "2026-11-11": {
-   "q-drink": 5,
-   "q-dessert": 5,
-   "out": 5,
-   "meal": 5,
-   "str-b": 40,
-   "dinner": 5
+   "guitar": 30,
+   "nosweet": 10,
+   "meal": 5
   },
   "2026-11-18": {
    "bfast": 5,
    "vit": 5,
-   "lessons": 0,
    "meal": 5,
    "dinner": 5,
    "read": 20,
    "nosweet": 10
-  },
-  "2026-11-23": {
-   "bfast": 5,
-   "vit": 5,
-   "out": 5,
-   "lessons": 0,
-   "meal": 5,
-   "dinner": 5,
-   "eve": 15,
-   "guitar": 30,
-   "enot-4": 100
-  },
-  "2026-11-16": {
-   "bfast": 5,
-   "guitar": 30,
-   "nosweet": 10,
-   "meal": 5,
-   "dinner": 5
-  },
-  "2026-11-14": {
-   "qx-soup": 5,
-   "qx-protein-every-meal": 5,
-   "bfast": 5,
-   "meal": 5
   },
   "2026-11-13": {
    "out": 5,
@@ -191,57 +146,84 @@
    "enot-2": 100,
    "enot-3": 100
   },
-  "2026-11-25": {
-   "qx-fruit-dessert": 5,
-   "qx-green-veg": 5,
-   "qx-no-fastfood": 5,
+  "2026-11-16": {
    "bfast": 5,
-   "lessons": 0,
+   "guitar": 30,
+   "nosweet": 10,
    "meal": 5,
-   "dinner": 5,
-   "nosweet": 10
+   "dinner": 5
+  },
+  "2026-11-11": {
+   "q-drink": 5,
+   "q-dessert": 5,
+   "out": 5,
+   "meal": 5,
+   "str-b": 40,
+   "dinner": 5
   },
   "2026-11-24": {
    "bfast": 5,
    "meal": 5,
    "dinner": 5,
    "nosweet": 10,
-   "qx-home-food": 5,
-   "lessons": 0
+   "qx-home-food": 5
+  },
+  "2026-11-23": {
+   "bfast": 5,
+   "vit": 5,
+   "out": 5,
+   "meal": 5,
+   "dinner": 5,
+   "eve": 15,
+   "guitar": 30,
+   "enot-4": 100
+  },
+  "2026-11-25": {
+   "qx-fruit-dessert": 5,
+   "qx-green-veg": 5,
+   "qx-no-fastfood": 5,
+   "bfast": 5,
+   "meal": 5,
+   "dinner": 5,
+   "nosweet": 10
   },
   "2026-11-26": {
    "bfast": 5,
    "meal": 5,
-   "lessons": 0,
    "nosweet": 10,
    "qx-no-juice": 5,
    "enot-5": 100,
    "enot-6": 100
   },
-  "2026-11-17": {
+  "2026-11-14": {
+   "qx-soup": 5,
+   "qx-protein-every-meal": 5,
    "bfast": 5,
-   "vit": 5,
-   "lessons": 0,
-   "dinner": 5,
-   "guitar": 30,
-   "nosweet": 10,
    "meal": 5
+  },
+  "2026-11-19": {
+   "out": 5,
+   "meal": 5,
+   "guitar": 30,
+   "wake": 20,
+   "bfast": 5,
+   "dinner": 5,
+   "nosweet": 10
   }
  },
  "status": {
   "2026-11-12": "ok",
-  "2026-11-19": "ok",
-  "2026-11-11": "ok",
+  "2026-11-17": "ok",
   "2026-11-18": "ok",
-  "2026-11-27": "new",
-  "2026-11-23": "ok",
-  "2026-11-16": "ok",
-  "2026-11-14": "ok",
   "2026-11-13": "ok",
-  "2026-11-25": "ok",
+  "2026-11-16": "ok",
+  "2026-11-11": "ok",
   "2026-11-24": "ok",
+  "2026-11-23": "ok",
+  "2026-11-25": "ok",
   "2026-11-26": "ok",
-  "2026-11-17": "ok"
+  "2026-11-14": "ok",
+  "2026-11-19": "ok"
  },
  "paid": {
   "2026-11-09": {
@@ -310,8 +292,9 @@
   "7": {
    "d": "2026-11-26",
    "at": 0,
-   "status": "new",
-   "reward": 100
+   "status": "no",
+   "reward": 100,
+   "decAt": 1795763442851
   },
   "8": {
    "d": "2026-11-26",
@@ -328,8 +311,9 @@
   "10": {
    "d": "2026-11-26",
    "at": 0,
-   "status": "new",
-   "reward": 100
+   "status": "no",
+   "reward": 100,
+   "decAt": 1795763444958
   }
  },
  "topics": {
@@ -355,6 +339,7 @@
  "subs": {},
  "mood": {},
  "moodNotes": {},
+ "lessonsAt": {},
  "items": {
   "2026-11-12": {
    "out": "ok",
@@ -367,49 +352,32 @@
    "q-drink": "ok",
    "q-dessert": "ok"
   },
-  "2026-11-19": {
-   "out": "ok",
-   "meal": "ok",
-   "lessons": "ok",
-   "guitar": "ok",
-   "wake": "ok",
+  "2026-11-17": {
    "bfast": "ok",
+   "vit": "ok",
+   "wake": "no",
    "dinner": "ok",
-   "nosweet": "ok"
-  },
-  "2026-11-11": {
-   "q-drink": "ok",
-   "q-dessert": "ok",
-   "out": "ok",
-   "meal": "ok",
-   "str-b": "ok",
-   "dinner": "ok",
-   "h-trash": "no"
+   "guitar": "ok",
+   "nosweet": "ok",
+   "meal": "ok"
   },
   "2026-11-18": {
    "wake": "no",
    "bfast": "ok",
    "vit": "ok",
-   "lessons": "ok",
    "meal": "ok",
    "dinner": "ok",
    "read": "ok",
    "guitar": "no",
    "nosweet": "ok"
   },
-  "2026-11-27": {
-   "lessons": "new"
-  },
-  "2026-11-23": {
-   "bfast": "ok",
-   "vit": "ok",
+  "2026-11-13": {
    "out": "ok",
-   "lessons": "ok",
    "meal": "ok",
-   "dinner": "ok",
-   "eve": "ok",
    "guitar": "ok",
-   "nosweet": "no"
+   "vit": "ok",
+   "q-drink": "ok",
+   "q-dessert": "ok"
   },
   "2026-11-16": {
    "wake": "no",
@@ -420,30 +388,14 @@
    "meal": "ok",
    "dinner": "ok"
   },
-  "2026-11-14": {
-   "qx-soup": "ok",
-   "qx-protein-every-meal": "ok",
-   "bfast": "ok",
-   "meal": "ok"
-  },
-  "2026-11-13": {
+  "2026-11-11": {
+   "q-drink": "ok",
+   "q-dessert": "ok",
    "out": "ok",
    "meal": "ok",
-   "guitar": "ok",
-   "vit": "ok",
-   "q-drink": "ok",
-   "q-dessert": "ok"
-  },
-  "2026-11-25": {
-   "qx-fruit-dessert": "ok",
-   "qx-green-veg": "ok",
-   "qx-no-fastfood": "ok",
-   "wake": "no",
-   "bfast": "ok",
-   "lessons": "ok",
-   "meal": "ok",
+   "str-b": "ok",
    "dinner": "ok",
-   "nosweet": "ok"
+   "h-trash": "no"
   },
   "2026-11-24": {
    "bfast": "ok",
@@ -451,30 +403,53 @@
    "meal": "ok",
    "dinner": "ok",
    "nosweet": "ok",
-   "qx-home-food": "ok",
-   "lessons": "ok"
+   "qx-home-food": "ok"
+  },
+  "2026-11-23": {
+   "bfast": "ok",
+   "vit": "ok",
+   "out": "ok",
+   "meal": "ok",
+   "dinner": "ok",
+   "eve": "ok",
+   "guitar": "ok",
+   "nosweet": "no"
+  },
+  "2026-11-25": {
+   "qx-fruit-dessert": "ok",
+   "qx-green-veg": "ok",
+   "qx-no-fastfood": "ok",
+   "wake": "no",
+   "bfast": "ok",
+   "meal": "ok",
+   "dinner": "ok",
+   "nosweet": "ok"
   },
   "2026-11-26": {
    "wake": "no",
    "bfast": "ok",
    "meal": "ok",
-   "lessons": "ok",
    "dinner": "no",
    "nosweet": "ok",
    "qx-no-juice": "ok"
   },
-  "2026-11-17": {
+  "2026-11-14": {
+   "qx-soup": "ok",
+   "qx-protein-every-meal": "ok",
    "bfast": "ok",
-   "vit": "ok",
-   "wake": "no",
-   "lessons": "ok",
-   "dinner": "ok",
-   "guitar": "ok",
-   "nosweet": "ok",
    "meal": "ok"
+  },
+  "2026-11-19": {
+   "out": "ok",
+   "meal": "ok",
+   "guitar": "ok",
+   "wake": "ok",
+   "bfast": "ok",
+   "dinner": "ok",
+   "nosweet": "ok"
   }
  },
- "updated": "2026-11-27T10:09",
+ "updated": "2026-11-27T10:27",
  "applied": [
   "amwc5whc4z9k",
   "amwc67m35xzt",
@@ -589,6 +564,12 @@
   "amwxz0shjobv",
   "amwxz10s9tmo",
   "amwxz9ttswyd",
-  "amwxz9ydihtq"
+  "amwxz9ydihtq",
+  "amwyn6i3p674",
+  "amwyn6jythq3",
+  "amwyn6ltjlzs",
+  "amwyn6ouvn14",
+  "amwyn6sgz8es",
+  "amwyn6u3iy52"
  ]
 }
