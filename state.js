@@ -31,12 +31,16 @@
       var p = claims.projs[k];
       if (p) S.projects[k] = { d: p.ready || p.picked, state: p.ready ? 'ready' : 'pick', topic: p.topic, status: 'new', reward: C.PROJ };
     });
-    Object.keys(claims.enot || {}).forEach(function (n) { if (claims.enot[n]) S.enot[n] = { d: claims.enot[n], status: 'new', reward: C.ENOT }; });
+    Object.keys(claims.enot || {}).forEach(function (n) { if (claims.enot[n]) S.enot[n] = { d: claims.enot[n], at: +((claims.enotAt || {})[n]) || 0, status: 'new', reward: C.ENOT }; });
     // Семён нажал «Сделал» у цели от мамы: ждёт её подтверждения
     S.goalDone = claims.goals || {};
     (actions || []).forEach(function (a) {
       var t = a.t;
-      if ((t === 'eok' || t === 'eno') && S.enot[a.ref]) { S.enot[a.ref].status = t === 'eok' ? 'ok' : 'no'; return; }
+      if ((t === 'eok' || t === 'eno') && S.enot[a.ref]) {
+        S.enot[a.ref].status = t === 'eok' ? 'ok' : 'no';
+        S.enot[a.ref].decAt = Date.parse(a.at || '') || 0;   // когда мама решила
+        return;
+      }
       // книга от мамы на срок: к сроку — вся награда, позже — половина
       if (t === 'book' && a.bid) { S.assigned[a.bid] = { t: a.title || '', a: a.author || '', pg: +a.pg || 0, from: a.from, due: a.due, rw: +a.rw || 0 }; return; }
       if (t === 'unbook') { delete S.assigned[a.bid]; return; }
@@ -62,6 +66,12 @@
       else if (t === 'goal') { if (a.id2) S.goals[a.id2] = { id: a.id2, w: a.w || '', rw: +a.rw || 0, d: a.d || '', at: (a.at || '').slice(0, 10), status: 'open', done: null }; }
       else if (t === 'ungoal') { delete S.goals[a.id2]; }
       else if (t === 'gok' || t === 'gno') { var g = S.goals[a.id2]; if (g) { g.status = t === 'gok' ? 'ok' : 'no'; g.done = a.d || g.done; if (t === 'gok') g.d = a.d || g.done || g.at; } }
+    });
+    // Урок курса, который мама не засчитала, можно пройти заново.
+    // Если Семён отметил урок позже решения мамы — он снова ждёт проверки.
+    Object.keys(S.enot).forEach(function (n) {
+      var e = S.enot[n];
+      if (e.status === 'no' && e.at && (!e.decAt || e.at > e.decAt)) e.status = 'new';
     });
     Object.keys(S.books).forEach(function (k) { var as = S.assigned[k], b = S.books[k];
       if (as) { b.assigned = true; b.due = as.due; b.reward = b.d <= as.due ? as.rw : Math.round(as.rw / 2); b.late = b.d > as.due; } });
@@ -254,6 +264,7 @@
     var quests = isoStr ? questsFor(isoStr) : QUESTS.map(function (q) { return { k: q[0], t: q[1], xp: 5 }; });
     function g(name, items) { G.push({ name: name, items: items.filter(Boolean) }); }
     g('Утро', [wk && { k: 'wake', t: 'Встал сам по будильнику', xp: 20 }, { k: 'vit', t: 'Витамины D и омега-3', xp: 5 }, { k: 'feet', t: 'Стопы', xp: 10 }]);
+    g('Школа', [wk && { k: 'lessons', t: 'Уроки — отметить самому', xp: 0 }]);
     var sport = [];
     if (dow >= 1 && dow <= 6) {
       var isLong = dow === 1 || dow === 2 || dow === 4;
