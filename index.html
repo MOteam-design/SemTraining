@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261128a"></script><script src="state.js?v=20261128a"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261128b"></script><script src="state.js?v=20261128b"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -454,6 +454,14 @@ td.best{color:var(--go);font-weight:800}
       <p class="small">Курс про то, как не верить на слово: логика, факты и мнения, мошенники, ловушки мышления, проверка новостей. Прошёл урок — отметь его тут, мама спросит, что запомнилось, и засчитает 100 ₽. Это не входит в потолок 1500 ₽ за неделю.</p>
       <p><a class="btn" href="https://moteam-design.github.io/enot-chek/" target="_blank" rel="noopener">Открыть курс 🦝</a></p>
       <div id="en-list" style="display:grid;gap:6px"></div>
+    </div>
+
+    <div class="panel" id="pres">
+      <span class="eyebrow">Сверх лимита · 100 ₽ за урок</span>
+      <h2>Курс «Презентация, которую досмотрят»</h2>
+      <p class="small">5 занятий с Пикселем и Скетчем: структура, заголовки, тексты, изображения и подача. Итог — презентация на 7 слайдов и выступление на 2 минуты. Прошёл занятие и тренажёр — отметь его тут, мама спросит, что запомнилось, и засчитает 100 ₽. Это не входит в потолок 1500 ₽ за неделю.</p>
+      <p><a class="btn" href="https://moteam-design.github.io/presentation-course/" target="_blank" rel="noopener">Открыть курс 📽</a></p>
+      <div id="pr-list" style="display:grid;gap:6px"></div>
     </div>
 
     <div class="panel" id="pj">
@@ -1452,7 +1460,7 @@ function momCacheSave(a){try{localStorage.setItem(MOM_CACHE,JSON.stringify({at:D
 function readMomCache(){try{var c=JSON.parse(localStorage.getItem(MOM_CACHE)||'null');return c&&c.acts?c:null;}catch(e){return null;}}
 function applyMom(j){
   if(!j)return;var m={};(j.fines||[]).forEach(function(f){if(f&&f.id&&f.d)m[f.id]=f;});
-  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();renderToday();renderStats();}
+  momStatus=j;setFines(m);renderBooks();renderProj();renderPuzzle();renderEnot();renderPres();renderToday();renderStats();}
 function refreshMom(){if(momActions&&window.SEM)applyMom(window.SEM.derive(localClaims(),momActions));}
 function loadMom(){
   if(IS_MOM||!window.fetch)return;
@@ -1665,26 +1673,35 @@ document.getElementById('pj-box').addEventListener('click',function(e){
 });
 // course «Енот Чек»: {lesson: date passed}; 100 ₽ each once mom confirms, outside the weekly cap
 var ENOT_L=[[1,'Знакомство и азбука логики'],[2,'Азбука логики: часть 2'],[3,'Факт или мнение'],[4,'Суперсила вопросов'],[5,'Осторожно, мошенники'],[6,'Ловушки в рассуждениях'],[7,'Ловушки-2 и неверные выводы'],[8,'Как мозг нас обманывает'],[9,'Проверка новостей'],[10,'Итоговый тест']];
+var PRES_L=[['p1','Структура: одна мысль, воздух и порядок'],['p2','Заголовки: мысль, глагол и 6–8 слов'],['p3','Тексты: шрифт, размер и вёрстка'],['p4','Изображения: фото, иконки и цифры'],['p5','Подача: выступление, анимация и шаблоны']];
 var enot={};try{enot=JSON.parse(get('sm-enot','{}'))||{};}catch(e){enot={};}
 var enotAt={};try{enotAt=JSON.parse(get('sm-enotat','{}'))||{};}catch(e){enotAt={};}
-function renderEnot(){
-  document.getElementById('en-list').innerHTML=ENOT_L.map(function(l){var n=String(l[0]),d=enot[n],m=momItem('enot',n),st;
-    if(m&&m.status==='ok')st='<span class="xp">✅ +100</span>';
-    else if(m&&m.status==='no')st='<span class="muted small">не засчитано</span> <button class="btn ghost" type="button" data-en="'+n+'">Пройти заново ✓</button>';
-    else if(d)st='<span class="muted small">ждёт маму</span> <button class="btn ghost" type="button" data-en="'+n+'">Отметить заново</button>';
-    else st='<button class="btn ghost" type="button" data-en="'+n+'">Прошёл ✓</button>';
-    return '<div class="row" style="justify-content:space-between;gap:8px"><span class="small"><b>'+n+'.</b> '+esc(l[1])+'</span>'+st+'</div>';}).join('');
+function courseRow(l,N){
+  var n=String(l[0]),d=enot[n],m=momItem('enot',n),st;
+  if(m&&m.status==='ok')st='<span class="xp">✅ +100</span>';
+  else if(m&&m.status==='no')st='<span class="muted small">не засчитано</span> <button class="btn ghost" type="button" data-en="'+n+'">Пройти заново ✓</button>';
+  else if(d)st='<span class="muted small">ждёт маму</span> <button class="btn ghost" type="button" data-en="'+n+'">Отметить заново</button>';
+  else st='<button class="btn ghost" type="button" data-en="'+n+'">Прошёл ✓</button>';
+  return '<div class="row" style="justify-content:space-between;gap:8px"><span class="small"><b>'+N+'.</b> '+esc(l[1])+'</span>'+st+'</div>';
 }
-document.getElementById('en-list').addEventListener('click',function(e){
+function renderEnot(){
+  document.getElementById('en-list').innerHTML=ENOT_L.map(function(l,i){return courseRow(l,i+1);}).join('');
+}
+function renderPres(){
+  document.getElementById('pr-list').innerHTML=PRES_L.map(function(l,i){return courseRow(l,i+1);}).join('');
+}
+function courseClick(e){
   var n=e.target.dataset&&(e.target.dataset.en||e.target.dataset.eun);if(!n)return;
   if(e.target.dataset.en){
     if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='Точно прошёл?';return;}
     enot[n]=todayIso;enotAt[n]=Date.now();   // время — чтобы урок можно было пройти заново после «не засчитано»
   }
   else{delete enot[n];delete enotAt[n];}
-  set('sm-enot',JSON.stringify(enot));set('sm-enotat',JSON.stringify(enotAt));renderEnot();refreshMom();
-});
-renderEnot();
+  set('sm-enot',JSON.stringify(enot));set('sm-enotat',JSON.stringify(enotAt));renderEnot();renderPres();refreshMom();
+}
+document.getElementById('en-list').addEventListener('click',courseClick);
+document.getElementById('pr-list').addEventListener('click',courseClick);
+renderEnot();renderPres();
 // all projects ever picked (mom needs the history to pay for accepted ones)
 var projs={};try{projs=JSON.parse(get('sm-projs','{}'))||{};}catch(e){projs={};}
 // цели от мамы: {id: дата}, когда Семён нажал «Сделал» — мама подтверждает

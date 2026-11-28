@@ -241,6 +241,14 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
     <p class="small muted">100 ₽ за урок. Спросите, что запомнилось из урока, — и засчитайте.</p>
   </section>
 
+  <!-- 7b. Курс презентаций -->
+  <section class="card">
+    <div class="row sp"><h2>📽 Курс «Презентация, которую досмотрят»</h2><span class="small muted" id="pr-count"></span></div>
+    <p class="small muted"><a href="https://moteam-design.github.io/presentation-course/" target="_blank" rel="noopener">Открыть курс</a> · 5 занятий по 100 ₽.</p>
+    <div id="pr-list"></div>
+    <p class="small muted">5 занятий, 100 ₽ за урок сверх лимита. Спросите, что запомнилось, — и засчитайте.</p>
+  </section>
+
   <!-- 8. Доклады -->
   <section class="card">
     <h2>🎤 Доклады</h2>
@@ -274,8 +282,8 @@ details.fold>div{display:grid;gap:10px;margin-top:10px}
   <p class="note">Семён видит ваши решения у себя в приложении сразу. Сообщения в Telegram приходят, когда включён компьютер. Карманные 500 ₽ сюда не входят. <a href="#" id="key-reset">Ключ на этом телефоне</a></p>
 </div>
 <div id="toast" hidden></div>
-<script src="puzzles.js?v=20261128a"></script>
-<script src="state.js?v=20261128a"></script>
+<script src="puzzles.js?v=20261128b"></script>
+<script src="state.js?v=20261128b"></script>
 <script src="push.js?v=20261116a"></script>
 <script>
 (function(){
@@ -419,7 +427,7 @@ function render(){
     $('wk-pay').innerHTML='<span class="chip ok">выплачено '+rub(p.sum)+'</span>'+
       (diff>0?' <button class="btn ghost sm" type="button" data-a="paid" data-mon="'+w.mon+'" data-sum="'+w.total+'">💸 Доплатить '+rub(diff)+'</button>':'');
   }
-  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderMonths,renderRead,renderEnot,renderProj,renderTopics,renderPromo,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
+  [renderDay,function(V){renderExtra(V,xp);},renderFines,renderWeeks,renderMonths,renderRead,renderEnot,renderPres,renderProj,renderTopics,renderPromo,renderPz].forEach(function(fn){try{fn(V);}catch(err){if(window.console)console.error(err);}});
 }
 // 2. day: full plan with done / not done, per-item decisions
 function renderDay(V){
@@ -488,12 +496,16 @@ function extrasPending(V){var L=[];
   Object.keys(V.enot||{}).forEach(function(k){if(V.enot[k].status==='new')L.push(['e',k]);});
   Object.keys(V.projects||{}).forEach(function(k){var p=V.projects[k];if(p.status==='new'&&p.state==='ready')L.push(['p',k]);});
   return L;}
-function lessonName(n){var l=(SEM.ENOT.LESSONS.filter(function(x){return String(x[0])===String(n);})[0]||[0,''])[1];return l;}
+function lessonName(n){
+  var k=String(n),L=(k.indexOf('p')===0?SEM.ENOT.PRES.LESSONS:SEM.ENOT.LESSONS);
+  var l=(L.filter(function(x){return String(x[0])===k;})[0]||[0,''])[1];return l;
+}
+function isPres(n){return String(n).indexOf('p')===0;}
 function renderExtra(V,L){
   $('extra-card').hidden=!L.length;
   $('extra').innerHTML=L.map(function(x){
     if(x[0]==='b'){var b=V.books[x[1]];return '<div class="box"><div class="row sp"><b>📖 Дочитал «'+esc(b.title)+'»</b><b>+'+b.reward+' ₽</b></div><span class="small muted">'+(b.pages?b.pages+' стр. · ':'')+dlong(b.d)+(b.assigned?(b.late?' · после срока — половина':' · к сроку'):'')+'</span><span class="small">Попросите рассказать за 3 минуты: о чём книга, что запомнилось.</span><div class="row"><button class="btn ok sm" type="button" data-a="bok" data-ref="'+x[1]+'">✅ Засчитать</button><button class="btn no sm" type="button" data-a="bno" data-ref="'+x[1]+'">Не засчитывать</button></div></div>';}
-    if(x[0]==='e'){var e=V.enot[x[1]];return '<div class="box"><div class="row sp"><b>🦝 Урок '+x[1]+': '+esc(lessonName(x[1]))+'</b><b>+100 ₽</b></div><span class="small muted">'+dlong(e.d)+' · спросите, что запомнилось</span><div class="row"><button class="btn ok sm" type="button" data-a="eok" data-ref="'+x[1]+'">✅ Засчитать</button><button class="btn no sm" type="button" data-a="eno" data-ref="'+x[1]+'">Не засчитывать</button></div></div>';}
+    if(x[0]==='e'){var e=V.enot[x[1]],pr=isPres(x[1]);return '<div class="box"><div class="row sp"><b>'+(pr?'📽':'🦝')+' Урок '+(pr?String(x[1]).slice(1):x[1])+': '+esc(lessonName(x[1]))+'</b><b>+100 ₽</b></div><span class="small muted">'+dlong(e.d)+' · спросите, что запомнилось</span><div class="row"><button class="btn ok sm" type="button" data-a="eok" data-ref="'+x[1]+'">✅ Засчитать</button><button class="btn no sm" type="button" data-a="eno" data-ref="'+x[1]+'">Не засчитывать</button></div></div>';}
     var p=V.projects[x[1]];return '<div class="box"><div class="row sp"><b>🎤 Выступил: «'+esc(p.topic)+'»</b><b>+400 ₽</b></div><div class="row"><button class="btn ok sm" type="button" data-a="pok" data-ref="'+x[1]+'">✅ Принять</button><button class="btn no sm" type="button" data-a="pno" data-ref="'+x[1]+'">Доработать</button></div></div>';
   }).join('');
 }
@@ -548,6 +560,17 @@ function renderEnot(V){
     else st='<span class="chip none">не пройден</span>';
     return '<div class="les"><span>'+k+'. '+esc(l[1])+'</span>'+st+'</div>';}).join('');
   $('en-count').textContent='засчитано '+n+' из '+SEM.ENOT.LESSONS.length;
+}
+// 7b. курс презентаций: 5 занятий
+function renderPres(V){
+  var E=V.enot||{},n=0;
+  $('pr-list').innerHTML=SEM.ENOT.PRES.LESSONS.map(function(l){var k=String(l[0]),e=E[k],st;
+    if(e&&e.status==='ok'){n++;st='<span class="chip ok">✓ +100 · '+dm(e.d)+'</span>';}
+    else if(e&&e.status==='new')st='<span class="chip new">прошёл '+dm(e.d)+' — проверьте выше</span>';
+    else if(e&&e.status==='no')st='<span class="chip no">не засчитано</span>';
+    else st='<span class="chip none">не пройден</span>';
+    return '<div class="les"><span>'+k.slice(1)+'. '+esc(l[1])+'</span>'+st+'</div>';}).join('');
+  $('pr-count').textContent='засчитано '+n+' из '+SEM.ENOT.PRES.LESSONS.length;
 }
 // 8. projects + topics on offer
 function renderProj(V){
