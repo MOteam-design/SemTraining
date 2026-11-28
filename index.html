@@ -1483,6 +1483,9 @@ loadMom();
 setInterval(function(){if(!document.hidden)loadMom();},30000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){if(Date.now()-momLastTry>10000)loadMom();syncNow();}});
 window.addEventListener('hashchange',function(){if((location.hash||'')==='#progress')loadMom();});
+[].forEach.call(document.querySelectorAll('[data-tab]'),function(a){
+  a.addEventListener('click',function(){if(a.getAttribute('data-tab')==='progress')loadMom();});
+});
 var fineForm=document.getElementById('f-form');
 if(fineForm){
   var fstore=null;
