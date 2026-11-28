@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261127d"></script><script src="state.js?v=20261127d"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0A0F1F"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LVL UP"><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png"><script src="puzzles.js?v=20261128a"></script><script src="state.js?v=20261128a"></script><script src="push.js?v=20261116a"></script><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style></head><body><title>Семён в форме</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap">
@@ -1404,7 +1404,7 @@ function renderEarn(){
       (pd?' · 💸 выплачено '+rub(paidSum)+' · осталось '+rub(left):'')+
       (db.total?'<br><b>⚠️ За прошлые недели не выплачено: '+rub(db.total)+'</b> — напомни маме':'')+
       (db.total?'<br><b>Всего к выплате с прошлыми неделями: '+rub(left+db.total)+'</b>':'')+
-      (momStale?'<br><span class="muted">Данные мамы на '+fmtWhen(momAt)+', обновятся сами.</span>':'')+'</p>';
+      (momAt?'<br><span class="muted">'+(momStale?'Нет связи — данные мамы на ':'Данные мамы обновлены в ')+fmtWhen(momAt)+'</span>':'')+'</p>';
   }
   var fl=[];Object.keys(fines||{}).forEach(function(k){var f=fines[k];if(f&&f.d>=iso(monday)&&f.d<=iso(new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+6)))fl.push(f);});
   document.getElementById('e-fines').innerHTML=ms+(fl.length?'<div class="stop"><b>Штрафы на этой неделе: −'+rub(cw.fine)+'</b><ul>'+fl.sort(function(x,y){return x.d<y.d?-1:1;}).map(function(f){return '<li>'+fmtDate(f.d)+' — '+esc(f.r)+': −'+rub(+f.a)+'</li>';}).join('')+'</ul></div>':'');
@@ -1480,8 +1480,9 @@ function loadStatusFile(){
   }).catch(function(){});
 }
 loadMom();
-setInterval(function(){if(!document.hidden)loadMom();},120000);
-document.addEventListener('visibilitychange',function(){if(!document.hidden){if(Date.now()-momLastTry>60000)loadMom();syncNow();}});
+setInterval(function(){if(!document.hidden)loadMom();},30000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){if(Date.now()-momLastTry>10000)loadMom();syncNow();}});
+window.addEventListener('hashchange',function(){if((location.hash||'')==='#progress')loadMom();});
 var fineForm=document.getElementById('f-form');
 if(fineForm){
   var fstore=null;
